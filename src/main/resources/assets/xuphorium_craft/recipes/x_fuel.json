@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"xcx",
+		"cCc",
+		"xcx"
+	],
+	"key":
+	{
+		"x":
+		{
+			"item": "x_craft:x_dust"
+		},
+		"c":
+		{
+			"item": "minecraft:coal","data":0
+		},
+		"C":
+		{
+			"item": "x_craft:x_catalyst"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_fuel"
+	}
+}

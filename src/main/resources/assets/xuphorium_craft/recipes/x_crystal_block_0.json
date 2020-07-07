@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"VVV",
+		"VPV",
+		"VVV"
+	],
+	"key":
+	{
+		"V":
+		{
+			"item": "x_craft:x_crystal"
+		},
+		"P":
+		{
+			"item": "x_craft:x_pearl"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_crystal_block","data":0
+	}
+}

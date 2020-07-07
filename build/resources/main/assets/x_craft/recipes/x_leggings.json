@@ -1,0 +1,33 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"#O#",
+		"OXO",
+		"#x#"
+	],
+	"key":
+	{
+		"O":
+		{
+			"item": "x_craft:x_block_advanced","data":0
+		},
+		"#":
+		{
+			"item": "x_craft:x_block","data":0
+		},
+		"X":
+		{
+			"item": "x_craft:x_item",
+			"data": 0
+		},
+		"x":
+		{
+			"item": "x_craft:x_dust"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_leggings"
+	}
+}

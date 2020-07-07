@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients":
+	[
+		{
+			"item": "x_craft:x_ingot"
+		}
+	],
+	"result":
+	{
+		"item": "x_craft:x_nugget",
+		"count":8
+	}
+}

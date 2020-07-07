@@ -1,0 +1,46 @@
+Unsupposrted library path: C:\MCMods\x_craft_reator\build\classes\java\api
+Unsupposrted library path: C:\MCMods\x_craft_reator\build\resources\api
+Symbol range map extraction starting
+Processing 14 files
+startProcessing "net/mcreator/x_craft/ClientProxyx_craft.java" md5: 8c0dbdc996e2c7ace456b048a5c4c82b
+endProcessing "net/mcreator/x_craft/ClientProxyx_craft.java"
+
+startProcessing "net/mcreator/x_craft/Elementsx_craft.java" md5: b3fbe192a91af281d21dbbb66e6c1fd6
+endProcessing "net/mcreator/x_craft/Elementsx_craft.java"
+
+startProcessing "net/mcreator/x_craft/IProxyx_craft.java" md5: 9a4dfdc50c920eb4a36ab2ce0387b21b
+endProcessing "net/mcreator/x_craft/IProxyx_craft.java"
+
+startProcessing "net/mcreator/x_craft/ServerProxyx_craft.java" md5: 661f6efd5150d39e5c9b06179f161d87
+endProcessing "net/mcreator/x_craft/ServerProxyx_craft.java"
+
+startProcessing "net/mcreator/x_craft/XArmor.java" md5: 413baf94507b827b864b720868ad3fb4
+endProcessing "net/mcreator/x_craft/XArmor.java"
+
+startProcessing "net/mcreator/x_craft/XBoss.java" md5: 7ef2409b4fa9dd42de977dd114168feb
+endProcessing "net/mcreator/x_craft/XBoss.java"
+
+startProcessing "net/mcreator/x_craft/XCraft.java" md5: 12e62bd1e48b9c0fa7ca0b33c49ebf39
+endProcessing "net/mcreator/x_craft/XCraft.java"
+
+startProcessing "net/mcreator/x_craft/XCraftBlocks.java" md5: 0e6b4b23244ce5a482fef6c0633e81c4
+endProcessing "net/mcreator/x_craft/XCraftBlocks.java"
+
+startProcessing "net/mcreator/x_craft/XCraftMaterials.java" md5: 8aec6977fd0a97b0164a732b00d1096f
+endProcessing "net/mcreator/x_craft/XCraftMaterials.java"
+
+startProcessing "net/mcreator/x_craft/XCraftReactions.java" md5: a7bd57908bfe85af8116b4f3ada11750
+endProcessing "net/mcreator/x_craft/XCraftReactions.java"
+
+startProcessing "net/mcreator/x_craft/XCraftTools.java" md5: a8a5b556d25db46fee2d3aa206f5d441
+endProcessing "net/mcreator/x_craft/XCraftTools.java"
+
+startProcessing "net/mcreator/x_craft/XCreeper.java" md5: 8e44628d95b1a5609cd4b9f00ddf7bc2
+endProcessing "net/mcreator/x_craft/XCreeper.java"
+
+startProcessing "net/mcreator/x_craft/x_craft.java" md5: 3822f992d81f393eba72615ea2144d1b
+endProcessing "net/mcreator/x_craft/x_craft.java"
+
+startProcessing "net/mcreator/x_craft/x_craftVariables.java" md5: 12645bb56979a4f659f097da2672cac7
+endProcessing "net/mcreator/x_craft/x_craftVariables.java"
+

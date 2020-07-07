@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"xxx",
+		"xVx",
+		"xxx"
+	],
+	"key":
+	{
+		"V":
+		{
+			"item": "x_craft:x_crystal"
+		},
+		"x":
+		{
+			"item": "x_craft:x_dust"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_catalyst",
+		"count": 4
+	}
+}

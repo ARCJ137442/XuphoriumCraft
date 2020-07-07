@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients":
+	[
+		{
+			"item": "x_craft:x_pearl"
+		},
+		{
+			"item": "x_craft:x_catalyst"
+		}
+	],
+	"result":
+	{
+		"item": "x_craft:x_eye",
+		"count": 1
+	}
+}

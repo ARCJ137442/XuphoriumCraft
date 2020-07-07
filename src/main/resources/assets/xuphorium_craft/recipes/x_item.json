@@ -1,0 +1,36 @@
+{
+	"group": "x_item_0",
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"!x/",
+		"x#x",
+		"/x!"
+	],
+	"key":
+	{
+		"/":
+		{
+			"item": "x_craft:x_rod",
+			"data": 0
+		},
+		"!":
+		{
+			"item": "x_craft:x_rod",
+			"data": 1
+		},
+		"#":
+		{
+			"item": "x_craft:x_ingot"
+		},
+		"x":
+		{
+			"item": "x_craft:x_dust"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_item",
+        "data": 0
+	}
+}

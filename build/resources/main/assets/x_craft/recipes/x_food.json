@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"xx",
+		"xx"
+	],
+	"key":
+	{
+		"x":
+		{
+			"item": "x_craft:x_dust"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_food"
+	}
+}

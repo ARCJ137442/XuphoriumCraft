@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"VVV",
+		"VHV",
+		"CVC"
+	],
+	"key":
+	{
+		"C":
+		{
+			"item": "x_craft:x_catalyst"
+		},
+		"V":
+		{
+			"item": "x_craft:x_crystal"
+		},
+		"H":
+		{
+			"item": "x_craft:x_shield"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_shield_powered","data":0
+	}
+}

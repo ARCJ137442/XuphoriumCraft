@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"xxx",
+		"xFx",
+		"xxx"
+	],
+	"key":
+	{
+		"x":
+		{
+			"item": "x_craft:x_dust"
+		},
+		"F":
+		{
+			"item": "x_craft:x_fuel"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_dust_block"
+	}
+}

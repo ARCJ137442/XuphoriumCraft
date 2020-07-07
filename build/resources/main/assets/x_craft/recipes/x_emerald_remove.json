@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients":
+	[
+		{
+			"item": "x_craft:x_emerald"
+		}
+	],
+	"result":
+	{
+		"item": "minecraft:emerald",
+		"count": 4
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"variants":
+	{
+		"normal":
+		{
+			"model": "x_craft:x_dust_block"
+		}
+	}
+}

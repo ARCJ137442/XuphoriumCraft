@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"#V#",
+		"VXV",
+		"#V#"
+	],
+	"key":
+	{
+		"#":
+		{
+			"item": "x_craft:x_ingot"
+		},
+		"V":
+		{
+			"item": "x_craft:x_crystal"
+		},
+		"X":
+		{
+			"item": "x_craft:x_item","data":0
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_reactive_core"
+	}
+}

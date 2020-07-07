@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"#*#",
+		"*g*",
+		"#*#"
+	],
+	"key":
+	{
+		"#":
+		{
+			"item": "x_craft:x_ingot"
+		},
+		"g":
+		{
+			"item": "minecraft:glass"
+		},
+		"*":
+		{
+			"item": "x_craft:x_dust"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_glass"
+	}
+}

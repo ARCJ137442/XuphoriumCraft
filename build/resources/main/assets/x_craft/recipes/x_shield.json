@@ -1,0 +1,33 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		"EDE",
+		"DXD",
+		"xDx"
+	],
+	"key":
+	{
+		"D":
+		{
+			"item": "x_craft:x_diamond"
+		},
+		"E":
+		{
+			"item": "x_craft:x_emerald"
+		},
+		"X":
+		{
+			"item": "x_craft:x_item",
+			"data": 0
+		},
+		"x":
+		{
+			"item": "x_craft:x_dust"
+		}
+	},
+	"result":
+	{
+		"item": "x_craft:x_shield","data":0
+	}
+}
