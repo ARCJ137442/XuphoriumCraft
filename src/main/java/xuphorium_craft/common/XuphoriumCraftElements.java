@@ -3,7 +3,7 @@
   *此文件是自动生成的，以将所有MCreator mod元素连接在一起。
   */
 
-package xuphorium_craft;
+package xuphorium_craft.common;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.common.registry.EntityEntry;

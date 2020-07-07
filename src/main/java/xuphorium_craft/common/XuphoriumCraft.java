@@ -6,7 +6,7 @@
   *将XuphoriumCraftElements对象和此类的所有调用保留在此类中INTACT，以保留由MCreator生成的mod元素的功能。
   *如果您未在Workspace设置中锁定基本mod元素文件，则此文件将在每个版本上重新生成。
   */
-package xuphorium_craft;
+package xuphorium_craft.common;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
