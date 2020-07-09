@@ -10,24 +10,24 @@
 	{
 		"O":
 		{
-			"item": "x_craft:x_block_advanced","data":0
+			"item": "xuphorium_craft:x_block_advanced","data":0
 		},
 		"#":
 		{
-			"item": "x_craft:x_block","data":0
+			"item": "xuphorium_craft:x_block","data":0
 		},
 		"X":
 		{
-			"item": "x_craft:x_item",
+			"item": "xuphorium_craft:x_item",
 			"data": 0
 		},
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_chestplate"
+		"item": "xuphorium_craft:x_chestplate"
 	}
 }

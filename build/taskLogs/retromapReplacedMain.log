@@ -1763,253 +1763,253 @@ New Key: class net/minecraftforge/fml/common/registry/GameRegistry
 New Key: class net/minecraftforge/fml/common/registry/GameRegistry
 New Key: class net/minecraftforge/fml/common/registry/GameRegistry
 FOUND CONSTR method xuphorium_craft/XCraftTools/XCraftTools (Lxuphorium_craft/XuphoriumCraftElements;)V xuphorium_craft/XCraftTools
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[9305,9324]::getHeldItemMainhand->func_184614_ca
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[9322,9329]::getItem->func_77973_b
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[9387,9406]::getHeldItemMainhand->func_184614_ca
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[9436,9454]::getHeldItemOffhand->func_184592_cb
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[9453,9460]::getItem->func_77973_b
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[9518,9536]::getHeldItemOffhand->func_184592_cb
-Rename method net/minecraft/util/DamageSource/canHarmInCreative ()Z[9579,9596]::canHarmInCreative->func_76357_e
-Rename method net/minecraft/util/DamageSource/getTrueSource ()Lnet/minecraft/entity/Entity;[9673,9686]::getTrueSource->func_76346_g
-Rename method net/minecraft/util/DamageSource/getTrueSource ()Lnet/minecraft/entity/Entity;[9757,9770]::getTrueSource->func_76346_g
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[9875,9894]::getHeldItemMainhand->func_184614_ca
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[9958,9965]::getItem->func_77973_b
-Rename method net/minecraft/entity/Entity/playSound (Lnet/minecraft/util/SoundEvent;FF)V[10078,10087]::playSound->func_184185_a
-Rename field net/minecraft/init/SoundEvents/BLOCK_ANVIL_LAND[10104,10120]::BLOCK_ANVIL_LAND->field_187689_f
-Rename method net/minecraft/item/ItemStack/damageItem (ILnet/minecraft/entity/EntityLivingBase;)V[10144,10154]::damageItem->func_77972_a
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[9447,9466]::getHeldItemMainhand->func_184614_ca
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[9464,9471]::getItem->func_77973_b
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[9529,9548]::getHeldItemMainhand->func_184614_ca
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[9578,9596]::getHeldItemOffhand->func_184592_cb
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[9595,9602]::getItem->func_77973_b
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[9660,9678]::getHeldItemOffhand->func_184592_cb
+Rename method net/minecraft/util/DamageSource/canHarmInCreative ()Z[9721,9738]::canHarmInCreative->func_76357_e
+Rename method net/minecraft/util/DamageSource/getTrueSource ()Lnet/minecraft/entity/Entity;[9815,9828]::getTrueSource->func_76346_g
+Rename method net/minecraft/util/DamageSource/getTrueSource ()Lnet/minecraft/entity/Entity;[9899,9912]::getTrueSource->func_76346_g
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[10017,10036]::getHeldItemMainhand->func_184614_ca
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[10100,10107]::getItem->func_77973_b
+Rename method net/minecraft/entity/Entity/playSound (Lnet/minecraft/util/SoundEvent;FF)V[10220,10229]::playSound->func_184185_a
+Rename field net/minecraft/init/SoundEvents/BLOCK_ANVIL_LAND[10246,10262]::BLOCK_ANVIL_LAND->field_187689_f
+Rename method net/minecraft/item/ItemStack/damageItem (ILnet/minecraft/entity/EntityLivingBase;)V[10286,10296]::damageItem->func_77972_a
 New Key: class xuphorium_craft/XCraftCTab
 FOUND CONSTR method xuphorium_craft/XCraftTools/XCraftToolCommon/XCraftToolCommon (Ljava/lang/String;II)V xuphorium_craft/XCraftTools/XCraftToolCommon
 FOUND CONSTR method xuphorium_craft/XCraftTools/XCraftToolCommon/XCraftToolCommon (Ljava/lang/String;IIZ)V xuphorium_craft/XCraftTools/XCraftToolCommon
-Rename method net/minecraft/item/Item/setHasSubtypes (Z)Lnet/minecraft/item/Item;[10781,10795]::setHasSubtypes->func_77627_a
-Rename method net/minecraft/item/Item/getItemEnchantability ()I[10842,10863]::getItemEnchantability->func_77619_b
-Rename method net/minecraft/item/Item/getMaxItemUseDuration (Lnet/minecraft/item/ItemStack;)I[10911,10932]::getMaxItemUseDuration->func_77626_a
+Rename method net/minecraft/item/Item/setHasSubtypes (Z)Lnet/minecraft/item/Item;[10923,10937]::setHasSubtypes->func_77627_a
+Rename method net/minecraft/item/Item/getItemEnchantability ()I[10984,11005]::getItemEnchantability->func_77619_b
+Rename method net/minecraft/item/Item/getMaxItemUseDuration (Lnet/minecraft/item/ItemStack;)I[11053,11074]::getMaxItemUseDuration->func_77626_a
 FOUND CONSTR method xuphorium_craft/XCraftTools/XItem/XItem ()V xuphorium_craft/XCraftTools/XItem
-Rename method net/minecraft/item/Item/getSubItems (Lnet/minecraft/creativetab/CreativeTabs;Lnet/minecraft/util/NonNullList;)V[11143,11154]::getSubItems->func_150895_a
-Rename method net/minecraft/item/Item/isInCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Z[11221,11236]::isInCreativeTab->func_194125_a
-Rename method net/minecraft/item/Item/getMaxItemUseDuration (Lnet/minecraft/item/ItemStack;)I[11451,11472]::getMaxItemUseDuration->func_77626_a
-Rename method net/minecraft/item/Item/canHarvestBlock (Lnet/minecraft/block/state/IBlockState;)Z[11673,11688]::canHarvestBlock->func_150897_b
-Rename method net/minecraft/block/state/IBlockState/getBlock ()Lnet/minecraft/block/Block;[11737,11745]::getBlock->func_177230_c
-Rename method net/minecraft/item/Item/isEnchantable (Lnet/minecraft/item/ItemStack;)Z[11835,11848]::isEnchantable->func_77616_k
-Rename method net/minecraft/item/Item/getItemEnchantability ()I[11949,11970]::getItemEnchantability->func_77619_b
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[12020,12035]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/block/state/IBlockState/getBlock ()Lnet/minecraft/block/Block;[12096,12104]::getBlock->func_177230_c
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[12136,12151]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/block/state/IBlockProperties/getMaterial ()Lnet/minecraft/block/material/Material;[12303,12314]::getMaterial->func_185904_a
-Rename field net/minecraft/block/material/Material/PLANTS[12351,12357]::PLANTS->field_151585_k
-Rename field net/minecraft/block/material/Material/VINE[12386,12390]::VINE->field_151582_l
-Rename field net/minecraft/block/material/Material/CORAL[12421,12426]::CORAL->field_151589_v
-Rename field net/minecraft/block/material/Material/LEAVES[12456,12462]::LEAVES->field_151584_j
-Rename field net/minecraft/block/material/Material/GOURD[12491,12496]::GOURD->field_151572_C
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItem (Lnet/minecraft/util/EnumHand;)Lnet/minecraft/item/ItemStack;[12797,12808]::getHeldItem->func_184586_b
-Rename method net/minecraft/entity/Entity/isSneaking ()Z[12832,12842]::isSneaking->func_70093_af
-Rename method net/minecraft/util/math/Vec3i/getX ()I[12893,12897]::getX->func_177958_n
-Rename method net/minecraft/util/math/Vec3i/getY ()I[12924,12928]::getY->func_177956_o
-Rename method net/minecraft/util/math/Vec3i/getZ ()I[12955,12959]::getZ->func_177952_p
-Rename field net/minecraft/entity/Entity/posX[12999,13003]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posY[13041,13045]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posZ[13083,13087]::posZ->field_70161_v
-Rename method net/minecraft/world/World/addWeatherEffect (Lnet/minecraft/entity/Entity;)Z[13171,13187]::addWeatherEffect->func_72942_c
-Rename method net/minecraft/entity/player/EntityPlayer/getCooldownTracker ()Lnet/minecraft/util/CooldownTracker;[13242,13260]::getCooldownTracker->func_184811_cZ
-Rename method net/minecraft/util/CooldownTracker/setCooldown (Lnet/minecraft/item/Item;I)V[13259,13270]::setCooldown->func_185145_a
-Rename method net/minecraft/entity/player/EntityPlayer/getCooldownTracker ()Lnet/minecraft/util/CooldownTracker;[13368,13386]::getCooldownTracker->func_184811_cZ
-Rename method net/minecraft/util/CooldownTracker/setCooldown (Lnet/minecraft/item/Item;I)V[13385,13396]::setCooldown->func_185145_a
-Rename field net/minecraft/entity/Entity/motionX[13448,13455]::motionX->field_70159_w
-Rename field net/minecraft/entity/Entity/motionY[13482,13489]::motionY->field_70181_x
-Rename field net/minecraft/entity/Entity/motionZ[13516,13523]::motionZ->field_70179_y
-Rename method net/minecraft/entity/player/EntityPlayer/getCooldownTracker ()Lnet/minecraft/util/CooldownTracker;[13550,13568]::getCooldownTracker->func_184811_cZ
-Rename method net/minecraft/util/CooldownTracker/setCooldown (Lnet/minecraft/item/Item;I)V[13567,13578]::setCooldown->func_185145_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[13690,13706]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[13792,13808]::onItemRightClick->func_77659_a
-Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[13852,13861]::getResult->func_188398_b
-Rename method net/minecraft/entity/Entity/isSneaking ()Z[13883,13893]::isSneaking->func_70093_af
-Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[13910,13923]::setItemDamage->func_77964_b
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[13934,13941]::getItem->func_77973_b
-Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[14027,14035]::onUpdate->func_77663_a
-Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[14124,14132]::onUpdate->func_77663_a
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[14303,14322]::getHeldItemMainhand->func_184614_ca
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14365,14380]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/SPEED[14406,14411]::SPEED->field_76424_c
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14457,14472]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/HASTE[14498,14503]::HASTE->field_76422_e
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14549,14564]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/JUMP_BOOST[14590,14600]::JUMP_BOOST->field_76430_j
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14641,14656]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/STRENGTH[14682,14690]::STRENGTH->field_76420_g
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14733,14748]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/NIGHT_VISION[14774,14786]::NIGHT_VISION->field_76439_r
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14826,14841]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/FIRE_RESISTANCE[14867,14882]::FIRE_RESISTANCE->field_76426_n
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14918,14933]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/WATER_BREATHING[14959,14974]::WATER_BREATHING->field_76427_o
+Rename method net/minecraft/item/Item/getSubItems (Lnet/minecraft/creativetab/CreativeTabs;Lnet/minecraft/util/NonNullList;)V[11285,11296]::getSubItems->func_150895_a
+Rename method net/minecraft/item/Item/isInCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Z[11363,11378]::isInCreativeTab->func_194125_a
+Rename method net/minecraft/item/Item/getMaxItemUseDuration (Lnet/minecraft/item/ItemStack;)I[11593,11614]::getMaxItemUseDuration->func_77626_a
+Rename method net/minecraft/item/Item/canHarvestBlock (Lnet/minecraft/block/state/IBlockState;)Z[11815,11830]::canHarvestBlock->func_150897_b
+Rename method net/minecraft/block/state/IBlockState/getBlock ()Lnet/minecraft/block/Block;[11879,11887]::getBlock->func_177230_c
+Rename method net/minecraft/item/Item/isEnchantable (Lnet/minecraft/item/ItemStack;)Z[11977,11990]::isEnchantable->func_77616_k
+Rename method net/minecraft/item/Item/getItemEnchantability ()I[12091,12112]::getItemEnchantability->func_77619_b
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[12162,12177]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/block/state/IBlockState/getBlock ()Lnet/minecraft/block/Block;[12238,12246]::getBlock->func_177230_c
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[12278,12293]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/block/state/IBlockProperties/getMaterial ()Lnet/minecraft/block/material/Material;[12445,12456]::getMaterial->func_185904_a
+Rename field net/minecraft/block/material/Material/PLANTS[12493,12499]::PLANTS->field_151585_k
+Rename field net/minecraft/block/material/Material/VINE[12528,12532]::VINE->field_151582_l
+Rename field net/minecraft/block/material/Material/CORAL[12563,12568]::CORAL->field_151589_v
+Rename field net/minecraft/block/material/Material/LEAVES[12598,12604]::LEAVES->field_151584_j
+Rename field net/minecraft/block/material/Material/GOURD[12633,12638]::GOURD->field_151572_C
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItem (Lnet/minecraft/util/EnumHand;)Lnet/minecraft/item/ItemStack;[12939,12950]::getHeldItem->func_184586_b
+Rename method net/minecraft/entity/Entity/isSneaking ()Z[12974,12984]::isSneaking->func_70093_af
+Rename method net/minecraft/util/math/Vec3i/getX ()I[13035,13039]::getX->func_177958_n
+Rename method net/minecraft/util/math/Vec3i/getY ()I[13066,13070]::getY->func_177956_o
+Rename method net/minecraft/util/math/Vec3i/getZ ()I[13097,13101]::getZ->func_177952_p
+Rename field net/minecraft/entity/Entity/posX[13141,13145]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posY[13183,13187]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posZ[13225,13229]::posZ->field_70161_v
+Rename method net/minecraft/world/World/addWeatherEffect (Lnet/minecraft/entity/Entity;)Z[13313,13329]::addWeatherEffect->func_72942_c
+Rename method net/minecraft/entity/player/EntityPlayer/getCooldownTracker ()Lnet/minecraft/util/CooldownTracker;[13384,13402]::getCooldownTracker->func_184811_cZ
+Rename method net/minecraft/util/CooldownTracker/setCooldown (Lnet/minecraft/item/Item;I)V[13401,13412]::setCooldown->func_185145_a
+Rename method net/minecraft/entity/player/EntityPlayer/getCooldownTracker ()Lnet/minecraft/util/CooldownTracker;[13510,13528]::getCooldownTracker->func_184811_cZ
+Rename method net/minecraft/util/CooldownTracker/setCooldown (Lnet/minecraft/item/Item;I)V[13527,13538]::setCooldown->func_185145_a
+Rename field net/minecraft/entity/Entity/motionX[13590,13597]::motionX->field_70159_w
+Rename field net/minecraft/entity/Entity/motionY[13624,13631]::motionY->field_70181_x
+Rename field net/minecraft/entity/Entity/motionZ[13658,13665]::motionZ->field_70179_y
+Rename method net/minecraft/entity/player/EntityPlayer/getCooldownTracker ()Lnet/minecraft/util/CooldownTracker;[13692,13710]::getCooldownTracker->func_184811_cZ
+Rename method net/minecraft/util/CooldownTracker/setCooldown (Lnet/minecraft/item/Item;I)V[13709,13720]::setCooldown->func_185145_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[13832,13848]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[13934,13950]::onItemRightClick->func_77659_a
+Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[13994,14003]::getResult->func_188398_b
+Rename method net/minecraft/entity/Entity/isSneaking ()Z[14025,14035]::isSneaking->func_70093_af
+Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[14052,14065]::setItemDamage->func_77964_b
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[14076,14083]::getItem->func_77973_b
+Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[14169,14177]::onUpdate->func_77663_a
+Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[14266,14274]::onUpdate->func_77663_a
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[14445,14464]::getHeldItemMainhand->func_184614_ca
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14507,14522]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/SPEED[14548,14553]::SPEED->field_76424_c
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14599,14614]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/HASTE[14640,14645]::HASTE->field_76422_e
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14691,14706]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/JUMP_BOOST[14732,14742]::JUMP_BOOST->field_76430_j
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14783,14798]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/STRENGTH[14824,14832]::STRENGTH->field_76420_g
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14875,14890]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/NIGHT_VISION[14916,14928]::NIGHT_VISION->field_76439_r
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[14968,14983]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/FIRE_RESISTANCE[15009,15024]::FIRE_RESISTANCE->field_76426_n
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[15060,15075]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/WATER_BREATHING[15101,15116]::WATER_BREATHING->field_76427_o
 FOUND CONSTR method xuphorium_craft/XCraftTools/XFood/XFood ()V xuphorium_craft/XCraftTools/XFood
-Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[15146,15164]::setUnlocalizedName->func_77655_b
-Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[15205,15219]::setCreativeTab->func_77637_a
-Rename method net/minecraft/item/Item/setMaxStackSize (I)Lnet/minecraft/item/Item;[15248,15263]::setMaxStackSize->func_77625_d
-Rename method net/minecraft/item/Item/getItemUseAction (Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/EnumAction;[15307,15323]::getItemUseAction->func_77661_b
-Rename method net/minecraft/item/ItemFood/onFoodEaten (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;)V[15415,15426]::onFoodEaten->func_77849_c
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[15497,15512]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/SATURATION[15538,15548]::SATURATION->field_76443_y
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[15612,15627]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/REGENERATION[15653,15665]::REGENERATION->field_76428_l
+Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[15288,15306]::setUnlocalizedName->func_77655_b
+Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[15347,15361]::setCreativeTab->func_77637_a
+Rename method net/minecraft/item/Item/setMaxStackSize (I)Lnet/minecraft/item/Item;[15390,15405]::setMaxStackSize->func_77625_d
+Rename method net/minecraft/item/Item/getItemUseAction (Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/EnumAction;[15449,15465]::getItemUseAction->func_77661_b
+Rename method net/minecraft/item/ItemFood/onFoodEaten (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;)V[15557,15568]::onFoodEaten->func_77849_c
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[15639,15654]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/SATURATION[15680,15690]::SATURATION->field_76443_y
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[15754,15769]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/REGENERATION[15795,15807]::REGENERATION->field_76428_l
 FOUND CONSTR method xuphorium_craft/XCraftTools/XMagnet/XMagnet ()V xuphorium_craft/XCraftTools/XMagnet
-Rename method net/minecraft/item/Item/setContainerItem (Lnet/minecraft/item/Item;)Lnet/minecraft/item/Item;[15884,15900]::setContainerItem->func_77642_a
-Rename method net/minecraft/item/Item/getSubItems (Lnet/minecraft/creativetab/CreativeTabs;Lnet/minecraft/util/NonNullList;)V[15928,15939]::getSubItems->func_150895_a
-Rename method net/minecraft/item/Item/isInCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Z[16006,16021]::isInCreativeTab->func_194125_a
-Rename method net/minecraft/item/Item/getItemEnchantability ()I[16195,16216]::getItemEnchantability->func_77619_b
-Rename method net/minecraft/item/Item/getMaxItemUseDuration (Lnet/minecraft/item/ItemStack;)I[16263,16284]::getMaxItemUseDuration->func_77626_a
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[16356,16371]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[17152,17168]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[17254,17270]::onItemRightClick->func_77659_a
-Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[17314,17323]::getResult->func_188398_b
-Rename method net/minecraft/entity/Entity/isSneaking ()Z[17345,17355]::isSneaking->func_70093_af
-Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[17371,17384]::setItemDamage->func_77964_b
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[17395,17402]::getItem->func_77973_b
-Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[17488,17496]::onUpdate->func_77663_a
-Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[17585,17593]::onUpdate->func_77663_a
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[17769,17788]::getHeldItemMainhand->func_184614_ca
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[17841,17859]::getHeldItemOffhand->func_184592_cb
-Rename field net/minecraft/world/World/loadedEntityList[17918,17934]::loadedEntityList->field_72996_f
-Rename field net/minecraft/entity/Entity/posX[18168,18172]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posX[18187,18191]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posY[18220,18224]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posY[18239,18243]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posZ[18272,18276]::posZ->field_70161_v
-Rename field net/minecraft/entity/Entity/posZ[18291,18295]::posZ->field_70161_v
-Rename field net/minecraft/entity/Entity/motionX[18405,18412]::motionX->field_70159_w
-Rename field net/minecraft/entity/Entity/motionY[18457,18464]::motionY->field_70181_x
-Rename field net/minecraft/entity/Entity/motionZ[18509,18516]::motionZ->field_70179_y
+Rename method net/minecraft/item/Item/setContainerItem (Lnet/minecraft/item/Item;)Lnet/minecraft/item/Item;[16026,16042]::setContainerItem->func_77642_a
+Rename method net/minecraft/item/Item/getSubItems (Lnet/minecraft/creativetab/CreativeTabs;Lnet/minecraft/util/NonNullList;)V[16070,16081]::getSubItems->func_150895_a
+Rename method net/minecraft/item/Item/isInCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Z[16148,16163]::isInCreativeTab->func_194125_a
+Rename method net/minecraft/item/Item/getItemEnchantability ()I[16378,16399]::getItemEnchantability->func_77619_b
+Rename method net/minecraft/item/Item/getMaxItemUseDuration (Lnet/minecraft/item/ItemStack;)I[16446,16467]::getMaxItemUseDuration->func_77626_a
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[16539,16554]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[17077,17093]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[17179,17195]::onItemRightClick->func_77659_a
+Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[17239,17248]::getResult->func_188398_b
+Rename method net/minecraft/entity/Entity/isSneaking ()Z[17270,17280]::isSneaking->func_70093_af
+Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[17296,17309]::setItemDamage->func_77964_b
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[17320,17327]::getItem->func_77973_b
+Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[17413,17421]::onUpdate->func_77663_a
+Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[17510,17518]::onUpdate->func_77663_a
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[17694,17713]::getHeldItemMainhand->func_184614_ca
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[17766,17784]::getHeldItemOffhand->func_184592_cb
+Rename field net/minecraft/world/World/loadedEntityList[17843,17859]::loadedEntityList->field_72996_f
+Rename field net/minecraft/entity/Entity/posX[18096,18100]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posX[18117,18121]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posY[18148,18152]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posY[18169,18173]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posZ[18200,18204]::posZ->field_70161_v
+Rename field net/minecraft/entity/Entity/posZ[18221,18225]::posZ->field_70161_v
+Rename field net/minecraft/entity/Entity/motionX[18356,18363]::motionX->field_70159_w
+Rename field net/minecraft/entity/Entity/motionY[18401,18408]::motionY->field_70181_x
+Rename field net/minecraft/entity/Entity/motionZ[18446,18453]::motionZ->field_70179_y
 FOUND CONSTR method xuphorium_craft/XCraftTools/XSword/XSword ()V xuphorium_craft/XCraftTools/XSword
-Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[18742,18760]::setUnlocalizedName->func_77655_b
-Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[18813,18827]::setCreativeTab->func_77637_a
-Rename method net/minecraft/item/Item/setHasSubtypes (Z)Lnet/minecraft/item/Item;[18861,18875]::setHasSubtypes->func_77627_a
-Rename method net/minecraft/item/Item/setMaxDamage (I)Lnet/minecraft/item/Item;[18890,18902]::setMaxDamage->func_77656_e
-Rename method net/minecraft/item/Item/getSubItems (Lnet/minecraft/creativetab/CreativeTabs;Lnet/minecraft/util/NonNullList;)V[18958,18969]::getSubItems->func_150895_a
-Rename method net/minecraft/item/Item/isInCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Z[19036,19051]::isInCreativeTab->func_194125_a
-Rename method net/minecraft/item/Item/isEnchantable (Lnet/minecraft/item/ItemStack;)Z[19431,19444]::isEnchantable->func_77616_k
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[19567,19583]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[19673,19689]::onItemRightClick->func_77659_a
-Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[19737,19746]::getResult->func_188398_b
-Rename field net/minecraft/entity/Entity/posX[19776,19780]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posY[19813,19817]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posZ[19850,19854]::posZ->field_70161_v
-Rename method net/minecraft/entity/Entity/isSneaking ()Z[19924,19934]::isSneaking->func_70093_af
-Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[19950,19963]::setItemDamage->func_77964_b
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[19974,19981]::getItem->func_77973_b
-Rename method net/minecraft/item/Item/hitEntity (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/entity/EntityLivingBase;)Z[20074,20083]::hitEntity->func_77644_a
-Rename field net/minecraft/entity/Entity/world[20185,20190]::world->field_70170_p
-Rename field net/minecraft/world/World/isRemote[20213,20221]::isRemote->field_72995_K
-Rename method net/minecraft/item/Item/hitEntity (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/entity/EntityLivingBase;)Z[20251,20260]::hitEntity->func_77644_a
-Rename field net/minecraft/entity/Entity/posX[20313,20317]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posY[20350,20354]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posZ[20387,20391]::posZ->field_70161_v
-Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[20747,20762]::setAttackTarget->func_70624_b
-Rename field net/minecraft/world/World/loadedEntityList[20826,20842]::loadedEntityList->field_72996_f
-Rename field net/minecraft/entity/Entity/posX[21063,21067]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posX[21085,21089]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posY[21126,21130]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posY[21148,21152]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posZ[21189,21193]::posZ->field_70161_v
-Rename field net/minecraft/entity/Entity/posZ[21211,21215]::posZ->field_70161_v
-Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[21538,21553]::setAttackTarget->func_70624_b
-Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[21588,21603]::setAttackTarget->func_70624_b
-Rename field net/minecraft/world/World/loadedEntityList[21667,21683]::loadedEntityList->field_72996_f
-Rename field net/minecraft/entity/Entity/posX[21809,21813]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posX[21831,21835]::posX->field_70165_t
-Rename field net/minecraft/entity/Entity/posY[21872,21876]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posY[21894,21898]::posY->field_70163_u
-Rename field net/minecraft/entity/Entity/posZ[21935,21939]::posZ->field_70161_v
-Rename field net/minecraft/entity/Entity/posZ[21957,21961]::posZ->field_70161_v
-Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[22031,22046]::setAttackTarget->func_70624_b
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[22159,22174]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[22269,22284]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/onBlockDestroyed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityLivingBase;)Z[22571,22587]::onBlockDestroyed->func_179218_a
-Rename method net/minecraft/item/Item/onBlockDestroyed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityLivingBase;)Z[22746,22762]::onBlockDestroyed->func_179218_a
+Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[18672,18690]::setUnlocalizedName->func_77655_b
+Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[18743,18757]::setCreativeTab->func_77637_a
+Rename method net/minecraft/item/Item/setHasSubtypes (Z)Lnet/minecraft/item/Item;[18791,18805]::setHasSubtypes->func_77627_a
+Rename method net/minecraft/item/Item/setMaxDamage (I)Lnet/minecraft/item/Item;[18820,18832]::setMaxDamage->func_77656_e
+Rename method net/minecraft/item/Item/getSubItems (Lnet/minecraft/creativetab/CreativeTabs;Lnet/minecraft/util/NonNullList;)V[18888,18899]::getSubItems->func_150895_a
+Rename method net/minecraft/item/Item/isInCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Z[18966,18981]::isInCreativeTab->func_194125_a
+Rename method net/minecraft/item/Item/isEnchantable (Lnet/minecraft/item/ItemStack;)Z[19361,19374]::isEnchantable->func_77616_k
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[19497,19513]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[19603,19619]::onItemRightClick->func_77659_a
+Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[19667,19676]::getResult->func_188398_b
+Rename field net/minecraft/entity/Entity/posX[19706,19710]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posY[19743,19747]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posZ[19780,19784]::posZ->field_70161_v
+Rename method net/minecraft/entity/Entity/isSneaking ()Z[19854,19864]::isSneaking->func_70093_af
+Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[19880,19893]::setItemDamage->func_77964_b
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[19904,19911]::getItem->func_77973_b
+Rename method net/minecraft/item/Item/hitEntity (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/entity/EntityLivingBase;)Z[20004,20013]::hitEntity->func_77644_a
+Rename field net/minecraft/entity/Entity/world[20115,20120]::world->field_70170_p
+Rename field net/minecraft/world/World/isRemote[20143,20151]::isRemote->field_72995_K
+Rename method net/minecraft/item/Item/hitEntity (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/entity/EntityLivingBase;)Z[20181,20190]::hitEntity->func_77644_a
+Rename field net/minecraft/entity/Entity/posX[20243,20247]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posY[20280,20284]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posZ[20317,20321]::posZ->field_70161_v
+Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[20677,20692]::setAttackTarget->func_70624_b
+Rename field net/minecraft/world/World/loadedEntityList[20756,20772]::loadedEntityList->field_72996_f
+Rename field net/minecraft/entity/Entity/posX[20993,20997]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posX[21015,21019]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posY[21056,21060]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posY[21078,21082]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posZ[21119,21123]::posZ->field_70161_v
+Rename field net/minecraft/entity/Entity/posZ[21141,21145]::posZ->field_70161_v
+Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[21468,21483]::setAttackTarget->func_70624_b
+Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[21518,21533]::setAttackTarget->func_70624_b
+Rename field net/minecraft/world/World/loadedEntityList[21597,21613]::loadedEntityList->field_72996_f
+Rename field net/minecraft/entity/Entity/posX[21739,21743]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posX[21761,21765]::posX->field_70165_t
+Rename field net/minecraft/entity/Entity/posY[21802,21806]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posY[21824,21828]::posY->field_70163_u
+Rename field net/minecraft/entity/Entity/posZ[21865,21869]::posZ->field_70161_v
+Rename field net/minecraft/entity/Entity/posZ[21887,21891]::posZ->field_70161_v
+Rename method net/minecraft/entity/EntityLiving/setAttackTarget (Lnet/minecraft/entity/EntityLivingBase;)V[21961,21976]::setAttackTarget->func_70624_b
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[22089,22104]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[22199,22214]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/onBlockDestroyed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityLivingBase;)Z[22501,22517]::onBlockDestroyed->func_179218_a
+Rename method net/minecraft/item/Item/onBlockDestroyed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityLivingBase;)Z[22676,22692]::onBlockDestroyed->func_179218_a
 FOUND CONSTR method xuphorium_craft/XCraftTools/XCraftToolCommon2/XCraftToolCommon2 (Ljava/lang/String;FFLjava/util/Set;)V xuphorium_craft/XCraftTools/XCraftToolCommon2
-Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[23125,23143]::setUnlocalizedName->func_77655_b
-Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[23186,23200]::setCreativeTab->func_77637_a
-Rename field net/minecraft/item/ItemTool/attackDamage[23234,23246]::attackDamage->field_77865_bY
-Rename field net/minecraft/item/ItemTool/attackSpeed[23272,23283]::attackSpeed->field_185065_c
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[23336,23351]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[23418,23433]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[23595,23611]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[23701,23717]::onItemRightClick->func_77659_a
-Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[23765,23774]::getResult->func_188398_b
+Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[23055,23073]::setUnlocalizedName->func_77655_b
+Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[23116,23130]::setCreativeTab->func_77637_a
+Rename field net/minecraft/item/ItemTool/attackDamage[23164,23176]::attackDamage->field_77865_bY
+Rename field net/minecraft/item/ItemTool/attackSpeed[23202,23213]::attackSpeed->field_185065_c
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[23266,23281]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[23348,23363]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[23525,23541]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[23631,23647]::onItemRightClick->func_77659_a
+Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[23695,23704]::getResult->func_188398_b
 FOUND CONSTR method xuphorium_craft/XCraftTools/XAxe/XAxe ()V xuphorium_craft/XCraftTools/XAxe
-Rename method net/minecraft/block/state/IBlockProperties/getMaterial ()Lnet/minecraft/block/material/Material;[24458,24469]::getMaterial->func_185904_a
-Rename field net/minecraft/block/material/Material/WOOD[24506,24510]::WOOD->field_151575_d
-Rename field net/minecraft/block/material/Material/PLANTS[24541,24547]::PLANTS->field_151585_k
-Rename field net/minecraft/block/material/Material/VINE[24576,24580]::VINE->field_151582_l
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[24629,24644]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[24737,24752]::getDestroySpeed->func_150893_a
-Rename field net/minecraft/item/ItemTool/efficiency[24769,24779]::efficiency->field_77864_a
-Rename method net/minecraft/item/Item/getMaxDamage ()I[24827,24839]::getMaxDamage->func_77612_l
+Rename method net/minecraft/block/state/IBlockProperties/getMaterial ()Lnet/minecraft/block/material/Material;[24388,24399]::getMaterial->func_185904_a
+Rename field net/minecraft/block/material/Material/WOOD[24436,24440]::WOOD->field_151575_d
+Rename field net/minecraft/block/material/Material/PLANTS[24471,24477]::PLANTS->field_151585_k
+Rename field net/minecraft/block/material/Material/VINE[24506,24510]::VINE->field_151582_l
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[24559,24574]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[24667,24682]::getDestroySpeed->func_150893_a
+Rename field net/minecraft/item/ItemTool/efficiency[24699,24709]::efficiency->field_77864_a
+Rename method net/minecraft/item/Item/getMaxDamage ()I[24757,24769]::getMaxDamage->func_77612_l
 FOUND CONSTR method xuphorium_craft/XCraftTools/XPickaxe/XPickaxe ()V xuphorium_craft/XCraftTools/XPickaxe
-Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[25034,25052]::setUnlocalizedName->func_77655_b
-Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[25109,25123]::setCreativeTab->func_77637_a
-Rename field net/minecraft/item/ItemTool/attackDamage[25157,25169]::attackDamage->field_77865_bY
-Rename field net/minecraft/item/ItemTool/attackSpeed[25187,25198]::attackSpeed->field_185065_c
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[25436,25451]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[25507,25522]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/getMaxDamage ()I[25566,25578]::getMaxDamage->func_77612_l
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[25732,25748]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[25838,25854]::onItemRightClick->func_77659_a
-Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[25902,25911]::getResult->func_188398_b
+Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[24964,24982]::setUnlocalizedName->func_77655_b
+Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[25039,25053]::setCreativeTab->func_77637_a
+Rename field net/minecraft/item/ItemTool/attackDamage[25087,25099]::attackDamage->field_77865_bY
+Rename field net/minecraft/item/ItemTool/attackSpeed[25117,25128]::attackSpeed->field_185065_c
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[25366,25381]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[25437,25452]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/getMaxDamage ()I[25496,25508]::getMaxDamage->func_77612_l
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[25662,25678]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[25768,25784]::onItemRightClick->func_77659_a
+Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[25832,25841]::getResult->func_188398_b
 FOUND CONSTR method xuphorium_craft/XCraftTools/XShovel/XShovel ()V xuphorium_craft/XCraftTools/XShovel
-Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[26150,26168]::setUnlocalizedName->func_77655_b
-Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[26223,26237]::setCreativeTab->func_77637_a
-Rename field net/minecraft/item/ItemTool/attackDamage[26271,26283]::attackDamage->field_77865_bY
-Rename field net/minecraft/item/ItemTool/attackSpeed[26301,26312]::attackSpeed->field_185065_c
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[26548,26563]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/block/state/IBlockState/getBlock ()Lnet/minecraft/block/Block;[26624,26632]::getBlock->func_177230_c
-Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[26664,26679]::getDestroySpeed->func_150893_a
-Rename method net/minecraft/item/Item/getMaxDamage ()I[26787,26799]::getMaxDamage->func_77612_l
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[26971,26987]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[27077,27093]::onItemRightClick->func_77659_a
-Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[27141,27150]::getResult->func_188398_b
+Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[26080,26098]::setUnlocalizedName->func_77655_b
+Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[26153,26167]::setCreativeTab->func_77637_a
+Rename field net/minecraft/item/ItemTool/attackDamage[26201,26213]::attackDamage->field_77865_bY
+Rename field net/minecraft/item/ItemTool/attackSpeed[26231,26242]::attackSpeed->field_185065_c
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[26478,26493]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/block/state/IBlockState/getBlock ()Lnet/minecraft/block/Block;[26554,26562]::getBlock->func_177230_c
+Rename method net/minecraft/item/Item/getDestroySpeed (Lnet/minecraft/item/ItemStack;Lnet/minecraft/block/state/IBlockState;)F[26594,26609]::getDestroySpeed->func_150893_a
+Rename method net/minecraft/item/Item/getMaxDamage ()I[26717,26729]::getMaxDamage->func_77612_l
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[26901,26917]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[27007,27023]::onItemRightClick->func_77659_a
+Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[27071,27080]::getResult->func_188398_b
 FOUND CONSTR method xuphorium_craft/XCraftTools/XHoe/XHoe ()V xuphorium_craft/XCraftTools/XHoe
-Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[27378,27396]::setUnlocalizedName->func_77655_b
-Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[27445,27459]::setCreativeTab->func_77637_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[27880,27896]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[27986,28002]::onItemRightClick->func_77659_a
-Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[28050,28059]::getResult->func_188398_b
+Rename method net/minecraft/item/Item/setUnlocalizedName (Ljava/lang/String;)Lnet/minecraft/item/Item;[27308,27326]::setUnlocalizedName->func_77655_b
+Rename method net/minecraft/item/Item/setCreativeTab (Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/item/Item;[27375,27389]::setCreativeTab->func_77637_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[27810,27826]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[27916,27932]::onItemRightClick->func_77659_a
+Rename method net/minecraft/util/ActionResult/getResult ()Ljava/lang/Object;[27980,27989]::getResult->func_188398_b
 FOUND CONSTR method xuphorium_craft/XCraftTools/XShield/XShield ()V xuphorium_craft/XCraftTools/XShield
 FOUND CONSTR method xuphorium_craft/XCraftTools/XShield/XShield (Ljava/lang/String;)V xuphorium_craft/XCraftTools/XShield
-Rename method net/minecraft/item/Item/isEnchantable (Lnet/minecraft/item/ItemStack;)Z[28491,28504]::isEnchantable->func_77616_k
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[28597,28613]::onItemRightClick->func_77659_a
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItem (Lnet/minecraft/util/EnumHand;)Lnet/minecraft/item/ItemStack;[28693,28704]::getHeldItem->func_184586_b
-Rename field net/minecraft/entity/Entity/world[28729,28734]::world->field_70170_p
-Rename field net/minecraft/world/World/isRemote[28743,28751]::isRemote->field_72995_K
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[28776,28791]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/RESISTANCE[28817,28827]::RESISTANCE->field_76429_m
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[28862,28877]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/SPEED[28903,28908]::SPEED->field_76424_c
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[28947,28962]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/GLOWING[28988,28995]::GLOWING->field_188423_x
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[29046,29053]::getItem->func_77973_b
-Rename method net/minecraft/entity/Entity/isSneaking ()Z[29077,29087]::isSneaking->func_70093_af
-Rename method net/minecraft/item/ItemStack/getCount ()I[29442,29450]::getCount->func_190916_E
-Rename method net/minecraft/item/ItemStack/getItemDamage ()I[29464,29477]::getItemDamage->func_77952_i
+Rename method net/minecraft/item/Item/isEnchantable (Lnet/minecraft/item/ItemStack;)Z[28421,28434]::isEnchantable->func_77616_k
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[28527,28543]::onItemRightClick->func_77659_a
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItem (Lnet/minecraft/util/EnumHand;)Lnet/minecraft/item/ItemStack;[28623,28634]::getHeldItem->func_184586_b
+Rename field net/minecraft/entity/Entity/world[28659,28664]::world->field_70170_p
+Rename field net/minecraft/world/World/isRemote[28673,28681]::isRemote->field_72995_K
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[28706,28721]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/RESISTANCE[28747,28757]::RESISTANCE->field_76429_m
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[28792,28807]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/SPEED[28833,28838]::SPEED->field_76424_c
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[28877,28892]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/GLOWING[28918,28925]::GLOWING->field_188423_x
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[28976,28983]::getItem->func_77973_b
+Rename method net/minecraft/entity/Entity/isSneaking ()Z[29007,29017]::isSneaking->func_70093_af
+Rename method net/minecraft/item/ItemStack/getCount ()I[29372,29380]::getCount->func_190916_E
+Rename method net/minecraft/item/ItemStack/getItemDamage ()I[29394,29407]::getItemDamage->func_77952_i
 FOUND CONSTR method xuphorium_craft/XCraftTools/XShieldPowered/XShieldPowered ()V xuphorium_craft/XCraftTools/XShieldPowered
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[29672,29688]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[29754,29770]::onItemRightClick->func_77659_a
-Rename method net/minecraft/item/Item/getItemUseAction (Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/EnumAction;[29817,29833]::getItemUseAction->func_77661_b
-Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[29918,29926]::onUpdate->func_77663_a
-Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[30015,30023]::onUpdate->func_77663_a
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[30224,30243]::getHeldItemMainhand->func_184614_ca
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[30241,30248]::getItem->func_77973_b
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[30287,30306]::getHeldItemMainhand->func_184614_ca
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[30331,30349]::getHeldItemOffhand->func_184592_cb
-Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[30348,30355]::getItem->func_77973_b
-Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[30394,30412]::getHeldItemOffhand->func_184592_cb
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[30460,30475]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/RESISTANCE[30501,30511]::RESISTANCE->field_76429_m
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[30553,30568]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/SPEED[30594,30599]::SPEED->field_76424_c
-Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[30645,30660]::addPotionEffect->func_70690_d
-Rename field net/minecraft/init/MobEffects/GLOWING[30686,30693]::GLOWING->field_188423_x
-Rename method net/minecraft/item/ItemStack/getItemDamage ()I[30756,30769]::getItemDamage->func_77952_i
-Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[30796,30809]::setItemDamage->func_77964_b
-Rename method net/minecraft/item/ItemStack/getItemDamage ()I[30816,30829]::getItemDamage->func_77952_i
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[29602,29618]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/onItemRightClick (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/ActionResult;[29684,29700]::onItemRightClick->func_77659_a
+Rename method net/minecraft/item/Item/getItemUseAction (Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/EnumAction;[29747,29763]::getItemUseAction->func_77661_b
+Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[29848,29856]::onUpdate->func_77663_a
+Rename method net/minecraft/item/Item/onUpdate (Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;IZ)V[29945,29953]::onUpdate->func_77663_a
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[30154,30173]::getHeldItemMainhand->func_184614_ca
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[30171,30178]::getItem->func_77973_b
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemMainhand ()Lnet/minecraft/item/ItemStack;[30217,30236]::getHeldItemMainhand->func_184614_ca
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[30261,30279]::getHeldItemOffhand->func_184592_cb
+Rename method net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;[30278,30285]::getItem->func_77973_b
+Rename method net/minecraft/entity/EntityLivingBase/getHeldItemOffhand ()Lnet/minecraft/item/ItemStack;[30324,30342]::getHeldItemOffhand->func_184592_cb
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[30390,30405]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/RESISTANCE[30431,30441]::RESISTANCE->field_76429_m
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[30483,30498]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/SPEED[30524,30529]::SPEED->field_76424_c
+Rename method net/minecraft/entity/EntityLivingBase/addPotionEffect (Lnet/minecraft/potion/PotionEffect;)V[30575,30590]::addPotionEffect->func_70690_d
+Rename field net/minecraft/init/MobEffects/GLOWING[30616,30623]::GLOWING->field_188423_x
+Rename method net/minecraft/item/ItemStack/getItemDamage ()I[30686,30699]::getItemDamage->func_77952_i
+Rename method net/minecraft/item/ItemStack/setItemDamage (I)V[30726,30739]::setItemDamage->func_77964_b
+Rename method net/minecraft/item/ItemStack/getItemDamage ()I[30746,30759]::getItemDamage->func_77952_i
 Import: org.apache.logging.log4j.Logger
 Adding 63 imports
         java.util.HashMap

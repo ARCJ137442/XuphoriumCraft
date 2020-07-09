@@ -10,23 +10,23 @@
 	{
 		"V":
 		{
-			"item": "x_craft:x_crystal"
+			"item": "xuphorium_craft:x_crystal"
 		},
 		"Y":
 		{
-			"item": "x_craft:x_curer"
+			"item": "xuphorium_craft:x_curer"
 		},
 		"/":
 		{
-			"item": "x_craft:x_rod","data":0
+			"item": "xuphorium_craft:x_rod","data":0
 		},
 		"!":
 		{
-			"item": "x_craft:x_rod","data":1
+			"item": "xuphorium_craft:x_rod","data":1
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_dust_generater","data":0
+		"item": "xuphorium_craft:x_dust_generater","data":0
 	}
 }

@@ -10,15 +10,15 @@
 	{
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		},
 		"F":
 		{
-			"item": "x_craft:x_fuel"
+			"item": "xuphorium_craft:x_fuel"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_dust_block"
+		"item": "xuphorium_craft:x_dust_block"
 	}
 }

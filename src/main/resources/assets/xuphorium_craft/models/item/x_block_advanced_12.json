@@ -1,5 +1,5 @@
 {
-	"parent": "x_craft:block/x_block_advanced_12",
+	"parent": "xuphorium_craft:block/x_block_advanced_12",
 	"display":
 	{
 		"thirdperson":

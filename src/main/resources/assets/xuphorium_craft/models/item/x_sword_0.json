@@ -2,6 +2,6 @@
 	"parent": "item/handheld",
 	"textures":
 	{
-		"layer0": "x_craft:items/x_sword_0"
+		"layer0": "xuphorium_craft:items/x_sword_0"
 	}
 }

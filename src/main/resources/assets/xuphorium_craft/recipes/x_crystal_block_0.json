@@ -10,15 +10,15 @@
 	{
 		"V":
 		{
-			"item": "x_craft:x_crystal"
+			"item": "xuphorium_craft:x_crystal"
 		},
 		"P":
 		{
-			"item": "x_craft:x_pearl"
+			"item": "xuphorium_craft:x_pearl"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_crystal_block","data":0
+		"item": "xuphorium_craft:x_crystal_block","data":0
 	}
 }

@@ -10,7 +10,7 @@
 	{
 		"#":
 		{
-			"item": "x_craft:x_ingot"
+			"item": "xuphorium_craft:x_ingot"
 		},
 		"g":
 		{
@@ -18,11 +18,11 @@
 		},
 		"*":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_glass"
+		"item": "xuphorium_craft:x_glass"
 	}
 }

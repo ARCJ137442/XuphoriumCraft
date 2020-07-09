@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_phase_web_block",
+  "parent": "xuphorium_craft:block/x_phase_web_block",
   "display": {
     "thirdperson": {
       "rotation": [

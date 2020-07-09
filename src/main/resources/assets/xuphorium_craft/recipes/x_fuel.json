@@ -10,7 +10,7 @@
 	{
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		},
 		"c":
 		{
@@ -18,11 +18,11 @@
 		},
 		"C":
 		{
-			"item": "x_craft:x_catalyst"
+			"item": "xuphorium_craft:x_catalyst"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_fuel"
+		"item": "xuphorium_craft:x_fuel"
 	}
 }

@@ -10,24 +10,24 @@
 	{
 		"D":
 		{
-			"item": "x_craft:x_diamond"
+			"item": "xuphorium_craft:x_diamond"
 		},
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		},
 		"P":
 		{
-			"item": "x_craft:x_pearl"
+			"item": "xuphorium_craft:x_pearl"
 		},
 		"/":
 		{
-			"item": "x_craft:x_rod",
+			"item": "xuphorium_craft:x_rod",
 			"data": 0
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_pickaxe"
+		"item": "xuphorium_craft:x_pickaxe"
 	}
 }

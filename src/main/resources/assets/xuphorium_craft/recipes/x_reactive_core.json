@@ -10,19 +10,19 @@
 	{
 		"#":
 		{
-			"item": "x_craft:x_ingot"
+			"item": "xuphorium_craft:x_ingot"
 		},
 		"V":
 		{
-			"item": "x_craft:x_crystal"
+			"item": "xuphorium_craft:x_crystal"
 		},
 		"X":
 		{
-			"item": "x_craft:x_item","data":0
+			"item": "xuphorium_craft:x_item","data":0
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_reactive_core"
+		"item": "xuphorium_craft:x_reactive_core"
 	}
 }

@@ -4,14 +4,14 @@
 	"ingredients":
 	[
 		{
-			"item": "x_craft:x_crystal_right"
+			"item": "xuphorium_craft:x_crystal_right"
 		},
 		{
-			"item": "x_craft:x_fuel"
+			"item": "xuphorium_craft:x_fuel"
 		}
 	],
 	"result":
 	{
-		"item": "x_craft:x_crystal_core"
+		"item": "xuphorium_craft:x_crystal_core"
 	}
 }

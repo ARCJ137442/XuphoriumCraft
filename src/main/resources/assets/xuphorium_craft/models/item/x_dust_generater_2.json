@@ -1,5 +1,5 @@
 {
-	"parent": "x_craft:block/x_dust_generater_2",
+	"parent": "xuphorium_craft:block/x_dust_generater_2",
 	"display":
 	{
 		"thirdperson":

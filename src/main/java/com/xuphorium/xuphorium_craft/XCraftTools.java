@@ -199,8 +199,9 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		ModelLoader.setCustomModelResourceLocation(X_FOOD,0,new ModelResourceLocation("xuphorium_craft:x_food","inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,0,new ModelResourceLocation("xuphorium_craft:x_magnet","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_MAGNET,1,new ModelResourceLocation("xuphorium_craft:x_magnet_powered","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_MAGNET,2,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_extra","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,1,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_negative","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,2,new ModelResourceLocation("xuphorium_craft:x_magnet_powered","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,3,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_extra","inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(X_AXE,0,new ModelResourceLocation("xuphorium_craft:x_axe","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_PICKAXE,0,new ModelResourceLocation("xuphorium_craft:x_pickaxe","inventory"));
@@ -466,6 +467,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				items.add(new ItemStack(this,1,0));
 				items.add(new ItemStack(this,1,1));
 				items.add(new ItemStack(this,1,2));
+				items.add(new ItemStack(this,1,3));
 			}
 		}
 
@@ -487,30 +489,16 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return 1F;
 		}
 		
-		public static double m_abs(double x)
-		{
-			if(x==0)return 0;return Math.abs(x)<1?1/x:x;
-		}
-		
-		public static double m_abX(double x)
-		{
-			if(x==0)return 0;return Math.abs(x)>1?1/x:0;
-		}
-		
-		public static double sgn(double x)
-		{
-			return x==0?0:(x>0?1:-1);
-		}
-		
 		public static double[] calculateGravityVector(double dx,double dy,double dz,double value)
 		{
 			//From Newton's universal gravitation formula
+			//From point to Origin
 			double distanceSquare=dx*dx+dy*dy+dz*dz;
 			if(distanceSquare<=0) return new double[]{0,0,0};
 			return new double[]{
-				value*(dx/distanceSquare),
-				value*(dy/distanceSquare),
-				value*(dz/distanceSquare)
+				-value*(dx/distanceSquare),
+				-value*(dy/distanceSquare),
+				-value*(dz/distanceSquare)
 				};
 		}
 		
@@ -518,7 +506,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		{
 			ActionResult<ItemStack> ar=super.onItemRightClick(world,player,hand);
 			ItemStack itemstack=ar.getResult();
-			if(player.isSneaking())itemstack.setItemDamage((itemstack.getItem().getDamage(itemstack)+1)%3);
+			if(player.isSneaking())itemstack.setItemDamage((itemstack.getItem().getDamage(itemstack)+1)%4);
 			return ar;
 		}
 
@@ -537,15 +525,15 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					double[] gravityForce;
 					for(Entity item : entities)
 					{
-						if(item instanceof EntityItem||item instanceof EntityXPOrb||level>1&&item instanceof IProjectile)
+						if(item instanceof EntityItem||item instanceof EntityXPOrb||(level&1)==1&&item instanceof IProjectile)
 						{
-							dx=entity.posX-item.posX;
-							dy=entity.posY-item.posY;
-							dz=entity.posZ-item.posZ;
-							gravityForce=calculateGravityVector(dx,dy,dz,-1);//1 means the mess of player
-							item.motionX+=gravityForce[0];//rot.x
-							item.motionY+=gravityForce[1];//rot.y
-							item.motionZ+=gravityForce[2];//rot.z
+							dx=item.posX-entity.posX;
+							dy=item.posY-entity.posY;
+							dz=item.posZ-entity.posZ;
+							gravityForce=calculateGravityVector(dx,dy,dz,(level==1)?-1:(level-1));//1 means the scale of force
+							item.motionX+=gravityForce[0];
+							item.motionY+=gravityForce[1];
+							item.motionZ+=gravityForce[2];
 						}
 					}
 				}

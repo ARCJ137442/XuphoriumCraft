@@ -10,32 +10,32 @@
 	{
 		"L":
 		{
-			"item": "x_craft:x_crystal_left"
+			"item": "xuphorium_craft:x_crystal_left"
 		},
 		"R":
 		{
-			"item": "x_craft:x_crystal_right"
+			"item": "xuphorium_craft:x_crystal_right"
 		},
 		"s":
 		{
-			"item": "x_craft:x_crystal_core"
+			"item": "xuphorium_craft:x_crystal_core"
 		},
 		"C":
 		{
-			"item": "x_craft:x_catalyst"
+			"item": "xuphorium_craft:x_catalyst"
 		},
 		"/":
 		{
-			"item": "x_craft:x_rod","data": 0
+			"item": "xuphorium_craft:x_rod","data": 0
 		},
 		"!":
 		{
-			"item": "x_craft:x_rod","data": 1
+			"item": "xuphorium_craft:x_rod","data": 1
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_crystal",
+		"item": "xuphorium_craft:x_crystal",
 		"count": 2
 	}
 }

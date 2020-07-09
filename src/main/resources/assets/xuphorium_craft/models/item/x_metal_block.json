@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_metal_block",
+  "parent": "xuphorium_craft:block/x_metal_block",
   "display": {
     "thirdperson": {
       "rotation": [

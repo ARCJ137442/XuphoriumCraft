@@ -9,11 +9,11 @@
 	{
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_food"
+		"item": "xuphorium_craft:x_food"
 	}
 }

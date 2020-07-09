@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_path",
+  "parent": "xuphorium_craft:block/x_path",
   "display": {
     "thirdperson": {
       "rotation": [

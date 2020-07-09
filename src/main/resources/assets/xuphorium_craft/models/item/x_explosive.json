@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_explosive",
+  "parent": "xuphorium_craft:block/x_explosive",
   "display": {
     "thirdperson": {
       "rotation": [

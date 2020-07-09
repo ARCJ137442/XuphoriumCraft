@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_reactive_core",
+  "parent": "xuphorium_craft:block/x_reactive_core",
   "display": {
     "thirdperson": {
       "rotation": [

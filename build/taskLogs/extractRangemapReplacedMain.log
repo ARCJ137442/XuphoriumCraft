@@ -20,7 +20,7 @@ endProcessing "com/xuphorium/xuphorium_craft/XCraftMaterials.java"
 startProcessing "com/xuphorium/xuphorium_craft/XCraftReactions.java" md5: eb471168a99e8a10ed41e6cb4f01797d
 endProcessing "com/xuphorium/xuphorium_craft/XCraftReactions.java"
 
-startProcessing "com/xuphorium/xuphorium_craft/XCraftTools.java" md5: 890060ba21a635037d9cb3596d99e02f
+startProcessing "com/xuphorium/xuphorium_craft/XCraftTools.java" md5: f552bc69d012cd8c31a556427cc3a759
 endProcessing "com/xuphorium/xuphorium_craft/XCraftTools.java"
 
 startProcessing "com/xuphorium/xuphorium_craft/XCreeper.java" md5: e743aff7914e2b07efacd334fea5f982

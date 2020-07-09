@@ -2,34 +2,25 @@
 	"type": "minecraft:crafting_shaped",
 	"pattern":
 	[
-		"/Ex",
-		"ExE",
-		"XE/"
+		"EEE",
+		"EXE",
+		"EEE"
 	],
 	"key":
 	{
 		"E":
 		{
-			"item": "x_craft:x_emerald"
-		},
-		"x":
-		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_emerald"
 		},
 		"X":
 		{
-			"item": "x_craft:x_item",
-			"data": 0
-		},
-		"/":
-		{
-			"item": "x_craft:x_rod",
+			"item": "xuphorium_craft:x_item",
 			"data": 0
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_magnet",
+		"item": "xuphorium_craft:x_magnet",
         "data": 0
 	}
 }

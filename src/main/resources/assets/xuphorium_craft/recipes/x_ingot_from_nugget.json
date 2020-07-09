@@ -11,11 +11,11 @@
 	{
 		",":
 		{
-			"item": "x_craft:x_nugget"
+			"item": "xuphorium_craft:x_nugget"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_ingot"
+		"item": "xuphorium_craft:x_ingot"
 	}
 }

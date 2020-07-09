@@ -10,16 +10,16 @@
 	{
 		"V":
 		{
-			"item": "x_craft:x_crystal"
+			"item": "xuphorium_craft:x_crystal"
 		},
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_catalyst",
+		"item": "xuphorium_craft:x_catalyst",
 		"count": 4
 	}
 }

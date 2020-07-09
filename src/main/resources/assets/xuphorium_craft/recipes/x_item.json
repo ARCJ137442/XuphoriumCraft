@@ -11,26 +11,26 @@
 	{
 		"/":
 		{
-			"item": "x_craft:x_rod",
+			"item": "xuphorium_craft:x_rod",
 			"data": 0
 		},
 		"!":
 		{
-			"item": "x_craft:x_rod",
+			"item": "xuphorium_craft:x_rod",
 			"data": 1
 		},
 		"#":
 		{
-			"item": "x_craft:x_ingot"
+			"item": "xuphorium_craft:x_ingot"
 		},
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_item",
+		"item": "xuphorium_craft:x_item",
         "data": 0
 	}
 }

@@ -10,25 +10,25 @@
 	{
 		"X":
 		{
-			"item": "x_craft:x_block","data":0
+			"item": "xuphorium_craft:x_block","data":0
 		},
 		"i":
 		{
-			"item": "x_craft:x_ingot"
+			"item": "xuphorium_craft:x_ingot"
 		},
 		"/":
 		{
-			"item": "x_craft:x_rod",
+			"item": "xuphorium_craft:x_rod",
 			"data": 0
 		},
 		"!":
 		{
-			"item": "x_craft:x_rod",
+			"item": "xuphorium_craft:x_rod",
 			"data": 1
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_block_advanced","data":0
+		"item": "xuphorium_craft:x_block_advanced","data":0
 	}
 }

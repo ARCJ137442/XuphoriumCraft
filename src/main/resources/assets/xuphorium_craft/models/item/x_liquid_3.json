@@ -1,5 +1,5 @@
 {
-	"parent": "x_craft:block/x_liquid_3",
+	"parent": "xuphorium_craft:block/x_liquid_3",
 	"display":
 	{
 		"thirdperson":

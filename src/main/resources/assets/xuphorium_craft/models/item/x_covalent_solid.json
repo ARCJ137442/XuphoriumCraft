@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_covalent_solid",
+  "parent": "xuphorium_craft:block/x_covalent_solid",
   "display": {
     "thirdperson": {
       "rotation": [

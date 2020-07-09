@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_curer",
+  "parent": "xuphorium_craft:block/x_curer",
   "display": {
     "thirdperson": {
       "rotation": [

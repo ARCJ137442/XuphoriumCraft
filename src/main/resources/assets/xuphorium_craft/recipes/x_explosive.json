@@ -10,15 +10,15 @@
 	{
 		"*":
 		{
-			"item": "x_craft:x_crystal"
+			"item": "xuphorium_craft:x_crystal"
 		},
 		"C":
 		{
-			"item": "x_craft:x_catalyst"
+			"item": "xuphorium_craft:x_catalyst"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_explosive"
+		"item": "xuphorium_craft:x_explosive"
 	}
 }

@@ -3,12 +3,12 @@
 	"ingredients":
 	[
 		{
-			"item": "x_craft:x_ingot"
+			"item": "xuphorium_craft:x_ingot"
 		}
 	],
 	"result":
 	{
-		"item": "x_craft:x_nugget",
+		"item": "xuphorium_craft:x_nugget",
 		"count":8
 	}
 }

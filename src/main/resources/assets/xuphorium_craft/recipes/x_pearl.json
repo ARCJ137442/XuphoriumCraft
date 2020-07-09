@@ -14,15 +14,15 @@
 		},
 		"x":
 		{
-			"item": "x_craft:x_dust"
+			"item": "xuphorium_craft:x_dust"
 		},
 		"C":
 		{
-			"item": "x_craft:x_catalyst"
+			"item": "xuphorium_craft:x_catalyst"
 		}
 	},
 	"result":
 	{
-		"item": "x_craft:x_pearl"
+		"item": "xuphorium_craft:x_pearl"
 	}
 }

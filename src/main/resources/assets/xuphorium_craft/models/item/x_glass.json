@@ -1,5 +1,5 @@
 {
-  "parent": "x_craft:block/x_glass",
+  "parent": "xuphorium_craft:block/x_glass",
   "display": {
     "thirdperson": {
       "rotation": [
