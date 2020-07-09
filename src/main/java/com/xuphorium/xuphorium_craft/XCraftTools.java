@@ -88,12 +88,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 /* 
-import com.xuphorium.XuphoriumCraft.*;
-import com.xuphorium.XuphoriumCraft.common.*;
-import com.xuphorium.XuphoriumCraft.proxy.*;
-import com.xuphorium.XuphoriumCraft.entity.*;
-import com.xuphorium.XuphoriumCraft.block.*;
-import com.xuphorium.XuphoriumCraft.item.*; */
+import com.xuphorium.xuphorium_craft.*;
+import com.xuphorium.xuphorium_craft.common.*;
+import com.xuphorium.xuphorium_craft.proxy.*;
+import com.xuphorium.xuphorium_craft.entity.*;
+import com.xuphorium.xuphorium_craft.block.*;
+import com.xuphorium.xuphorium_craft.item.*; */
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftTools extends XuphoriumCraftElements.ModElement
@@ -272,7 +272,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	
 	//============Current Classes============//
 	//========Tool-Common========//
-	public static class XCraftToolCommon extends XCraftCTab.XCraftItemCommon
+	public static class XCraftToolCommon extends XuphoriumCraft.XCraftItemCommon
 	{
 		public XCraftToolCommon(String name,int maxDamage,int maxStackSize)
 		{
@@ -433,7 +433,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			super(0,0.3F,false);
 			setUnlocalizedName("x_food");
 			setRegistryName("x_food");
-			setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 			setMaxStackSize(16);
 		}
 
@@ -546,10 +546,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XSword()
 		{
-			super(XCraftCTab.xSwordMaterial);
+			super(XuphoriumCraft.xSwordMaterial);
 			this.setUnlocalizedName("x_sword");
 			this.setRegistryName("x_sword");
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 			this.setHasSubtypes(true);
 			this.setMaxDamage(0);
 			//this.maxStackSize=1;
@@ -683,10 +683,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		
 		public XCraftToolCommon2(String name,float attackDamage,float attackSpeed,Set<Block> effectiveItemsSet)
 		{
-			super(XCraftCTab.xToolsMaterial,effectiveItemsSet);
+			super(XuphoriumCraft.xToolsMaterial,effectiveItemsSet);
 			this.setUnlocalizedName(name);
 			this.setRegistryName(name);
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 			this.attackDamage=attackDamage;
 			this.attackSpeed=attackSpeed;
 		}
@@ -726,7 +726,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XAxe()
 		{
-			super("x_axe",12.8f,-3.14f,XCraftCTab.xAxeEffectiveItemsSet);
+			super("x_axe",12.8f,-3.14f,XuphoriumCraft.xAxeEffectiveItemsSet);
 		}
 		
 		public boolean canCurrentHarvest(ItemStack stack,IBlockState state)
@@ -749,10 +749,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XPickaxe()
 		{
-			super(XCraftCTab.xToolsMaterial);
+			super(XuphoriumCraft.xToolsMaterial);
 			this.setUnlocalizedName("x_pickaxe");
 			this.setRegistryName("x_pickaxe");
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 			this.attackDamage=6.4f;
 			this.attackSpeed=-2.4f;
 		}
@@ -790,10 +790,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XShovel()
 		{
-			super(XCraftCTab.xToolsMaterial);
+			super(XuphoriumCraft.xToolsMaterial);
 			this.setUnlocalizedName("x_shovel");
 			this.setRegistryName("x_shovel");
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 			this.attackDamage=4.8f;
 			this.attackSpeed=-1.6f;
 		}
@@ -835,10 +835,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XHoe()
 		{
-			super(XCraftCTab.xToolsMaterial);
+			super(XuphoriumCraft.xToolsMaterial);
 			this.setUnlocalizedName("x_hoe");
 			this.setRegistryName("x_hoe");
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 			//this.attackDamage=2.4f;
 			//this.attackSpeed=-0.4f;
 		}

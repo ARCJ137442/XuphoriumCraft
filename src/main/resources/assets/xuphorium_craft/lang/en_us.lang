@@ -50,7 +50,7 @@ item.x_sword.name=X-Sword
 item.x_totem.name=X-Totem
 
 #itemGroup
-itemGroup.tabxcraft=X-Craft
+itemGroup.xuphorium_craft=X-Craft
 
 #block
 tile.x_alpha_metal.name=X-Alpha-Metal

@@ -50,7 +50,7 @@ item.x_sword.name=X-剑
 item.x_totem.name=X-图腾
 
 #itemGroup
-itemGroup.tabxcraft=X-工艺
+itemGroup.xuphorium_craft=X-工艺
 
 #block
 tile.x_alpha_metal.name=X-Alpha-合金

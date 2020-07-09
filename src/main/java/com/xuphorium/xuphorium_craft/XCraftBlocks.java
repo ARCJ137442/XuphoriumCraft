@@ -100,12 +100,12 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 /* 
-import com.xuphorium.XuphoriumCraft.*;
-import com.xuphorium.XuphoriumCraft.common.*;
-import com.xuphorium.XuphoriumCraft.proxy.*;
-import com.xuphorium.XuphoriumCraft.entity.*;
-import com.xuphorium.XuphoriumCraft.block.*;
-import com.xuphorium.XuphoriumCraft.item.*; */
+import com.xuphorium.xuphorium_craft.*;
+import com.xuphorium.xuphorium_craft.common.*;
+import com.xuphorium.xuphorium_craft.proxy.*;
+import com.xuphorium.xuphorium_craft.entity.*;
+import com.xuphorium.xuphorium_craft.block.*;
+import com.xuphorium.xuphorium_craft.item.*; */
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftBlocks extends XuphoriumCraftElements.ModElement
@@ -610,7 +610,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			this.setRegistryName(name);
 			this.setUnlocalizedName(name);
 			this.setSoundType(soundType);
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 		}
 	}
 	
@@ -1514,7 +1514,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 					for(int dz=-level;dz<=level;dz++)
 					{
 						tP=new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz);
-						XCraftCTab.blockReaction(tP,world);
+						XuphoriumCraft.blockReaction(tP,world);
 					}
 				}
 			}

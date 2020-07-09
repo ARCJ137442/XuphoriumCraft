@@ -36,6 +36,118 @@ import java.util.function.Supplier;
 @Mod(modid = XuphoriumCraft.MODID, version = XuphoriumCraft.VERSION)
 public class XuphoriumCraft
 {
+	//============Xuphorium-Craft Global Variables============//
+	public static final int[] xArmorHardness=new int[]{4,7,8,5};
+	public static final ItemArmor.ArmorMaterial xArmorMaterial=EnumHelper.addArmorMaterial("X","xuphorium_craft:x_armor",25,XCraftCTab.xArmorHardness,100,null,4f);
+	
+	public static final ToolMaterial xSwordMaterial=EnumHelper.addToolMaterial("X_SWORD",3,2048,9f,8f,100);
+	public static final ToolMaterial xToolsMaterial=EnumHelper.addToolMaterial("X_TOOLS",6,2048,25.6f,12.8f,64);
+	public static final Set<Block> xAxeEffectiveItemsSet=com.google.common.collect.Sets.newHashSet(
+				new Block[]{Blocks.PLANKS,Blocks.BOOKSHELF,Blocks.LOG,Blocks.LOG2,Blocks.CHEST,
+							Blocks.PUMPKIN,Blocks.LIT_PUMPKIN,Blocks.MELON_BLOCK,Blocks.LADDER,
+							Blocks.WOODEN_BUTTON,Blocks.WOODEN_PRESSURE_PLATE});
+
+	public static CreativeTabs CREATIVE_TAB=new CreativeTabs("xuphorium_craft")
+	{
+		@SideOnly(Side.CLIENT)
+		@Override
+		public ItemStack getTabIconItem()
+		{
+			return new ItemStack(XCraftTools.X_ITEM,1);
+		}
+
+		@SideOnly(Side.CLIENT)
+		public boolean hasSearchBar()
+		{
+			return false;
+		}
+	};
+	
+	public static boolean blockReaction(int x,int y,int z,World world)
+	{
+		return blockReaction(new BlockPos(x,y,z),world);
+	}
+	
+	public static boolean blockReaction(BlockPos pos,World world)
+	{
+		IBlockState currentBlock=world.getBlockState(pos);
+		IBlockState reactedBlock=getReactedBlock(pos,currentBlock);
+		if(reactedBlock!=null)
+		{
+			world.setBlockState(pos,reactedBlock,3);
+			return true;
+		}
+		return false;
+	}
+	
+	public static IBlockState getReactedBlock(BlockPos currentPos,IBlockState currentBlock)
+	{
+		double type=Math.random()*100;
+		if(blockEquals(currentBlock,Blocks.STONE.getDefaultState()))
+		{
+			if(type<=50) return Blocks.COAL_ORE.getDefaultState();
+			else if(type<=80) return Blocks.IRON_ORE.getDefaultState();
+			else if(type<=85) return Blocks.REDSTONE_ORE.getDefaultState();
+			else if(type<=90) return Blocks.LAPIS_ORE.getDefaultState();
+			else if(type<=95) return Blocks.GOLD_ORE.getDefaultState();
+			else if(type<=98) return Blocks.EMERALD_ORE.getDefaultState();
+			else if(type<=99) return Blocks.DIAMOND_ORE.getDefaultState();
+			else return XCraftBlocks.X_ORE.getDefaultState();
+		}
+		else if(blockEquals(currentBlock,Blocks.DIRT.getDefaultState())||
+				blockEquals(currentBlock,Blocks.DIRT.getStateFromMeta(0))||
+				blockEquals(currentBlock,Blocks.DIRT.getStateFromMeta(1))||
+				blockEquals(currentBlock,Blocks.DIRT.getStateFromMeta(2)))
+		{
+			if(type<=48) return Blocks.PLANKS.getStateFromMeta((int)Math.floor(Math.random()*6));
+			else if(type<=60) return Blocks.FLOWING_WATER.getDefaultState();
+			else if(type<=85) return Blocks.SAND.getStateFromMeta(0);
+			else if(type<=96) return Blocks.STONE.getStateFromMeta(0);
+			else if(type<=98) return Blocks.GRASS.getDefaultState();
+			else return Blocks.MYCELIUM.getDefaultState();
+		}
+		else if(blockEquals(currentBlock,Blocks.GRASS.getDefaultState()))
+		{
+			if(type<=60) return Blocks.PLANKS.getStateFromMeta((int)Math.floor(Math.random()*6));
+			else if(type<=75) return Blocks.FLOWING_WATER.getDefaultState();
+			else if(type<=85) return Blocks.SAND.getStateFromMeta(0);
+			else return Blocks.STONE.getStateFromMeta(0);
+		}
+		return null;
+	}
+	
+	public static boolean blockEquals(IBlockState a,IBlockState b)
+	{
+		try
+		{
+			return (a.getBlock()==b.getBlock())&&(a.getBlock().getMetaFromState(a)==b.getBlock().getMetaFromState(b));
+		}
+		catch (Exception e)
+		{
+			return (a.getBlock()==b.getBlock());
+		}
+	}
+
+	@SubscribeEvent
+	public void onUseHoe(PlayerInteractEvent.RightClickBlock event)
+	{
+		
+	}
+	
+	//========Material-Common========//
+	public static class XCraftItemCommon extends Item
+	{
+		public XCraftItemCommon(String name,int maxDamage,int maxStackSize)
+		{
+			this.setMaxDamage(maxDamage);
+			this.maxStackSize=maxStackSize;
+			this.setUnlocalizedName(name);
+			this.setRegistryName(name);
+			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+		}
+	}
+	
+	//============Xuphorium-Craft Start============//
 	public static final String MODID = "xuphorium_craft";
 	public static final String VERSION = "1.0.0";
 	public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("xuphorium_craft");

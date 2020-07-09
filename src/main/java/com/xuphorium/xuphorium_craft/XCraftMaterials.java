@@ -250,7 +250,7 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	
 	//============Current Classes============//
 	//========Material-Common========//
-	public static class XCraftMaterialCommon extends XCraftCTab.XCraftItemCommon
+	public static class XCraftMaterialCommon extends XuphoriumCraft.XCraftItemCommon
 	{
 		public XCraftMaterialCommon(String name,int maxDamage,int maxStackSize)
 		{
@@ -291,17 +291,21 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 		}
 
 		@Override
-		public EnumActionResult onItemUseFirst(EntityPlayer entity,World world,BlockPos pos,EnumFacing side,float hitX,float hitY,float hitZ,EnumHand hand)
+		public EnumActionResult onItemUseFirst(EntityPlayer player,World world,BlockPos pos,EnumFacing side,float hitX,float hitY,float hitZ,EnumHand hand)
 		{
-			ItemStack itemstack=entity.getHeldItem(hand);
+			ItemStack itemstack=player.getHeldItem(hand);
 			int x=pos.getX();
 			int y=pos.getY();
 			int z=pos.getZ();
-			if(entity instanceof EntityLivingBase)
+			if(player instanceof EntityLivingBase)
 			{
-				if(((EntityLivingBase)entity).getHeldItemMainhand().getItem()==new ItemStack(X_DUST,1).getItem())
+				if(((EntityLivingBase)player).getHeldItem(hand).getItem()==new ItemStack(X_DUST,1).getItem())
 				{
-					if(XCraftCTab.blockReaction(x,y,z,world)&&entity instanceof EntityPlayer) ((EntityLivingBase)entity).getHeldItemMainhand().shrink(1);
+					if(XuphoriumCraft.blockReaction(x,y,z,world)&&player instanceof EntityPlayer)
+					{
+						((EntityLivingBase)player).getHeldItem(hand).shrink(1);
+						player.getCooldownTracker().setCooldown(this,10);
+					}
 				}
 			}
 			return EnumActionResult.PASS;
@@ -376,7 +380,7 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 			{
 				if(((EntityLivingBase)entity).getHeldItemMainhand().getItem()==new ItemStack(X_DUST,1).getItem())
 				{
-					if(XCraftCTab.blockReaction(x,y,z,world)&&entity instanceof EntityPlayer) ((EntityLivingBase)entity).getHeldItemMainhand().shrink(1);
+					if(XuphoriumCraft.blockReaction(x,y,z,world)&&entity instanceof EntityPlayer) ((EntityLivingBase)entity).getHeldItemMainhand().shrink(1);
 				}
 			}
 			return EnumActionResult.PASS;
@@ -492,7 +496,7 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 			{
 				if(((EntityLivingBase)entity).getHeldItemMainhand().getItem()==new ItemStack(X_DUST,1).getItem())
 				{
-					if(XCraftCTab.blockReaction(x,y,z,world)&&entity instanceof EntityPlayer) ((EntityLivingBase)entity).getHeldItemMainhand().shrink(1);
+					if(XuphoriumCraft.blockReaction(x,y,z,world)&&entity instanceof EntityPlayer) ((EntityLivingBase)entity).getHeldItemMainhand().shrink(1);
 				}
 			}
 			return EnumActionResult.PASS;
