@@ -2,10 +2,10 @@
 	"parent": "minecraft:block/block",
 	"textures":
 	{
-		"particle": "x_craft:blocks/x_liquid",
-		"top": "x_craft:blocks/x_liquid",
-		"side": "x_craft:blocks/x_liquid",
-		"bottom": "x_craft:blocks/x_liquid"
+		"particle": "xuphorium_craft:blocks/x_liquid",
+		"top": "xuphorium_craft:blocks/x_liquid",
+		"side": "xuphorium_craft:blocks/x_liquid",
+		"bottom": "xuphorium_craft:blocks/x_liquid"
 	},
 	"elements":
 	[

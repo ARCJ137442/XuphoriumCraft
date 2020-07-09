@@ -2,6 +2,6 @@
 	"parent": "block/cube_all",
 	"textures":
 	{
-		"all": "x_craft:blocks/x_block_advanced_3"
+		"all": "xuphorium_craft:blocks/x_block_advanced_3"
 	}
 }

@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "x_craft:blocks/x_ore"
+    "all": "xuphorium_craft:blocks/x_ore"
   }
 }

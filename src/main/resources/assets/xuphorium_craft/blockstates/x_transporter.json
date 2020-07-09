@@ -1,13 +1,13 @@
 {
 	"variants":
 	{
-		"active=false,facing=east":{"model":"x_craft:x_transporter"},
-		"active=false,facing=south":{"model":"x_craft:x_transporter","y":90},
-		"active=false,facing=west":{"model":"x_craft:x_transporter","y":180},
-		"active=false,facing=north":{"model":"x_craft:x_transporter","y":270},
-		"active=true,facing=east":{"model":"x_craft:x_transporter_active"},
-		"active=true,facing=south":{"model":"x_craft:x_transporter_active","y":90},
-		"active=true,facing=west":{"model":"x_craft:x_transporter_active","y":180},
-		"active=true,facing=north":{"model":"x_craft:x_transporter_active","y":270}
+		"active=false,facing=east":{"model":"xuphorium_craft:x_transporter"},
+		"active=false,facing=south":{"model":"xuphorium_craft:x_transporter","y":90},
+		"active=false,facing=west":{"model":"xuphorium_craft:x_transporter","y":180},
+		"active=false,facing=north":{"model":"xuphorium_craft:x_transporter","y":270},
+		"active=true,facing=east":{"model":"xuphorium_craft:x_transporter_active"},
+		"active=true,facing=south":{"model":"xuphorium_craft:x_transporter_active","y":90},
+		"active=true,facing=west":{"model":"xuphorium_craft:x_transporter_active","y":180},
+		"active=true,facing=north":{"model":"xuphorium_craft:x_transporter_active","y":270}
 	}
 }

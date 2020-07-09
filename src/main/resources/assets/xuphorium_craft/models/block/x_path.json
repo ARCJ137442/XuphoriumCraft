@@ -2,10 +2,10 @@
 	"parent": "block/block",
 	"textures":
 	{
-		"particle": "x_craft:blocks/x_path",
-		"top": "x_craft:blocks/x_path",
-		"side": "x_craft:blocks/x_path",
-		"bottom": "x_craft:blocks/x_path"
+		"particle": "xuphorium_craft:blocks/x_path",
+		"top": "xuphorium_craft:blocks/x_path",
+		"side": "xuphorium_craft:blocks/x_path",
+		"bottom": "xuphorium_craft:blocks/x_path"
 	},
 	"elements":
 	[

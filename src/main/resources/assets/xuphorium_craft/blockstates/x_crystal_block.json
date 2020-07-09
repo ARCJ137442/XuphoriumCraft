@@ -1,13 +1,13 @@
 {
 	"variants":
 	{
-		"level=0":{"model": "x_craft:x_crystal_block_0"},
-		"level=1":{"model": "x_craft:x_crystal_block_1"},
-		"level=2":{"model": "x_craft:x_crystal_block_2"},
-		"level=3":{"model": "x_craft:x_crystal_block_3"},
-		"level=4":{"model": "x_craft:x_crystal_block_4"},
-		"level=5":{"model": "x_craft:x_crystal_block_5"},
-		"level=6":{"model": "x_craft:x_crystal_block_6"},
-		"level=7":{"model": "x_craft:x_crystal_block_7"}
+		"level=0":{"model": "xuphorium_craft:x_crystal_block_0"},
+		"level=1":{"model": "xuphorium_craft:x_crystal_block_1"},
+		"level=2":{"model": "xuphorium_craft:x_crystal_block_2"},
+		"level=3":{"model": "xuphorium_craft:x_crystal_block_3"},
+		"level=4":{"model": "xuphorium_craft:x_crystal_block_4"},
+		"level=5":{"model": "xuphorium_craft:x_crystal_block_5"},
+		"level=6":{"model": "xuphorium_craft:x_crystal_block_6"},
+		"level=7":{"model": "xuphorium_craft:x_crystal_block_7"}
 	}
 }
