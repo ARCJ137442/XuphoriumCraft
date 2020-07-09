@@ -21,15 +21,41 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod;
+
 import net.minecraftforge.fluids.FluidRegistry;
+
 import net.minecraftforge.event.RegistryEvent;
+
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.EnumHelper;
+
 import net.minecraftforge.client.event.ModelRegistryEvent;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.potion.Potion;
 import net.minecraft.item.Item;
 import net.minecraft.block.Block;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+
+import java.util.Set;
 
 import java.util.function.Supplier;
 
@@ -38,12 +64,12 @@ public class XuphoriumCraft
 {
 	//============Xuphorium-Craft Global Variables============//
 	public static final int[] xArmorHardness=new int[]{4,7,8,5};
-	public static final ItemArmor.ArmorMaterial xArmorMaterial=EnumHelper.addArmorMaterial("X","xuphorium_craft:x_armor",25,XCraftCTab.xArmorHardness,100,null,4f);
+	public static final ItemArmor.ArmorMaterial xArmorMaterial=EnumHelper.addArmorMaterial("X","xuphorium_craft:x_armor",25,XuphoriumCraft.xArmorHardness,100,null,4f);
 	
 	public static final ToolMaterial xSwordMaterial=EnumHelper.addToolMaterial("X_SWORD",3,2048,9f,8f,100);
 	public static final ToolMaterial xToolsMaterial=EnumHelper.addToolMaterial("X_TOOLS",6,2048,25.6f,12.8f,64);
 	public static final Set<Block> xAxeEffectiveItemsSet=com.google.common.collect.Sets.newHashSet(
-				new Block[]{Blocks.PLANKS,Blocks.BOOKSHELF,Blocks.LOG,Blocks.LOG2,Blocks.CHEST,
+							new Block[]{Blocks.PLANKS,Blocks.BOOKSHELF,Blocks.LOG,Blocks.LOG2,Blocks.CHEST,
 							Blocks.PUMPKIN,Blocks.LIT_PUMPKIN,Blocks.MELON_BLOCK,Blocks.LADDER,
 							Blocks.WOODEN_BUTTON,Blocks.WOODEN_PRESSURE_PLATE});
 
@@ -143,7 +169,7 @@ public class XuphoriumCraft
 			this.maxStackSize=maxStackSize;
 			this.setUnlocalizedName(name);
 			this.setRegistryName(name);
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 		}
 	}
 	

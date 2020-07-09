@@ -375,23 +375,25 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			double dx=x+0.5-player.posX;
 			double dy=y+0.5-player.posY;
 			double dz=z+0.5-player.posZ;
-
-			switch(this.getMetadata(itemstack))
+			if(!player.getCooldownTracker().hasCooldown(this))
 			{
-				case 0:
-					world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
-					player.getCooldownTracker().setCooldown(this,15);
-					break;
-				case 2:
-					XCraftTools.teleportBlock(world,pos,8);
-					player.getCooldownTracker().setCooldown(this,20);
-					break;
-				case 3:
-					player.motionX+=dx/2;
-					player.motionY+=dy/2;
-					player.motionZ+=dz/2;
-					player.getCooldownTracker().setCooldown(this,10);
-					break;
+				switch(this.getMetadata(itemstack))
+				{
+					case 0:
+						world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
+						player.getCooldownTracker().setCooldown(this,15);
+						break;
+					case 2:
+						XCraftTools.teleportBlock(world,pos,8);
+						player.getCooldownTracker().setCooldown(this,20);
+						break;
+					case 3:
+						player.motionX+=dx/2;
+						player.motionY+=dy/2;
+						player.motionZ+=dz/2;
+						player.getCooldownTracker().setCooldown(this,10);
+						break;
+				}
 			}
 			return EnumActionResult.SUCCESS;
 		}
@@ -560,8 +562,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			if(this.isInCreativeTab(tab))for(int i=0;i<4;++i)items.add(new ItemStack(this,1,i));
 		}
 		
-        public Item getRepairItem()
-        {
+		public Item getRepairItem()
+		{
 			return XCraftMaterials.X_INGOT;
 		}
 		
@@ -592,25 +594,25 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		}
 
 		@Override
-		public boolean hitEntity(ItemStack itemstack,EntityLivingBase entity,EntityLivingBase entity2)
+		public boolean hitEntity(ItemStack itemstack,EntityLivingBase target,EntityLivingBase attacker)
 		{
-			World world=entity.world;
+			World world=attacker.world;
 			if(world.isRemote) return true;
-			super.hitEntity(itemstack,entity,entity2);
-			int x=(int)entity.posX;
-			int y=(int)entity.posY;
-			int z=(int)entity.posZ;
+			super.hitEntity(itemstack,attacker,target);
+			int x=(int)attacker.posX;
+			int y=(int)attacker.posY;
+			int z=(int)attacker.posZ;
 			List<Entity> entities;
 			double dx,dy,dz,distanceSquare,nearestDistanceSquare;
-			if(!(entity2 instanceof EntityLiving)) return true;
-			EntityLiving entityLiving2=(EntityLiving)entity2;
-			if(entityLiving2!=null)
+			if(!(target instanceof EntityLiving)) return true;
+			EntityLiving targetLiving2=(EntityLiving)target;
+			if(targetLiving2!=null)
 			{
 				EntityLiving nearestEntity;
 				switch(this.getMetadata(itemstack))
 				{
 					case 1:
-						entityLiving2.setAttackTarget(entityLiving2);
+						targetLiving2.setAttackTarget(targetLiving2);
 						break;
 					case 2:
 						entities=world.loadedEntityList;
@@ -621,9 +623,9 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 							if(entity3==null) continue;
 							if(entity3 instanceof EntityLiving)
 							{
-								dx=entityLiving2.posX-entity3.posX;
-								dy=entityLiving2.posY-entity3.posY;
-								dz=entityLiving2.posZ-entity3.posZ;
+								dx=targetLiving2.posX-entity3.posX;
+								dy=targetLiving2.posY-entity3.posY;
+								dz=targetLiving2.posZ-entity3.posZ;
 								distanceSquare=dx*dx+dy*dy+dz*dz;
 								if(distanceSquare==0) continue;
 								if(nearestEntity==null||distanceSquare<nearestDistanceSquare)
@@ -633,8 +635,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 								}
 							}
 						}
-						nearestEntity.setAttackTarget(entityLiving2);
-						entityLiving2.setAttackTarget(nearestEntity);
+						nearestEntity.setAttackTarget(targetLiving2);
+						targetLiving2.setAttackTarget(nearestEntity);
 						break;
 					case 3:
 						entities=world.loadedEntityList;
@@ -642,16 +644,48 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 						{
 							if(entity4 instanceof EntityLiving)
 							{
-								dx=entityLiving2.posX-entity4.posX;
-								dy=entityLiving2.posY-entity4.posY;
-								dz=entityLiving2.posZ-entity4.posZ;
-								if(dx*dx+dy*dy+dz*dz<=256)((EntityLiving)entity4).setAttackTarget(entityLiving2);
+								dx=targetLiving2.posX-entity4.posX;
+								dy=targetLiving2.posY-entity4.posY;
+								dz=targetLiving2.posZ-entity4.posZ;
+								if(dx*dx+dy*dy+dz*dz<=256)((EntityLiving)entity4).setAttackTarget(targetLiving2);
 							}
 						}
 						break;
 				}
 			}
 			return true;
+		}
+		
+		@Override
+		public boolean itemInteractionForEntity(ItemStack itemstack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
+		{
+			return false;
+			/* if(entity.world.isRemote)
+			{
+				return false;
+			}
+			if(entity instanceof net.minecraftforge.common.IShearable)
+			{
+				net.minecraftforge.common.IShearable target =(net.minecraftforge.common.IShearable)entity;
+				BlockPos pos=new BlockPos(entity.posX, entity.posY, entity.posZ);
+				if(target.isShearable(itemstack, entity.world, pos))
+				{
+					java.util.List<ItemStack> drops =target.onSheared(itemstack, entity.world, pos,
+							net.minecraft.enchantment.EnchantmentHelper.getEnchantmentLevel(net.minecraft.init.Enchantments.FORTUNE, itemstack));
+
+					java.util.Random rand =new java.util.Random();
+					for(ItemStack stack : drops)
+					{
+						net.minecraft.entity.item.EntityItem ent =entity.entityDropItem(stack, 1.0F);
+						ent.motionY +=rand.nextFloat() * 0.05F;
+						ent.motionX +=(rand.nextFloat() - rand.nextFloat()) * 0.1F;
+						ent.motionZ +=(rand.nextFloat() - rand.nextFloat()) * 0.1F;
+					}
+					itemstack.damageItem(1, entity);
+				}
+				return true;
+			}
+			return false; */
 		}
 
 		@Override
@@ -697,8 +731,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return (float)1.5*super.getDestroySpeed(stack,state);
 		}
 		
-        public Item getRepairItem()
-        {
+		public Item getRepairItem()
+		{
 			return XCraftMaterials.X_INGOT;
 		}
 		
@@ -770,8 +804,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return super.getDestroySpeed(stack,state)*(2-this.getMetadata(stack)/this.getMaxDamage());
 		}
 		
-        public Item getRepairItem()
-        {
+		public Item getRepairItem()
+		{
 			return XCraftMaterials.X_INGOT;
 		}
 		
@@ -815,8 +849,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return result;
 		}
 		
-        public Item getRepairItem()
-        {
+		public Item getRepairItem()
+		{
 			return XCraftMaterials.X_INGOT;
 		}
 		
@@ -850,8 +884,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return result.keySet();
 		}
 		
-        public Item getRepairItem()
-        {
+		public Item getRepairItem()
+		{
 			return XCraftMaterials.X_INGOT;
 		}
 		
@@ -878,8 +912,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			super(name,4096,1);
 		}
 		
-        public Item getRepairItem()
-        {
+		public Item getRepairItem()
+		{
 			return XCraftMaterials.X_INGOT;
 		}
 

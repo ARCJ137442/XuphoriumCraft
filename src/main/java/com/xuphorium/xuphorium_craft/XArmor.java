@@ -69,10 +69,10 @@ public class XArmor extends XuphoriumCraftElements.ModElement
 	{
 		public XArmorCommon(EntityEquipmentSlot slot,String name)
 		{
-			super(XCraftCTab.xArmorMaterial,0,slot);
+			super(XuphoriumCraft.xArmorMaterial,0,slot);
 			this.setUnlocalizedName(name);
 			this.setRegistryName(name);
-			this.setCreativeTab(XCraftCTab.CREATIVE_TAB);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 		}
 	}
 	

@@ -281,7 +281,7 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	{
 		public XDust()
 		{
-			super("x_dust",0,96);
+			super("x_dust",0,64);
 		}
 
 		@Override
@@ -297,13 +297,13 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 			int x=pos.getX();
 			int y=pos.getY();
 			int z=pos.getZ();
-			if(player instanceof EntityLivingBase)
+			if(player instanceof EntityLivingBase&&!player.getCooldownTracker().hasCooldown(this))
 			{
 				if(((EntityLivingBase)player).getHeldItem(hand).getItem()==new ItemStack(X_DUST,1).getItem())
 				{
 					if(XuphoriumCraft.blockReaction(x,y,z,world)&&player instanceof EntityPlayer)
 					{
-						((EntityLivingBase)player).getHeldItem(hand).shrink(1);
+						if(!player.capabilities.isCreativeMode) itemstack.shrink(1);
 						player.getCooldownTracker().setCooldown(this,10);
 					}
 				}

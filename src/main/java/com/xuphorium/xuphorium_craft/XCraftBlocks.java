@@ -1667,7 +1667,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		
 		public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer playerIn,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ)
 		{
-			if(world.isRemote||!world.isAreaLoaded(pos,1)) return false;// Forge: prevent loading unloaded chunks when checking neighbor's light
+			if(world.isRemote||!world.isAreaLoaded(pos,1)) return true;// Forge: prevent loading unloaded chunks when checking neighbor's light
 			if((int)state.getValue(LEVEL)>2)
 			{
 				world.setBlockState(pos,this.getDefaultState(),2);
@@ -1676,6 +1676,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 				world.spawnEntity(entityToSpawn);
 				return true;
 			}
+			
 			return false;
 		}
 		
