@@ -50,7 +50,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.IProjectile;
 
@@ -374,21 +374,25 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			double dx=x+0.5-player.posX;
 			double dy=y+0.5-player.posY;
 			double dz=z+0.5-player.posZ;
+
 			switch(this.getMetadata(itemstack))
 			{
 				case 0:
 					world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
+					player.getCooldownTracker().setCooldown(this,15);
 					break;
 				case 2:
 					XCraftTools.teleportBlock(world,pos,8);
+					player.getCooldownTracker().setCooldown(this,20);
 					break;
 				case 3:
 					player.motionX+=dx/2;
 					player.motionY+=dy/2;
 					player.motionZ+=dz/2;
+					player.getCooldownTracker().setCooldown(this,10);
 					break;
 			}
-			return EnumActionResult.PASS;
+			return EnumActionResult.SUCCESS;
 		}
 		
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
@@ -602,23 +606,23 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		@Override
 		public boolean hitEntity(ItemStack itemstack,EntityLivingBase entity,EntityLivingBase entity2)
 		{
+			World world=entity.world;
+			if(world.isRemote) return;
 			super.hitEntity(itemstack,entity,entity2);
 			int x=(int)entity.posX;
 			int y=(int)entity.posY;
 			int z=(int)entity.posZ;
-			World world=entity.world;
-			
 			List<Entity> entities;
 			double dx,dy,dz,distance,nearestDistance;
-			if(!(entity2 instanceof EntityCreature)) return true;
-			EntityCreature entityCreature2=(EntityCreature)entity2;
-			if(entityCreature2!=null)
+			if(!(entity2 instanceof EntityLiving)) return true;
+			EntityLiving entityLiving2=(EntityLiving)entity2;
+			if(entityLiving2!=null)
 			{
-				EntityCreature nearestEntity;
+				EntityLiving nearestEntity;
 				switch(this.getMetadata(itemstack))
 				{
 					case 1:
-						entityCreature2.setAttackTarget(entityCreature2);
+						entityLiving2.setAttackTarget(entityLiving2);
 						break;
 					case 2:
 						entities=world.loadedEntityList;
@@ -627,33 +631,33 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 						for(Entity entity3 : entities)
 						{
 							if(entity3==null) continue;
-							if(entity3 instanceof EntityCreature)
+							if(entity3 instanceof EntityLiving)
 							{
-								dx=entityCreature2.posX-entity3.posX;
-								dy=entityCreature2.posY-entity3.posY;
-								dz=entityCreature2.posZ-entity3.posZ;
+								dx=entityLiving2.posX-entity3.posX;
+								dy=entityLiving2.posY-entity3.posY;
+								dz=entityLiving2.posZ-entity3.posZ;
 								distance=Math.sqrt(dx*dx+dy*dy+dz*dz);
 								if(distance==0) continue;
 								if(nearestEntity==null||distance<nearestDistance)
 								{
-									nearestEntity=(EntityCreature)entity3;
+									nearestEntity=(EntityLiving)entity3;
 									nearestDistance=distance;
 								}
 							}
 						}
-						nearestEntity.setAttackTarget(entityCreature2);
-						entityCreature2.setAttackTarget(nearestEntity);
+						nearestEntity.setAttackTarget(entityLiving2);
+						entityLiving2.setAttackTarget(nearestEntity);
 						break;
 					case 3:
 						entities=world.loadedEntityList;
 						for(Entity entity4 : entities)
 						{
-							if(entity4 instanceof EntityCreature)
+							if(entity4 instanceof EntityLiving)
 							{
-								dx=entityCreature2.posX-entity4.posX;
-								dy=entityCreature2.posY-entity4.posY;
-								dz=entityCreature2.posZ-entity4.posZ;
-								if(Math.sqrt(dx*dx+dy*dy+dz*dz)<=16)((EntityCreature)entity4).setAttackTarget(entityCreature2);
+								dx=entityLiving2.posX-entity4.posX;
+								dy=entityLiving2.posY-entity4.posY;
+								dz=entityLiving2.posZ-entity4.posZ;
+								if(dx*dx+dy*dy+dz*dz<=256)((EntityLiving)entity4).setAttackTarget(entityLiving2);
 							}
 						}
 						break;
@@ -900,14 +904,14 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		@Override
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
-			ActionResult<ItemStack> ar=super.onItemRightClick(world,player,hand);
-			ItemStack itemstack=ar.getResult();
+			ItemStack itemstack=player.getHeldItem(hand);
+			if(player.world.isRemote) return;
 			player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE,64,3,false,true));
 			player.addPotionEffect(new PotionEffect(MobEffects.SPEED,64,3,true,true));
 			player.addPotionEffect(new PotionEffect(MobEffects.GLOWING,64,1,true,true));
 			Item item=itemstack.getItem();
 			if(player.isSneaking()) XShield.trunMode(item==X_SHIELD?X_SHIELD_POWERED:X_SHIELD,itemstack,world,player,hand);
-			return ar;
+			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 		}
 		
 		public static void trunMode(Item willTurnTo,ItemStack stack,World world,EntityPlayer player,EnumHand hand)
@@ -943,8 +947,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			{
 				EntityLivingBase entityLiving=((EntityLivingBase)entity);
 				ItemStack shield=null;
-				if(entityLiving.getHeldItemMainhand().getItem()==X_SHIELD_POWERED) shield=entityLiving.getHeldItemMainhand();
-				else if(entityLiving.getHeldItemOffhand().getItem()==X_SHIELD_POWERED) shield=entityLiving.getHeldItemOffhand();
+				if(entityLiving.getHeldItemMainhand().getItem()==X_SHIELD) shield=entityLiving.getHeldItemMainhand();
+				else if(entityLiving.getHeldItemOffhand().getItem()==X_SHIELD) shield=entityLiving.getHeldItemOffhand();
 				if(shield!=null)
 				{
 					entityLiving.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE,64,3,false,true));
