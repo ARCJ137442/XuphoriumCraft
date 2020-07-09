@@ -118,24 +118,25 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	public void initElements()
 	{
 		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityXBoss.class).id(new ResourceLocation("xuphorium_craft","x_boss"),ENTITYID).name("x_boss").tracker(64,1,true).egg(-3355444,-16711681).build());
-		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityBulletCustom.class).id(new ResourceLocation("xuphorium_craft","x_boss_bullet"),ENTITYID_RANGED).name("x_boss_bullet").tracker(64,1,true).build());
+		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityXBossBullet.class).id(new ResourceLocation("xuphorium_craft","x_boss_bullet"),ENTITYID_RANGED).name("x_boss_bullet").tracker(64,1,true).build());
 	}
 		
 	public static void punchEntities(World world,Entity host,double x,double y,double z,double range)
 	{
 		List<Entity> entities=world.loadedEntityList;
-		double dx,dy,dz;
+		double dx,dy,dz,dSquare;
 		for(Entity entity : entities)
 		{
 			if(entity==host) continue;
 			dx=entity.posX-x;
 			dy=entity.posY-y;
 			dz=entity.posZ-z;
-			if(dx*dy*dz!=0&&dx*dx+dy*dy+dz*dz<=range*range)
+			dSquare=dx*dx+dy*dy+dz*dz;
+			if(dx*dy*dz!=0&&dSquare<=range*range)
 			{
-				entity.motionX+=1/m_abs(dx);
-				entity.motionY+=1/m_abs(dy);
-				entity.motionZ+=1/m_abs(dz);
+				entity.motionX+=dx/dSquare;
+				entity.motionY+=dy/dSquare;
+				entity.motionZ+=dz/dSquare;
 			}
 		}
 	}
@@ -168,10 +169,10 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			});
 			return customRender;
 		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityBulletCustom.class,renderManager -> {
-			return new RenderSnowball<EntityBulletCustom>(renderManager,null,Minecraft.getMinecraft().getRenderItem())
+		RenderingRegistry.registerEntityRenderingHandler(EntityXBossBullet.class,renderManager -> {
+			return new RenderSnowball<EntityXBossBullet>(renderManager,null,Minecraft.getMinecraft().getRenderItem())
 			{
-				public ItemStack getStackToRender(EntityBulletCustom entity)
+				public ItemStack getStackToRender(EntityXBossBullet entity)
 				{
 					return new ItemStack(XCraftTools.X_ITEM,1);
 				}
@@ -386,7 +387,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			
 			if(!world.isRemote)
 			{
-				EntityBulletCustom xb=new EntityBulletCustom(world,this,0,-1/32,0);
+				EntityXBossBullet xb=new EntityXBossBullet(world,this,0,-1/32,0);
 				xb.setVelocity(this.getLookVec().x/2,this.getLookVec().y/2,this.getLookVec().z/2);
 				//XBullet.setDamage(4*2.0F);
 				//XBullet.setKnockbackStrength(4);
@@ -565,7 +566,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		
 		public void attackEntityWithRangedAttack(EntityLivingBase target,float flval)
 		{
-			EntityBulletCustom xb=new EntityBulletCustom(this.world,this,0,-1/32,0);/*
+			EntityXBossBullet xb=new EntityXBossBullet(this.world,this,0,0,0);/*
 			double d0=target.posY+(double)target.getEyeHeight()-1.1;
 			double d1=target.posX-this.posX;
 			double d2=d0-xb.posY;
@@ -607,8 +608,13 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				randomHurtTick=(int)(Math.random()*30+10);
 				hurtOther(this.world,true,16,false);
 			}
+			//Drag to Target
 			Entity target=this.getAttackTarget();//getAttackingEntity
-			if(target!=null)
+			if(target==this)
+			{
+				this.setAttackTarget(null);
+			}
+			else if(target!=null)
 			{
 				double targetDistance=getDiatance(this,target);
 				double dx=target.posX-this.posX;
@@ -668,23 +674,23 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		}
 	}
 	
-	public static class EntityBulletCustom extends EntityFireball
+	public static class EntityXBossBullet extends EntityFireball
 	{
 		public Entity target;
 		
-		public EntityBulletCustom(World a)
+		public EntityXBossBullet(World a)
 		{
 			super(a);
 			this.setSize(0.5F,0.5F);
 		}
 		
-		public EntityBulletCustom(World worldIn,double x,double y,double z,double ax,double ay,double az)
+		public EntityXBossBullet(World worldIn,double x,double y,double z,double ax,double ay,double az)
 		{
 			super(worldIn,x,y,z,ax,ay,az);
 			this.setSize(0.5F,0.5F);
 		}
 		
-		public EntityBulletCustom(World worldIn,EntityLivingBase shooter,double ax,double ay,double az)
+		public EntityXBossBullet(World worldIn,EntityLivingBase shooter,double ax,double ay,double az)
 		{
 			super(worldIn,shooter,ax,ay,az);
 			this.setSize(0.5F,0.5F);

@@ -380,18 +380,18 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				switch(this.getMetadata(itemstack))
 				{
 					case 0:
-						world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
 						player.getCooldownTracker().setCooldown(this,15);
+						world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
 						break;
 					case 2:
-						XCraftTools.teleportBlock(world,pos,8);
 						player.getCooldownTracker().setCooldown(this,20);
+						XCraftTools.teleportBlock(world,pos,8);
 						break;
 					case 3:
+						player.getCooldownTracker().setCooldown(this,7);
 						player.motionX+=dx/2;
 						player.motionY+=dy/2;
 						player.motionZ+=dz/2;
-						player.getCooldownTracker().setCooldown(this,10);
 						break;
 				}
 			}
@@ -620,19 +620,15 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 						nearestEntity=null;
 						for(Entity entity3 : entities)
 						{
-							if(entity3==null) continue;
-							if(entity3 instanceof EntityLiving)
+							if(entity3==null||entity3==target||!(entity3 instanceof EntityLiving)) continue;
+							dx=targetLiving2.posX-entity3.posX;
+							dy=targetLiving2.posY-entity3.posY;
+							dz=targetLiving2.posZ-entity3.posZ;
+							distanceSquare=dx*dx+dy*dy+dz*dz;
+							if(nearestEntity==null||distanceSquare<nearestDistanceSquare)
 							{
-								dx=targetLiving2.posX-entity3.posX;
-								dy=targetLiving2.posY-entity3.posY;
-								dz=targetLiving2.posZ-entity3.posZ;
-								distanceSquare=dx*dx+dy*dy+dz*dz;
-								if(distanceSquare==0) continue;
-								if(nearestEntity==null||distanceSquare<nearestDistanceSquare)
-								{
-									nearestEntity=(EntityLiving)entity3;
-									nearestDistanceSquare=distanceSquare;
-								}
+								nearestEntity=(EntityLiving)entity3;
+								nearestDistanceSquare=distanceSquare;
 							}
 						}
 						nearestEntity.setAttackTarget(targetLiving2);
@@ -904,12 +900,12 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XShield()
 		{
-			super("x_shield",4096,1);
+			super("x_shield",1024,1);
 		}
 		
-		protected XShield(String name)
+		protected XShield(String name,int maxDamage)
 		{
-			super(name,4096,1);
+			super(name,512,1);
 		}
 		
 		public Item getRepairItem()
@@ -941,7 +937,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public static void trunMode(Item willTurnTo,ItemStack stack,World world,EntityPlayer player,EnumHand hand)
 		{
 			ItemStack newstack=new ItemStack(willTurnTo,stack.getCount(),stack.getItemDamage());
-			
+			//TODO Transform Mode
 		}
 	}
 	
@@ -949,7 +945,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XShieldPowered()
 		{
-			super("x_shield_powered");
+			super("x_shield_powered",1024);
 		}
 
 		@Override

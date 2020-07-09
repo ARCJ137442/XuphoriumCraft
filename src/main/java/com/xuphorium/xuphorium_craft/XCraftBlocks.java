@@ -1580,14 +1580,16 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 					double dz=pos.getZ()+0.5-itemE.posZ;
 					if(dx*dx+dy*dy+dz*dz<=power*power)
 					{
-						Item item=itemE.getItem().getItem();
+						Item item=itemE.getItem().getItem();//EntityItem -> ItemStack -> ?
+						int metaData=itemE.getItem().getMetadata();
 						BlockPos blockPos=new BlockPos((int)Math.round(itemE.posX-0.5),(int)Math.round(itemE.posY-0.5),(int)Math.round(itemE.posZ-0.5));
 						if(item instanceof ItemBlock)
 						{
-							Block block=((ItemBlock)item).getBlock();
+							ItemBlock itemBlock=(ItemBlock)item;
+							Block block=itemBlock.getBlock();
 							if(block!=null&&XCraftBlocks.getIsReplaceable(world,blockPos))
 							{
-								world.setBlockState(blockPos,block.getDefaultState());
+								world.setBlockState(blockPos,block.getStateFromMeta(metaData));//this.block.getStateForPlacement(world,blockPos,EnumFacing.DOWN,(float)itemE.posX,(float)itemE.posY,(float)itemE.posZ,metaData,null,EnumHand.MAIN_HAND);
 								itemE.getItem().shrink(1);
 								itemE.setItem(itemE.getItem());//Update
 							}
