@@ -1,9 +1,0 @@
-{
-	"variants":
-	{
-		"level=0":{"model": "x_craft:x_dust_generater_0"},
-		"level=1":{"model": "x_craft:x_dust_generater_1"},
-		"level=2":{"model": "x_craft:x_dust_generater_2"},
-		"level=3":{"model": "x_craft:x_dust_generater_3"}
-	}
-}

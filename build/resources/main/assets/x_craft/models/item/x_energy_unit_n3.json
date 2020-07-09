@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "x_craft:items/x_energy_unit_n3"
-  }
-}

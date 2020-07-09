@@ -1,7 +1,0 @@
-{
-	"parent": "block/cube_all",
-	"textures":
-	{
-		"all": "x_craft:blocks/x_dust_generater_1"
-	}
-}
