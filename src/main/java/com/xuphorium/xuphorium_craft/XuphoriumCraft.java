@@ -116,9 +116,9 @@ public class XuphoriumCraft
 			else if(type<=85) return Blocks.REDSTONE_ORE.getDefaultState();
 			else if(type<=90) return Blocks.LAPIS_ORE.getDefaultState();
 			else if(type<=95) return Blocks.GOLD_ORE.getDefaultState();
-			else if(type<=98) return Blocks.EMERALD_ORE.getDefaultState();
+			else if(type<=99) return Blocks.EMERALD_ORE.getDefaultState();
 			else if(type<=99) return Blocks.DIAMOND_ORE.getDefaultState();
-			else return XCraftBlocks.X_ORE.getDefaultState();
+			else return Blocks.FLOWING_LAVA.getDefaultState();
 		}
 		else if(blockEquals(currentBlock,Blocks.DIRT.getDefaultState())||
 				blockEquals(currentBlock,Blocks.DIRT.getStateFromMeta(0))||
@@ -135,9 +135,9 @@ public class XuphoriumCraft
 		else if(blockEquals(currentBlock,Blocks.GRASS.getDefaultState()))
 		{
 			if(type<=60) return Blocks.PLANKS.getStateFromMeta((int)Math.floor(Math.random()*6));
-			else if(type<=75) return Blocks.FLOWING_WATER.getDefaultState();
-			else if(type<=85) return Blocks.SAND.getStateFromMeta(0);
-			else return Blocks.STONE.getStateFromMeta(0);
+			else if(type<=75) return Blocks.SAND.getStateFromMeta(0);
+			else if(type<=90) return Blocks.STONE.getStateFromMeta(0);
+			else return Blocks.MYCELIUM.getDefaultState();
 		}
 		return null;
 	}

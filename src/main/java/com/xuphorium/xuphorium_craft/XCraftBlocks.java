@@ -183,7 +183,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			}
 			//Generate
 			if(!this.mustFull||canReplaceCount<19) return false;
-			XCraftBlocks.LOGGER.info("Generated X Ores At "+position.toString()+",As "+this.center.getBlock().getUnlocalizedName());
+			//XCraftBlocks.LOGGER.info("Generated X Ores At "+position.toString()+",As "+this.center.getBlock().getUnlocalizedName());
 			for(BlockPos pos : succeedPos)
 			{
 				if(pos.equals(position)) worldIn.setBlockState(position,this.center,2);
@@ -542,7 +542,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 				new WorldGenOreBall(
 					Blocks.STONE.getDefaultState(),
 					X_ORE.getDefaultState()
-					).randomize(random,X_BLOCK.getDefaultState(),X_FLUID.getDefaultState()).generate(world,random,new BlockPos(x,y,z));
+					).randomize(random,X_ORE.getDefaultState(),X_FLUID.getDefaultState()).generate(world,random,new BlockPos(x,y,z));
 				//generateOreBall(world,x,y,z,X_ORE.getDefaultState(),Blocks.STONE.getDefaultState().getBlock());
 			}
 			break;
@@ -568,7 +568,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 				new WorldGenOreBall(
 					Blocks.END_STONE.getDefaultState(),
 					X_ORE_END.getDefaultState()
-					).randomize(random,X_CRYSTAL_BLOCK.getDefaultState().withProperty(XCrystalBlock.LEVEL,Integer.valueOf(random.nextInt(8))),X_OXYGEN.getDefaultState()).generate(world,random,new BlockPos(x,y,z));
+					).randomize(random,X_ORE_END.getDefaultState().withProperty(XCrystalBlock.LEVEL,Integer.valueOf(random.nextInt(8))),X_OXYGEN.getDefaultState()).generate(world,random,new BlockPos(x,y,z));
 				//generateOreBall(world,x,y,z,X_ORE_END.getDefaultState(),Blocks.END_STONE.getDefaultState().getBlock());
 			}
 			break;
