@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import org.apache.logging.log4j.Logger;
 
@@ -87,13 +87,13 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-/* 
-import com.xuphorium.xuphorium_craft.*;
+
+/*import com.xuphorium.xuphorium_craft.*;
 import com.xuphorium.xuphorium_craft.common.*;
 import com.xuphorium.xuphorium_craft.proxy.*;
 import com.xuphorium.xuphorium_craft.entity.*;
 import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*; */
+import com.xuphorium.xuphorium_craft.item.*;*/
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftTools extends XuphoriumCraftElements.ModElement
@@ -407,21 +407,21 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		}
 
 		@Override
-		public void onUpdate(ItemStack itemstack,World world,Entity entity,int par4,boolean par5)
+		public void onUpdate(ItemStack itemstack,World world,Entity entity,int itemSlot,boolean isSelected)
 		{
-			super.onUpdate(itemstack,world,entity,par4,par5);
+			super.onUpdate(itemstack,world,entity,itemSlot,isSelected);
 			if(entity instanceof EntityLivingBase)
 			{
-				EntityLivingBase entityLiving=(EntityLivingBase)entity;
-				if(entityLiving.getHeldItemMainhand().equals(itemstack))
+				EntityLivingBase entityLivingBase=(EntityLivingBase)entity;
+				if(entityLivingBase.getHeldItemMainhand().equals(itemstack))
 				{
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.SPEED,10,4,true,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.HASTE,10,2,true,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,10,2,true,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,10,2,true,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION,300,1,true,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE,10,1,true,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING,10,1,true,true));
+					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.SPEED,10,4,true,true));
+					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.HASTE,10,2,true,true));
+					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,10,2,true,true));
+					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,10,2,true,true));
+					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION,300,1,true,true));
+					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE,10,1,true,true));
+					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING,10,1,true,true));
 				}
 			}
 		}
@@ -493,9 +493,14 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		
 		public static double[] calculateGravityVector(double dx,double dy,double dz,double value)
 		{
+			return calculateGravityVector(dx,dy,dz,value,0);
+		}
+		
+		public static double[] calculateGravityVector(double dx,double dy,double dz,double value,double distanceSquareOffset)
+		{
 			//From Newton's universal gravitation formula
 			//From point to Origin
-			double distanceSquare=dx*dx+dy*dy+dz*dz;
+			double distanceSquare=dx*dx+dy*dy+dz*dz+distanceSquareOffset;//Avoid from zero
 			if(distanceSquare<=0) return new double[]{0,0,0};
 			return new double[]{
 				-value*(dx/distanceSquare),
@@ -523,16 +528,17 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				   ((EntityLivingBase)entity).getHeldItemOffhand().equals(itemstack))
 				{
 					List<Entity> entities=world.loadedEntityList;
-					double dx,dy,dz,distance;
 					double[] gravityForce;
 					for(Entity item : entities)
 					{
 						if(item instanceof EntityItem||item instanceof EntityXPOrb||(level&1)==1&&item instanceof IProjectile)
 						{
-							dx=item.posX-entity.posX;
-							dy=item.posY-entity.posY;
-							dz=item.posZ-entity.posZ;
-							gravityForce=calculateGravityVector(dx,dy,dz,(level==1)?-1:(level-1));//1 means the scale of force
+							gravityForce=calculateGravityVector(item.posX-entity.posX,
+									item.posY-entity.posY,
+									item.posZ-entity.posZ,
+									(level==1)?-1:(level-1),
+									1
+							);//1 means the scale of force
 							item.motionX+=gravityForce[0];
 							item.motionY+=gravityForce[1];
 							item.motionZ+=gravityForce[2];
@@ -939,6 +945,17 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			ItemStack newstack=new ItemStack(willTurnTo,stack.getCount(),stack.getItemDamage());
 			//TODO Transform Mode
 		}
+		
+		/**
+		 * Return whether this item is repairable in an anvil.
+		 *
+		 * @param toRepair the {@code ItemStack} being repaired
+		 * @param repair the {@code ItemStack} being used to perform the repair
+		 */
+		public boolean getIsRepairable(ItemStack toRepair,ItemStack repair)
+		{
+			return (repair.getItem()==XCraftMaterials.X_INGOT)?true:super.getIsRepairable(toRepair,repair);
+		}
 	}
 	
 	public static class XShieldPowered extends XShield
@@ -952,6 +969,17 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
 			return super.onItemRightClick(world,player,hand);
+		}
+		
+		@Override
+		public boolean getIsRepairable(ItemStack toRepair,ItemStack repair)
+		{
+			Item item=repair.getItem();
+			return (item==XCraftMaterials.X_CATALYST||
+					item==XCraftMaterials.X_CRYSTAL||
+					item==XCraftMaterials.X_CRYSTAL_LEFT||
+					item==XCraftMaterials.X_CRYSTAL_RIGHT
+					)?true:super.getIsRepairable(toRepair,repair);
 		}
 		
 		public EnumAction getItemUseAction(ItemStack stack)

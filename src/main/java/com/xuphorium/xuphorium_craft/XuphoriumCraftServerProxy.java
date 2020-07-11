@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

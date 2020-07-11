@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import org.apache.logging.log4j.Logger;
 
@@ -93,13 +93,13 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-/* 
-import com.xuphorium.XuphoriumCraft*;
-import com.xuphorium.XuphoriumCraftcommon.*;
-import com.xuphorium.XuphoriumCraftproxy.*;
-import com.xuphorium.XuphoriumCraftentity.*;
-import com.xuphorium.XuphoriumCraftblock.*;
-import com.xuphorium.XuphoriumCraftitem.*; */
+
+/*import com.xuphorium.xuphorium_craft.*;
+import com.xuphorium.xuphorium_craft.common.*;
+import com.xuphorium.xuphorium_craft.proxy.*;
+import com.xuphorium.xuphorium_craft.entity.*;
+import com.xuphorium.xuphorium_craft.block.*;
+import com.xuphorium.xuphorium_craft.item.*;*/
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftReactions extends XuphoriumCraftElements.ModElement
@@ -853,7 +853,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 		public ReactionContainer setBlockAt(int x,int y,int z,Block block)
 		{
 			this.blocks[x][y][z]=block;
-			XCraftBlocks.LOGGER.info("Setted Block At"+x+","+y+","+z+","+block);
+			//XCraftBlocks.LOGGER.info("Setted Block At"+x+","+y+","+z+","+block);
 			return this;
 		}
 		

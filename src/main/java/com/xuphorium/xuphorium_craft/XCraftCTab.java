@@ -7,14 +7,12 @@
   *
   *由于此类已加载到mod元素列表中，因此需要扩展ModElement类。 如果删除此扩展语句或删除构造函数，编译将失败。
   *
-  *如果要创建一个普通的独立类，请在
-  *“工作区”->“源”菜单。
+  *如果要创建一个普通的独立类，请在“工作区”->“源”菜单。
   *
-  *如果更改工作区软件包，modid或前缀，则需要
-  *手动使该文件适应这些更改或重新制作。
+  *如果更改工作区软件包，modid或前缀，则需要手动使该文件适应这些更改或重新制作。
   */
   
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -62,13 +60,13 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 
 import java.util.Set;
-/* 
-import com.xuphorium.xuphorium_craft.*;
+
+/*import com.xuphorium.xuphorium_craft.*;
 import com.xuphorium.xuphorium_craft.common.*;
 import com.xuphorium.xuphorium_craft.proxy.*;
 import com.xuphorium.xuphorium_craft.entity.*;
 import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*; */
+import com.xuphorium.xuphorium_craft.item.*;*/
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftCTab extends XuphoriumCraftElements.ModElement

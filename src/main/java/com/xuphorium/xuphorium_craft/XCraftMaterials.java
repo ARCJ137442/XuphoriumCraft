@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -44,13 +44,13 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.init.MobEffects;
 
 import java.util.Random;
-/* 
-import com.xuphorium.xuphorium_craft.*;
+
+/*import com.xuphorium.xuphorium_craft.*;
 import com.xuphorium.xuphorium_craft.common.*;
 import com.xuphorium.xuphorium_craft.proxy.*;
 import com.xuphorium.xuphorium_craft.entity.*;
 import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*; */
+import com.xuphorium.xuphorium_craft.item.*;*/
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftMaterials extends XuphoriumCraftElements.ModElement
@@ -293,18 +293,22 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 		@Override
 		public EnumActionResult onItemUseFirst(EntityPlayer player,World world,BlockPos pos,EnumFacing side,float hitX,float hitY,float hitZ,EnumHand hand)
 		{
-			ItemStack itemstack=player.getHeldItem(hand);
-			int x=pos.getX();
-			int y=pos.getY();
-			int z=pos.getZ();
-			if(player instanceof EntityLivingBase&&!player.getCooldownTracker().hasCooldown(this))
+			if(!world.isRemote)
 			{
-				if(((EntityLivingBase)player).getHeldItem(hand).getItem()==new ItemStack(X_DUST,1).getItem())
+				ItemStack itemstack=player.getHeldItem(hand);
+				int x=pos.getX();
+				int y=pos.getY();
+				int z=pos.getZ();
+				if(!player.getCooldownTracker().hasCooldown(this))
 				{
-					if(XuphoriumCraft.blockReaction(x,y,z,world)&&player instanceof EntityPlayer)
+					if(player.getHeldItem(hand).getItem()==new ItemStack(X_DUST,1).getItem())
 					{
-						if(!player.capabilities.isCreativeMode) itemstack.shrink(1);
-						player.getCooldownTracker().setCooldown(this,10);
+						if(XuphoriumCraft.blockReaction(x,y,z,world)&&player instanceof EntityPlayer)
+						{
+							if(!player.capabilities.isCreativeMode) itemstack.shrink(1);
+							player.getCooldownTracker().setCooldown(this,10);
+							return EnumActionResult.SUCCESS;
+						}
 					}
 				}
 			}
@@ -376,12 +380,9 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 			int x=pos.getX();
 			int y=pos.getY();
 			int z=pos.getZ();
-			if(entity instanceof EntityLivingBase)
+			if(entity.getHeldItemMainhand().getItem()==new ItemStack(X_DUST,1).getItem())
 			{
-				if(((EntityLivingBase)entity).getHeldItemMainhand().getItem()==new ItemStack(X_DUST,1).getItem())
-				{
-					if(XuphoriumCraft.blockReaction(x,y,z,world)&&entity instanceof EntityPlayer) ((EntityLivingBase)entity).getHeldItemMainhand().shrink(1);
-				}
+				if(XuphoriumCraft.blockReaction(x,y,z,world)&&entity instanceof EntityPlayer) ((EntityLivingBase)entity).getHeldItemMainhand().shrink(1);
 			}
 			return EnumActionResult.PASS;
 		}

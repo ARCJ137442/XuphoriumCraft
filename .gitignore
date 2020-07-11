@@ -22,5 +22,8 @@ eclipse
 run
 *.lnk
 
+#for test/debug
+*[Tt]est.bat
+
 # Files from Forge MDK
 forge*changelog.txt

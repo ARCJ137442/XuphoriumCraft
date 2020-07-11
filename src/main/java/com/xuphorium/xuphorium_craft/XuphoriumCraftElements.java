@@ -3,7 +3,7 @@
   *此文件是自动生成的，以将所有MCreator mod元素连接在一起。
   */
 
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -40,6 +40,13 @@ import java.util.ArrayList;
 
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Retention;
+
+/*import com.xuphorium.xuphorium_craft.*;
+import com.xuphorium.xuphorium_craft.common.*;
+import com.xuphorium.xuphorium_craft.proxy.*;
+import com.xuphorium.xuphorium_craft.entity.*;
+import com.xuphorium.xuphorium_craft.block.*;
+import com.xuphorium.xuphorium_craft.item.*;*/
 
 public class XuphoriumCraftElements implements IFuelHandler, IWorldGenerator {
 	protected final List<ModElement> elements = new ArrayList<>();

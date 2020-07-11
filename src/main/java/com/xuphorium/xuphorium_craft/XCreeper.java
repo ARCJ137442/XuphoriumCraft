@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,13 +48,13 @@ import java.util.Iterator;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
-/* 
-import com.xuphorium.xuphorium_craft.*;
+
+/*import com.xuphorium.xuphorium_craft.*;
 import com.xuphorium.xuphorium_craft.common.*;
 import com.xuphorium.xuphorium_craft.proxy.*;
 import com.xuphorium.xuphorium_craft.entity.*;
 import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*; */
+import com.xuphorium.xuphorium_craft.item.*;*/
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCreeper extends XuphoriumCraftElements.ModElement

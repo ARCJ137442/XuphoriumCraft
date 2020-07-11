@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -106,17 +106,19 @@ public class XArmor extends XuphoriumCraftElements.ModElement
 		{
 			super(EntityEquipmentSlot.FEET,"x_boots");
 		}
-		/*
 		@Override
-		public void onUpdate(ItemStack stack,World world,Entity entity,int par4,boolean par5)
+		public void onUpdate(ItemStack stack,World world,Entity entity,int itemSlot,boolean isSelected)
 		{
-			
 			EntityEquipmentSlot entityequipmentslot=EntityLiving.getSlotForItemStack(stack);
-			if(entityequipmentslot==EntityEquipmentSlot.FEET&&stack.getItem()==X_BOOTS)
+			if(entity.isSneaking()&&entityequipmentslot==EntityEquipmentSlot.FEET&&stack.getItem()==X_BOOTS)
 			{
-				if(entity.motionY<0) entity.motionY*=0.2;
-				else if(entity.motionY>0) entity.motionY+=0.08;
+				XCraftBlocks.LOGGER.info("itemSlot="+itemSlot);
+				if(entity.motionY<0)
+				{
+					entity.motionY*=0;
+					//entity.motionY+=0.01;
+				}
 			}
-		}*/
+		}
 	}
 }

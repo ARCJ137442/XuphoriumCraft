@@ -1,5 +1,6 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.IWorldGenerator;
 
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.Fluid;
@@ -99,13 +101,13 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-/* 
-import com.xuphorium.xuphorium_craft.*;
+
+/*import com.xuphorium.xuphorium_craft.*;
 import com.xuphorium.xuphorium_craft.common.*;
 import com.xuphorium.xuphorium_craft.proxy.*;
 import com.xuphorium.xuphorium_craft.entity.*;
 import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*; */
+import com.xuphorium.xuphorium_craft.item.*;*/
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftBlocks extends XuphoriumCraftElements.ModElement
@@ -143,7 +145,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			this(stone,ore,center,true);
 		}
 		
-		public WorldGenOreBall randomize(Random rand,IBlockState randOre,IBlockState randCenter)
+		public WorldGenOreBall randomize(Random rand, IBlockState randOre, IBlockState randCenter)
 		{
 			if(rand.nextInt(10)*rand.nextInt(10)<rand.nextInt(10)+rand.nextInt(10))
 			{
@@ -152,8 +154,8 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			}
 			return this;
 		}
-		
-		public boolean generate(World worldIn,Random rand,BlockPos position)
+
+		public boolean generate(World worldIn, Random rand, BlockPos position)
 		{
 			int x=position.getX();
 			int y=position.getY();
@@ -225,7 +227,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		return (block==X_ORE||block==X_ORE_NETHER||block==X_ORE_END);
 	}
-		
+	
 	public static boolean getIsReplaceable(World world,BlockPos pos,IBlockState state)
 	{
 		return state.getBlock().isReplaceable(world,pos);
@@ -529,47 +531,46 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 
 	//fill ~-20 ~-10 ~-20 ~20 ~10 ~10 air 0 replace stone
 	@Override
-	public void generateWorld(Random random,int chunkX,int chunkZ,World world,int dimID,IChunkGenerator cg,IChunkProvider cp)
+	public void generateWorld(Random random,int chunkX,int chunkZ,World world,int dimID,IChunkGenerator chunkGenerator,IChunkProvider chunkProvider)
 	{
+		int x,y,z;
 		switch(dimID)
 		{
 			case 0:
 			for(int i=0;i<3;i++)
 			{
-				int x=chunkX+random.nextInt(14)+1;
-				int y=random.nextInt(6)+9;
-				int z=chunkZ+random.nextInt(14)+1;
+				x=chunkX+random.nextInt(14)+1;
+				y=random.nextInt(6)+9;
+				z=chunkZ+random.nextInt(14)+1;
 				new WorldGenOreBall(
 					Blocks.STONE.getDefaultState(),
 					X_ORE.getDefaultState()
-					).randomize(random,X_ORE.getDefaultState(),X_FLUID.getDefaultState()).generate(world,random,new BlockPos(x,y,z));
-				//generateOreBall(world,x,y,z,X_ORE.getDefaultState(),Blocks.STONE.getDefaultState().getBlock());
+					).randomize(random,X_ORE.getDefaultState(),X_FLUID.getDefaultState()
+				).generate(world,random,new BlockPos(x,y,z));
 			}
 			break;
 			case -1:
-			for(int i=0;i<16;i++)
+			for(int i=0;i<13;i++)
 			{
-				int x=chunkX+random.nextInt(14)+1;
-				int y=random.nextInt(253)+1;
-				int z=chunkZ+random.nextInt(14)+1;
+				x=chunkX+random.nextInt(14)+1;
+				y=random.nextInt(253)+1;
+				z=chunkZ+random.nextInt(14)+1;
 				new WorldGenOreBall(
-					Blocks.NETHERRACK.getDefaultState(),
-					X_ORE_NETHER.getDefaultState()
+					Blocks.NETHERRACK.getDefaultState(),X_ORE_NETHER.getDefaultState()
 					).generate(world,random,new BlockPos(x,y,z));
-				//generateOreBall(world,x,y,z,X_ORE_NETHER.getDefaultState(),Blocks.NETHERRACK.getDefaultState().getBlock());
 			}
 			break;
 			case 1:
 			for(int i=0;i<7;i++)
 			{
-				int x=chunkX+random.nextInt(14)+1;
-				int y=random.nextInt(253)+1;
-				int z=chunkZ+random.nextInt(14)+1;
+				x=chunkX+random.nextInt(14)+1;
+				y=random.nextInt(253)+1;
+				z=chunkZ+random.nextInt(14)+1;
 				new WorldGenOreBall(
-					Blocks.END_STONE.getDefaultState(),
-					X_ORE_END.getDefaultState()
-					).randomize(random,X_ORE_END.getDefaultState().withProperty(XCrystalBlock.LEVEL,Integer.valueOf(random.nextInt(8))),X_OXYGEN.getDefaultState()).generate(world,random,new BlockPos(x,y,z));
-				//generateOreBall(world,x,y,z,X_ORE_END.getDefaultState(),Blocks.END_STONE.getDefaultState().getBlock());
+					Blocks.END_STONE.getDefaultState(),X_ORE_END.getDefaultState()
+					).randomize(random,X_ORE_END.getDefaultState(),X_OXYGEN.getDefaultState()
+				).generate(world,random,new BlockPos(x,y,z));
+				//X_CRYSTAL_BLOCK.getDefaultState().withProperty(XCrystalBlock.LEVEL,Integer.valueOf(random.nextInt(8)))
 			}
 			break;
 		}
@@ -655,7 +656,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			this.setResistance(128F);
 			this.setLightLevel(0F);
 			this.setLightOpacity(255);
-			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));	
+			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
 		}
 		
 		public int getMetaFromState(IBlockState state)
@@ -736,7 +737,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			setResistance(256F);
 			setLightLevel(0F);
 			setLightOpacity(255);
-			setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(1)));	
+			setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(1)));
 		}
 		
 		public int getMetaFromState(IBlockState state)
@@ -785,27 +786,39 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			return true;
 		}
 		
-		/*
+		
 		@Override
 		public void neighborChanged(IBlockState state,World world,BlockPos pos,Block neighborBlock,BlockPos fromPos)
 		{
 			super.neighborChanged(state,world,pos,neighborBlock,fromPos);
-			int x=pos.getX();
-			int y=pos.getY();
-			int z=pos.getZ();
-			Block block=this;
+			double cx=(double)pos.getX()+0.5;
+			double cy=(double)pos.getY()+0.5;
+			double cz=(double)pos.getZ()+0.5;
 			int power=world.isBlockIndirectlyGettingPowered(pos);
-		}*/
+			int level=world.getBlockState(pos).getValue(LEVEL);
+			if(power>0)
+			{
+				//punch
+				XBoss.punchEntities(world,null,cx,cy,cz,1+(level+1)*0.5,1+(1+power)*0.125,0.1);
+				//particle
+				if((world instanceof WorldServer))
+				{
+					((WorldServer)world).spawnParticle(EnumParticleTypes.CRIT_MAGIC,
+							cx,cy,cz,
+							8*(1+level/4),0.5,0.5,0.5,0,new int[0]
+					);
+				}
+			}
+		}
 		
 		public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ)
 		{
 			ItemStack stack=player.getHeldItem(hand);
 			Item item=stack.getItem();
-			if(state.getBlock()==X_BLOCK_ADVANCED&&
-			   item==XCraftMaterials.X_ENERGY_UNIT)
+			if(state.getBlock()==X_BLOCK_ADVANCED&&item==XCraftMaterials.X_ENERGY_UNIT)
 			{
 				int power=item.getDamage(stack)-6;//+6~-6
-				int level=(int)state.getValue(LEVEL);
+				int level=state.getValue(LEVEL);
 				int count=stack.getCount();
 				if(count<1) return false;
 				if(power==0&&level>0)
@@ -817,7 +830,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 					//l=12,c=7(l%c=5) -> p=(12-12%7)/7=+1,l=5;
 					//l=9,c=12(l%c=4) -> p=(9-9%12)/12=0,l=9;9%12=9
 					//y>x => x%y=x => (x-x%y)/y=0
-					if(power>0)
+					if(power>0&&power<7)//-6<=p<=6
 					{
 						world.setBlockState(pos,X_BLOCK_ADVANCED.getDefaultState().withProperty(LEVEL,Integer.valueOf(level)));
 						stack.setItemDamage(power+6);
@@ -849,10 +862,10 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 							if(level+count<16)
 							{
 								level=15-abxLevel%count;//l1%c=l2
-								power-=(int)(abxLevel/count);
+								power-=(abxLevel/count);
 							}
 						}
-						else//p-
+						else if(level-count>=0)//p-
 						{
 							//l=6,p=-2,c=2(s=2) -> p=0,l=2;
 							//l=7,	p=-3,	c=3(s=-2,(l-l%c)/c=2)	->	p=-2,	l=1;
@@ -860,10 +873,10 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 							//l=3,	p=-2,	c=2(s=-1,(l-l%c)/c=1)	->	p=-1,	l=1;
 							//l=6,	p=-2,	c=6(s=-6,l=c)			->	p=+1,	l=0;
 							//l=3,	p=-1,	c=4(s=-4,l<c)			->	Error;
-							if(level-count>=0)
+							if(power+(abxLevel/count)<7)//p<=6
 							{
 								level%=count;//l1%c=l2
-								power+=(int)(abxLevel/count);
+								power+=(abxLevel/count);
 							}
 						}
 					}
@@ -906,7 +919,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			this.setResistance(512F);
 			this.setLightLevel(0.25F);
 			this.setLightOpacity(0);
-			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));	
+			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
 			this.setTickRandomly(true);
 		}
 		
@@ -1589,7 +1602,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 							Block block=itemBlock.getBlock();
 							if(block!=null&&XCraftBlocks.getIsReplaceable(world,blockPos))
 							{
-								world.setBlockState(blockPos,block.getStateFromMeta(metaData));//this.block.getStateForPlacement(world,blockPos,EnumFacing.DOWN,(float)itemE.posX,(float)itemE.posY,(float)itemE.posZ,metaData,null,EnumHand.MAIN_HAND);
+								world.setBlockState(blockPos,block.getStateFromMeta(metaData),2);//block.getStateForPlacement(world,blockPos,EnumFacing.DOWN,(float)itemE.posX,(float)itemE.posY,(float)itemE.posZ,metaData,null,EnumHand.MAIN_HAND)
 								itemE.getItem().shrink(1);
 								itemE.setItem(itemE.getItem());//Update
 							}
@@ -1626,7 +1639,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			this.setResistance(64F);
 			this.setLightLevel(0.25F);
 			this.setLightOpacity(0);
-			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));	
+			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
 			this.setTickRandomly(true);
 		}
 
@@ -1693,7 +1706,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			drops.add(this.getItem(world,pos,state));
 		}
 		*/
-		@Override
+		/*@Override
 		public int getWeakPower(IBlockState state,IBlockAccess baccess,BlockPos pos,EnumFacing side)
 		{
 			return 0;
@@ -1725,7 +1738,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 					if(level<3) grow(world,pos,level);
 				}
 			}
-		}
+		}*/
 
 		@Override
 		public void updateTick(World world,BlockPos pos,IBlockState state,Random random)
@@ -1787,7 +1800,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			this.setResistance(512F);
 			this.setLightLevel(0.125F);
 			this.setLightOpacity(0);
-			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));	
+			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
 		}
 		
 		public boolean isOpaqueCube(IBlockState state)
@@ -2110,8 +2123,8 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			if(((Boolean)state.getValue(ACTIVE)).booleanValue())
 			{
 				EnumFacing facing=(EnumFacing)state.getValue(FACING);
-				if(facing.getFrontOffsetX()!=0) entityIn.motionX=facing.getFrontOffsetX()*0.1D;
-				if(facing.getFrontOffsetZ()!=0) entityIn.motionZ=facing.getFrontOffsetZ()*0.1D;
+				if(facing.getFrontOffsetX()!=0) entityIn.motionX=facing.getFrontOffsetX()*0.2D;
+				if(facing.getFrontOffsetZ()!=0) entityIn.motionZ=facing.getFrontOffsetZ()*0.2D;
 			}
 		}
 		

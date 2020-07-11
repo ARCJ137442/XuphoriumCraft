@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

@@ -1,4 +1,4 @@
-package xuphorium_craft;
+package com.xuphorium.xuphorium_craft;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -120,8 +120,18 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityXBoss.class).id(new ResourceLocation("xuphorium_craft","x_boss"),ENTITYID).name("x_boss").tracker(64,1,true).egg(-3355444,-16711681).build());
 		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityXBossBullet.class).id(new ResourceLocation("xuphorium_craft","x_boss_bullet"),ENTITYID_RANGED).name("x_boss_bullet").tracker(64,1,true).build());
 	}
-		
+	
 	public static void punchEntities(World world,Entity host,double x,double y,double z,double range)
+	{
+		punchEntities(world,host,x,y,z,range,1);
+	}
+	
+	public static void punchEntities(World world,Entity host,double x,double y,double z,double range,double value)
+	{
+		punchEntities(world,host,x,y,z,range,1,0);
+	}
+	
+	public static void punchEntities(World world,Entity host,double x,double y,double z,double range,double value,double distanceSquareOffset)
 	{
 		List<Entity> entities=world.loadedEntityList;
 		double dx,dy,dz,dSquare;
@@ -131,12 +141,12 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			dx=entity.posX-x;
 			dy=entity.posY-y;
 			dz=entity.posZ-z;
-			dSquare=dx*dx+dy*dy+dz*dz;
+			dSquare=dx*dx+dy*dy+dz*dz+distanceSquareOffset;
 			if(dx*dy*dz!=0&&dSquare<=range*range)
 			{
-				entity.motionX+=dx/dSquare;
-				entity.motionY+=dy/dSquare;
-				entity.motionZ+=dz/dSquare;
+				entity.motionX+=value*dx/dSquare;
+				entity.motionY+=value*dy/dSquare;
+				entity.motionZ+=value*dz/dSquare;
 			}
 		}
 	}
@@ -626,7 +636,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 					this.motionY+=dy/targetDistance*0.2;
 					this.motionZ+=dz/targetDistance*0.2;
 				}
-				((WorldServer)world).spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,this.posX,this.posY+1.7,this.posZ,dx,dy,dz);
+				if(!world.isRemote) world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
 			}
 		}
 		
