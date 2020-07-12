@@ -106,19 +106,5 @@ public class XArmor extends XuphoriumCraftElements.ModElement
 		{
 			super(EntityEquipmentSlot.FEET,"x_boots");
 		}
-		@Override
-		public void onUpdate(ItemStack stack,World world,Entity entity,int itemSlot,boolean isSelected)
-		{
-			EntityEquipmentSlot entityequipmentslot=EntityLiving.getSlotForItemStack(stack);
-			if(entity.isSneaking()&&entityequipmentslot==EntityEquipmentSlot.FEET&&stack.getItem()==X_BOOTS)
-			{
-				XCraftBlocks.LOGGER.info("itemSlot="+itemSlot);
-				if(entity.motionY<0)
-				{
-					entity.motionY*=0;
-					//entity.motionY+=0.01;
-				}
-			}
-		}
 	}
 }

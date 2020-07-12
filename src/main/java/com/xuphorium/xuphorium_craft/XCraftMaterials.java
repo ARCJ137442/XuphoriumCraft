@@ -1,5 +1,7 @@
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.block.BlockDispenser;
+import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -282,6 +284,7 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 		public XDust()
 		{
 			super("x_dust",0,64);
+			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this,XuphoriumCraft.BehaviorXDustDispenseItem.getInstance());
 		}
 
 		@Override
@@ -520,8 +523,8 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 			int y=(int)entity.posY;
 			int z=(int)entity.posZ;
 			if(entity instanceof EntityLivingBase&&
-			(((EntityLivingBase)entity).getHeldItemMainhand().equals(itemstack)||
-			((EntityLivingBase)entity).getHeldItemMainhand().equals(itemstack)))
+				(((EntityLivingBase)entity).getHeldItemMainhand().equals(itemstack)||
+				((EntityLivingBase)entity).getHeldItemMainhand().equals(itemstack)))
 			{
 				((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.SPEED,10,2,true,true));
 				((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.HASTE,10,2,true,true));
@@ -529,7 +532,10 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 				((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION,300,1,true,true));
 				((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE,10,1,true,true));
 				((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING,10,1,true,true));
-				if(entity.isSneaking()) entity.motionY+=0.0875;
+				if(entity.isSneaking())
+				{
+					if(entity.motionY<0) entity.motionY*=0;
+				}
 			}
 		}
 	}

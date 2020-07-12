@@ -1519,15 +1519,13 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			world.setBlockToAir(pos);
 			
-			BlockPos tP;
 			for(int dx=-level;dx<=level;dx++)
 			{
 				for(int dy=-level;dy<=level;dy++)
 				{
 					for(int dz=-level;dz<=level;dz++)
 					{
-						tP=new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz);
-						XuphoriumCraft.blockReaction(tP,world);
+						XuphoriumCraft.blockReaction(new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz),world);
 					}
 				}
 			}

@@ -382,28 +382,29 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					case 0:
 						player.getCooldownTracker().setCooldown(this,15);
 						world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
-						break;
+						return EnumActionResult.SUCCESS;
 					case 2:
 						player.getCooldownTracker().setCooldown(this,20);
 						XCraftTools.teleportBlock(world,pos,8);
-						break;
+						return EnumActionResult.SUCCESS;
 					case 3:
 						player.getCooldownTracker().setCooldown(this,7);
 						player.motionX+=dx/2;
 						player.motionY+=dy/2;
 						player.motionZ+=dz/2;
-						break;
+						return EnumActionResult.SUCCESS;
 				}
 			}
-			return EnumActionResult.SUCCESS;
+			return EnumActionResult.FAIL;
 		}
 		
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
-			ActionResult<ItemStack> ar=super.onItemRightClick(world,player,hand);
-			ItemStack itemstack=ar.getResult();
-			if(player.isSneaking()) itemstack.setItemDamage((itemstack.getItem().getDamage(itemstack)+1)%4);
-			return ar;
+			ActionResult<ItemStack> actionResult=super.onItemRightClick(world,player,hand);
+			if(!player.isSneaking()) return actionResult;
+			ItemStack itemstack=actionResult.getResult();
+			itemstack.setItemDamage((itemstack.getItem().getDamage(itemstack)+1)&3);
+			return actionResult;
 		}
 
 		@Override

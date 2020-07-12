@@ -8,8 +8,17 @@
  */
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.block.BlockColored;
+import net.minecraft.block.BlockDispenser;
+import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IPosition;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fluids.DispenseFluidContainer;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -54,6 +63,7 @@ import com.xuphorium.xuphorium_craft.entity.*;
 import com.xuphorium.xuphorium_craft.block.*;
 import com.xuphorium.xuphorium_craft.item.*;*/
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 import java.util.function.Supplier;
@@ -87,26 +97,68 @@ public class XuphoriumCraft
 			return false;
 		}
 	};
+
+	public static class BehaviorXDustDispenseItem extends BehaviorDefaultDispenseItem
+	{
+		private static final BehaviorXDustDispenseItem INSTANCE = new BehaviorXDustDispenseItem();
+
+		public static BehaviorXDustDispenseItem getInstance()
+		{
+			return INSTANCE;
+		}
+
+		@Override
+		public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack)
+		{
+			//EnumFacing enumfacing = (EnumFacing)source.getBlockState().getValue(BlockDispenser.FACING);
+			IPosition position = BlockDispenser.getDispensePosition(source);
+			//ItemStack itemstack = stack.splitStack(1);
+			if(blockReaction((int)position.getX(),(int)position.getY(),(int)position.getZ(),source.getWorld()))
+			{
+				ItemStack stackCopy = stack.copy();
+				stackCopy.shrink(1);
+				return stackCopy;
+			}
+			else return stack;
+		}
+	}
 	
 	public static boolean blockReaction(int x,int y,int z,World world)
 	{
 		return blockReaction(x,y,z,world,true);
 	}
+
+	public static void readcionCloud(World world,double cx,double cy,double cz)
+	{
+		if(world instanceof WorldServer)
+		{
+			((WorldServer)world).spawnParticle(
+					EnumParticleTypes.CLOUD,cx,cy,cz,
+					16,0.375,0.375,0.375,0,new int[0]
+			);
+		}
+	}
 	
 	public static boolean blockReaction(int x,int y,int z,World world,boolean spawnParticle)
 	{
 		boolean returnBool=blockReaction(new BlockPos(x,y,z),world);
-		if(returnBool&&(world instanceof WorldServer))
+		if(spawnParticle&&returnBool)
 		{
-			((WorldServer)world).spawnParticle(
-					EnumParticleTypes.CLOUD,
-					0.5+(double)x,0.5+(double)y,0.5+(double)z,
-					16,0.5,0.5,0.5,0,new int[0]
-			);
+			readcionCloud(world,0.5+(double)x,0.5+(double)y,0.5+(double)z);
 		}
 		return returnBool;
 	}
-	
+
+	public static boolean blockReaction(BlockPos pos,World world,boolean spawnParticle)
+	{
+		boolean returnBool=blockReaction(pos,world);
+		if(spawnParticle&&returnBool)
+		{
+			readcionCloud(world,0.5+(double)pos.getX(),0.5+(double)pos.getY(),0.5+(double)pos.getZ());
+		}
+		return returnBool;
+	}
+
 	public static boolean blockReaction(BlockPos pos,World world)
 	{
 		IBlockState currentBlock=world.getBlockState(pos);
@@ -122,35 +174,120 @@ public class XuphoriumCraft
 	public static IBlockState getReactedBlock(BlockPos currentPos,IBlockState currentBlock)
 	{
 		double type=Math.random()*100;
-		if(blockEquals(currentBlock,Blocks.STONE.getDefaultState()))
+		//STONES
+		if(currentBlock.getBlock()==Blocks.STONE)
 		{
-			if(type<=50) return Blocks.COAL_ORE.getDefaultState();
-			else if(type<=80) return Blocks.IRON_ORE.getDefaultState();
-			else if(type<=85) return Blocks.REDSTONE_ORE.getDefaultState();
-			else if(type<=90) return Blocks.LAPIS_ORE.getDefaultState();
-			else if(type<=95) return Blocks.GOLD_ORE.getDefaultState();
-			else if(type<=99) return Blocks.EMERALD_ORE.getDefaultState();
-			else if(type<=99) return Blocks.DIAMOND_ORE.getDefaultState();
-			else return Blocks.FLOWING_LAVA.getDefaultState();
+			if(blockEquals(currentBlock,Blocks.STONE.getStateFromMeta(0)))
+			{
+				if(type <= 10) return Blocks.STONE.getStateFromMeta(1);
+				else if(type <= 20) return Blocks.STONE.getStateFromMeta(3);
+				else if(type <= 30) return Blocks.STONE.getStateFromMeta(5);
+				else if(type <= 60) return Blocks.COAL_ORE.getDefaultState();
+				else if(type <= 80) return Blocks.IRON_ORE.getDefaultState();
+				else if(type <= 85) return Blocks.REDSTONE_ORE.getDefaultState();
+				else if(type <= 90) return Blocks.LAPIS_ORE.getDefaultState();
+				else if(type <= 93) return Blocks.GOLD_ORE.getDefaultState();
+				else if(type <= 94) return Blocks.EMERALD_ORE.getDefaultState();
+				else if(type <= 95) return Blocks.DIAMOND_ORE.getDefaultState();
+				else return Blocks.FLOWING_LAVA.getDefaultState();
+			}
+			else
+			{
+				if(type <= 60) return Blocks.COAL_ORE.getDefaultState();
+				else if(type <= 80) return Blocks.IRON_ORE.getDefaultState();
+				else if(type <= 85) return Blocks.REDSTONE_ORE.getDefaultState();
+				else if(type <= 90) return Blocks.LAPIS_ORE.getDefaultState();
+				else if(type <= 93) return Blocks.GOLD_ORE.getDefaultState();
+				else if(type <= 94) return Blocks.EMERALD_ORE.getDefaultState();
+				else if(type <= 95) return Blocks.DIAMOND_ORE.getDefaultState();
+				else return Blocks.FLOWING_LAVA.getDefaultState();
+			}
 		}
-		else if(blockEquals(currentBlock,Blocks.DIRT.getDefaultState())||
-				blockEquals(currentBlock,Blocks.DIRT.getStateFromMeta(0))||
-				blockEquals(currentBlock,Blocks.DIRT.getStateFromMeta(1))||
-				blockEquals(currentBlock,Blocks.DIRT.getStateFromMeta(2)))
+		//DIRT
+		else if(currentBlock.getBlock()==Blocks.DIRT)
 		{
-			if(type<=48) return Blocks.PLANKS.getStateFromMeta((int)Math.floor(Math.random()*6));
-			else if(type<=60) return Blocks.FLOWING_WATER.getDefaultState();
-			else if(type<=85) return Blocks.SAND.getStateFromMeta(0);
-			else if(type<=96) return Blocks.STONE.getStateFromMeta(0);
+			if(type<=50) return Blocks.SAND.getStateFromMeta(type>49?1:0);
+			else if(type<=75) return Blocks.GRAVEL.getDefaultState();
 			else if(type<=98) return Blocks.GRASS.getDefaultState();
 			else return Blocks.MYCELIUM.getDefaultState();
 		}
+		//SAND&GRAVEL
+		else if(currentBlock.getBlock()==Blocks.SAND||
+				currentBlock.getBlock()==Blocks.GRAVEL)
+		{
+			return Blocks.DIRT.getDefaultState();
+		}
 		else if(blockEquals(currentBlock,Blocks.GRASS.getDefaultState()))
 		{
-			if(type<=60) return Blocks.PLANKS.getStateFromMeta((int)Math.floor(Math.random()*6));
-			else if(type<=75) return Blocks.SAND.getStateFromMeta(0);
-			else if(type<=90) return Blocks.STONE.getStateFromMeta(0);
+			if(type<=25) return Blocks.SAND.getStateFromMeta(type>49?1:0);
+			else if(type<=50) return Blocks.STONE.getDefaultState();
+			else if(type<=75) return Blocks.COBBLESTONE.getDefaultState();
+			else if(type<=98) return Blocks.FLOWING_WATER.getStateFromMeta(0);
 			else return Blocks.MYCELIUM.getDefaultState();
+		}
+		else if(blockEquals(currentBlock,Blocks.MYCELIUM.getDefaultState()))
+		{
+			if(type<=50) return Blocks.SAND.getStateFromMeta(type>49?1:0);
+			else if(type<=75) return Blocks.GRAVEL.getDefaultState();
+			else return Blocks.STONE.getDefaultState();
+		}
+		//Stone Brick
+		else if(currentBlock.getBlock()==Blocks.STONEBRICK)
+		{
+			if(type<=25) return Blocks.BRICK_BLOCK.getDefaultState();
+			else return Blocks.STONEBRICK.getStateFromMeta((int)Math.floor(type*0.03));
+		}
+		//LEAVES
+		else if(currentBlock.getBlock()==Blocks.LEAVES||currentBlock.getBlock()==Blocks.LEAVES2)
+		{
+			if(type<=25) return Blocks.PLANKS.getStateFromMeta((int)Math.floor(Math.random()*6));
+			else return Blocks.AIR.getDefaultState();
+		}
+		else if(currentBlock.getBlock()==Blocks.COBBLESTONE)
+		{
+			if(type<=1) return Blocks.GLASS.getDefaultState();
+			else if(type<=2) return Blocks.ICE.getDefaultState();
+			else if(type<=3) return Blocks.PRISMARINE.getDefaultState();
+			else if(type<=4) return Blocks.OBSIDIAN.getDefaultState();
+			else if(type<=25) return Blocks.MOSSY_COBBLESTONE.getDefaultState();
+			else return Blocks.STONE.getDefaultState();
+		}
+		else if(currentBlock.getBlock()==Blocks.NETHER_WART)
+		{
+			if(type<=15) return Blocks.MAGMA.getDefaultState();
+			else if(type<=80) return Blocks.SOUL_SAND.getDefaultState();
+			else if(type<=95) return Blocks.NETHER_WART_BLOCK.getDefaultState();
+			else return Blocks.QUARTZ_ORE.getDefaultState();
+		}
+		else if(currentBlock.getBlock()==Blocks.NETHER_BRICK)
+		{
+			return Blocks.RED_NETHER_BRICK.getDefaultState();
+		}
+		else if(currentBlock.getBlock()==Blocks.PRISMARINE)
+		{
+			if(type<=70) return Blocks.PRISMARINE.getStateFromMeta(1);
+			else if(type<=95) return Blocks.PRISMARINE.getStateFromMeta(2);
+			else return Blocks.SEA_LANTERN.getDefaultState();
+		}
+		//MUSHROOM
+		else if(currentBlock.getBlock()==Blocks.BROWN_MUSHROOM_BLOCK||currentBlock.getBlock()==Blocks.RED_MUSHROOM_BLOCK)
+		{
+			return Blocks.DIRT.getStateFromMeta((int)Math.floor(type*0.025));
+		}
+		//Monster Egg
+		else if(currentBlock.getBlock()==Blocks.MONSTER_EGG)
+		{
+			return Blocks.STONE.getDefaultState();
+		}
+		//Chorus Flower
+		else if(currentBlock.getBlock()==Blocks.CHORUS_FLOWER)
+		{
+			return Blocks.CHORUS_FLOWER.getDefaultState();
+		}
+		//Color Transform
+		else if(currentBlock.getBlock() instanceof BlockColored)
+		{
+			return currentBlock.getBlock().getStateFromMeta((int)(type*0.15));
 		}
 		return null;
 	}
