@@ -43,7 +43,7 @@ item.x_pickaxe.name=X-镐
 item.x_rod.name=X-棒
 item.x_ruby.name=X-红宝石
 item.x_shield.name=X-盾
-item.x_shield_powered.name=充能的X-盾
+item.x_shield_deactivated.name=失效的X-盾
 item.x_shovel.name=X-铲
 item.x_star.name=X之星
 item.x_sword.name=X-剑
@@ -83,3 +83,6 @@ tile.x_phase_web_block.name=X-相位-网-方块
 tile.x_reactive_core.name=X-反应-核
 tile.x_ruby_block.name=X-红宝石-方块
 tile.x_transporter.name=X-传送带
+
+tile.x_fluid.name=X-液体
+tile.x_oxygen.name=X-氧

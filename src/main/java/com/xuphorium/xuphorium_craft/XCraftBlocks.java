@@ -1,10 +1,10 @@
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.item.*;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.IWorldGenerator;
 
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.Fluid;
@@ -24,9 +23,6 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.Item;
 
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -40,29 +36,23 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyBool;
 
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.NonNullList;
 
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Mirror;
 
@@ -71,7 +61,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.EntityLivingBase;
@@ -81,26 +70,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 
 import net.minecraft.creativetab.CreativeTabs;
 
-import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /*import com.xuphorium.xuphorium_craft.*;
 import com.xuphorium.xuphorium_craft.common.*;
@@ -328,11 +310,11 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		X_FLUID_Fluid=new Fluid("x_fluid",
 						new ResourceLocation("xuphorium_craft:blocks/x_fluid_still"),
 						new ResourceLocation("xuphorium_craft:blocks/x_fluid")
-						).setDensity(1024).setViscosity(1024).setGaseous(false);
+						).setDensity(1280).setViscosity(768).setGaseous(false).setTemperature(300).setRarity(EnumRarity.UNCOMMON);
 		X_OXYGEN_Fluid=new Fluid("x_oxygen",
 						new ResourceLocation("xuphorium_craft:blocks/x_oxygen"),
 						new ResourceLocation("xuphorium_craft:blocks/x_oxygen")
-						).setDensity(-768).setViscosity(1024).setGaseous(true);
+						).setDensity(-512).setViscosity(256).setGaseous(true).setTemperature(324).setRarity(EnumRarity.RARE);
 						
 	}
 
@@ -533,6 +515,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	@Override
 	public void generateWorld(Random random,int chunkX,int chunkZ,World world,int dimID,IChunkGenerator chunkGenerator,IChunkProvider chunkProvider)
 	{
+		if(world.isRemote) return;
 		int x,y,z;
 		switch(dimID)
 		{
@@ -811,9 +794,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			}
 		}
 		
-		public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ)
+		public static boolean XEnergyUnitUse(World world,BlockPos pos,IBlockState state,ItemStack stack,EnumFacing facing,float hitX,float hitY,float hitZ)
 		{
-			ItemStack stack=player.getHeldItem(hand);
+			if(world.isRemote) return false;
 			Item item=stack.getItem();
 			if(state.getBlock()==X_BLOCK_ADVANCED&&item==XCraftMaterials.X_ENERGY_UNIT)
 			{
@@ -880,8 +863,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 							}
 						}
 					}
-					if(power!=item.getDamage(stack)-6&&
-					   level!=(int)state.getValue(LEVEL))
+					if(power!=item.getDamage(stack)-6&&level!=state.getValue(LEVEL))
 					{
 						world.setBlockState(pos,X_BLOCK_ADVANCED.getDefaultState().withProperty(LEVEL,Integer.valueOf(level)));
 						stack.setItemDamage(power+6);
@@ -890,6 +872,11 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 				}
 			}
 			return false;
+		}
+		
+		public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ)
+		{
+			return XEnergyUnitUse(world,pos,state,player.getHeldItem(hand),facing,hitX,hitY,hitZ);
 		}
 	}
 	
@@ -1167,12 +1154,13 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 
 		@SideOnly(Side.CLIENT)
 		@Override
+		
 		public BlockRenderLayer getBlockLayer()
 		{
-			return BlockRenderLayer.SOLID;
+			return BlockRenderLayer.CUTOUT;
 		}
-
-		@Override
+		
+		/*@Override
 		public boolean removedByPlayer(IBlockState state,World world,BlockPos pos,EntityPlayer entity,boolean willHarvest)
 		{
 			boolean retval=super.removedByPlayer(state,world,pos,entity,willHarvest);
@@ -1180,9 +1168,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			int y=pos.getY();
 			int z=pos.getZ();
 			EntityItem entityToSpawn;
-			if((state.getBlock()==X_ORE||
-				state.getBlock()==X_ORE_END)&&
-				entity.getHeldItemMainhand().getItem()==XCraftTools.X_ITEM)
+			if((state.getBlock()==X_ORE||state.getBlock()==X_ORE_END)&&entity.getHeldItemMainhand().getItem()==XCraftTools.X_ITEM)
 			{
 				if(!world.isRemote)
 				{
@@ -1195,7 +1181,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 				}
 			}
 			return retval;
-		}
+		}*/
 	}
 	
 	//========X-Ore========//
@@ -1237,12 +1223,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		}
 
 		@SideOnly(Side.CLIENT)
-		@Override
-		public BlockRenderLayer getBlockLayer()
-		{
-			return BlockRenderLayer.SOLID;
-		}
-
+		
 		@Override
 		public void getDrops(NonNullList<ItemStack> drops,IBlockAccess world,BlockPos pos,IBlockState state,int fortune)
 		{
@@ -1512,20 +1493,26 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			super.neighborChanged(state,world,pos,neighborBlock,fromPos);
 			int power=world.isBlockIndirectlyGettingPowered(pos);
-			if(power>0) explode(world,pos,power);
+			if(power>0) XExplosiveExplode(world,pos,(int)Math.ceil(power/2),true);
 		}
 		
-		protected void explode(World world,BlockPos pos,int level)
+		public static void XExplosiveExplode(World world,BlockPos pos,int range,boolean limited)
+		{
+			XExplosiveExplode(world,pos,range,limited,false);
+		}
+		
+		public static void XExplosiveExplode(World world,BlockPos pos,int range,boolean limited,boolean spawnParticle)
 		{
 			world.setBlockToAir(pos);
 			
-			for(int dx=-level;dx<=level;dx++)
+			for(int dx=-range;dx<=range;dx++)
 			{
-				for(int dy=-level;dy<=level;dy++)
+				for(int dy=-range;dy<=range;dy++)
 				{
-					for(int dz=-level;dz<=level;dz++)
+					for(int dz=-range;dz<=range;dz++)
 					{
-						XuphoriumCraft.blockReaction(new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz),world);
+						if(limited&&Math.abs(dx)+Math.abs(dy)+Math.abs(dz)>range) continue;
+						XuphoriumCraft.blockReaction(new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz),world,spawnParticle);
 					}
 				}
 			}

@@ -1,0 +1,59 @@
+{
+	"pools": [
+		{
+			"name": "materials",
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "item",
+					"name": "xuphorium_craft:x_dust",
+					"weight": 17,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 0,
+								"max": 2
+							}
+						},
+						{
+							"function": "looting_enchant",
+							"count": {
+								"min": 0,
+								"max": 1
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "xuphorium_craft:x_catalyst",
+					"weight": 6,
+					"functions": [
+						{
+							"function": "looting_enchant",
+							"count": {
+								"min": 0,
+								"max": 1
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "xuphorium_craft:x_crystal_core",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "looting_enchant",
+							"count": {
+								"min": 0,
+								"max": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

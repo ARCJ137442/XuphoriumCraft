@@ -2,17 +2,15 @@
   {
     "modid": "xuphorium_craft",
     "name": "Xuphorium Craft",
-    "description": "",
-    "version": "1.2.0",
+    "description": "A Simple Mod About a Unknown Element called Xuphorium.",
+    "version": "1.0.0",
     "credits": "",
     "logoFile": "",
     "mcversion": "1.12.2",
     "url": "https://github.com/ARCJ137442/XuphoriumCraft",
     "updateUrl": "",
     "authorList": [
-      "ARCJ137442",
-      "Minecraft Forge Gradle",
-      "IntelliJ IDEA"
+      "ARCJ137442"
     ],
     "dependencies": [],
     "dependants": [],

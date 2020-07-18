@@ -1,5 +1,8 @@
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.block.BlockDispenser;
+import net.minecraft.item.*;
+import net.minecraft.util.*;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -30,17 +33,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 
@@ -55,17 +47,6 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.IProjectile;
 
 import net.minecraft.potion.PotionEffect;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemTool;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemSpade;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.EnumAction;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 
@@ -82,6 +63,7 @@ import net.minecraft.creativetab.CreativeTabs;
 
 import net.minecraft.init.SoundEvents;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
@@ -165,9 +147,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_shield")
 	public static final Item X_SHIELD=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_shield_powered")
-	public static final Item X_SHIELD_POWERED=null;
-	
 	public XCraftTools(XuphoriumCraftElements instance)
 	{
 		super(instance,2);
@@ -185,15 +164,18 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		elements.items.add(()->new XShovel());
 		elements.items.add(()->new XHoe());
 		elements.items.add(()->new XShield());
-		elements.items.add(()->new XShieldPowered());
 	}
 
 	@Override
 	public void registerModels(ModelRegistryEvent event)
 	{
-		for(int i=0;i<4;i++)
+		int i;
+		for(i=0;i<XItem.NUM_MODES;i++)
 		{
 			ModelLoader.setCustomModelResourceLocation(X_ITEM,i,new ModelResourceLocation("xuphorium_craft:x_item_"+i,"inventory"));
+		}
+		for(i=0;i<4;i++)
+		{
 			ModelLoader.setCustomModelResourceLocation(X_SWORD,i,new ModelResourceLocation("xuphorium_craft:x_sword_"+i,"inventory"));
 		}
 		ModelLoader.setCustomModelResourceLocation(X_FOOD,0,new ModelResourceLocation("xuphorium_craft:x_food","inventory"));
@@ -209,7 +191,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		ModelLoader.setCustomModelResourceLocation(X_HOE,0,new ModelResourceLocation("xuphorium_craft:x_hoe","inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(X_SHIELD,0,new ModelResourceLocation("xuphorium_craft:x_shield","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_SHIELD_POWERED,0,new ModelResourceLocation("xuphorium_craft:x_shield_powered","inventory"));
 	}
 
 	@Override
@@ -232,6 +213,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	}
 	
 	//============Current Events============//
+	//========X Shield Defence========//
 	@SubscribeEvent
 	public boolean onEntityAttacked(LivingAttackEvent event)
 	{
@@ -239,30 +221,43 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		{
 			DamageSource source=event.getSource();
 			EntityLivingBase entityLiving=event.getEntityLiving();
-			ItemStack shield=null;
+			//Detect Player
+			EntityPlayer player=null;
+			if(entityLiving instanceof EntityPlayer) player=(EntityPlayer)entityLiving;
+			//X Boss's Special Logic
+			if(entityLiving instanceof XBoss.EntityXBoss)
+			{
+				//TODO
+				return true;
+			}
 			//Detect Shield
-			if(entityLiving.getHeldItemMainhand().getItem()==X_SHIELD_POWERED)
+			ItemStack shieldStack=null;
+			if(entityLiving.getHeldItemMainhand().getItem()==X_SHIELD) shieldStack=entityLiving.getHeldItemMainhand();
+			else if(entityLiving.getHeldItemOffhand().getItem()==X_SHIELD) shieldStack=entityLiving.getHeldItemOffhand();
+			//Check Usable & Blocking
+			if(!source.canHarmInCreative()&&shieldStack!=null&&XShield.isUsable(shieldStack))
 			{
-				shield=entityLiving.getHeldItemMainhand();
-			}
-			else if(entityLiving.getHeldItemOffhand().getItem()==X_SHIELD_POWERED)
-			{
-				shield=entityLiving.getHeldItemOffhand();
-			}
-			//Shield Blocking
-			if(!source.canHarmInCreative()&&shield!=null)
-			{
+				//Get Attacker Weapon
 				EntityLivingBase entityAttacker=null;
 				if(source.getTrueSource() instanceof EntityLivingBase) entityAttacker=(EntityLivingBase)source.getTrueSource();
 				ItemStack attackerWeapon=null;
-				
 				if(entityAttacker!=null) attackerWeapon=entityAttacker.getHeldItemMainhand();
-				boolean randomDefence=(attackerWeapon!=null&&attackerWeapon.getItem()==X_SWORD);
-				if(!randomDefence||randomDefence&&Math.random()>Math.random())
+				//Judge Special Chopping
+				boolean specialChopping=(attackerWeapon!=null&&attackerWeapon.getItem()==X_SWORD)&&(Math.random()<Math.random());
+				//Defence
+				if(player==null||!player.getCooldownTracker().hasCooldown(X_SHIELD))
 				{
-					entityLiving.playSound(SoundEvents.BLOCK_ANVIL_LAND,1.0F,1.0F);
-					shield.damageItem((int)(event.getAmount()/(1+Math.random())),entityLiving);
-					if(event.isCancelable()&&!event.isCanceled()) event.setCanceled(true);
+					if(event.isCancelable()&&!event.isCanceled())
+					{
+						//Play Sound & Damage Item
+						int damage=(int)(event.getAmount());
+						entityLiving.playSound(SoundEvents.BLOCK_ANVIL_LAND,1.0F,1.0F);
+						for(int i=0;i<damage&&XShield.isUsable(shieldStack);i++) shieldStack.damageItem(1,entityLiving);
+						//Player's Shield Cooldown
+						if(player!=null&&!entityLiving.world.isRemote) player.getCooldownTracker().setCooldown(X_SHIELD,specialChopping?30:5);
+						//Defence
+						event.setCanceled(true);
+					}
 					return false;
 				}
 			}
@@ -304,36 +299,87 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public XItem()
 		{
 			super("x_item",0,16,true);
+			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this,XuphoriumCraft.BehaviorXItemDispenseItem.getInstance());
+		}
+		
+		public static final int NUM_MODES=5;
+		
+		public static int XItemUseWithoutCD(World world,EntityPlayer player,BlockPos pos,ItemStack itemstack,EnumFacing side,float hitX,float hitY,float hitZ)
+		{
+			return XItemUseWithoutCD(world, player, pos, itemstack.getMetadata(), side, hitX, hitY, hitZ);
+		}
+		
+		public static int XItemUseWithoutCD(World world,EntityPlayer player,BlockPos pos,int metadata,EnumFacing side,float hitX,float hitY,float hitZ)
+		{
+			int x=pos.getX();
+			int y=pos.getY();
+			int z=pos.getZ();
+			switch(metadata)//this.getMetadata(itemstack)
+			{
+				case 0:
+					if(!world.isRemote) world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
+					return 0;
+				case 2:
+					XCraftTools.teleportBlock(world,pos,8);
+					return 2;
+				case 3:
+					if(player==null) break;
+					player.motionX+=(x+0.5-player.posX)/2;
+					player.motionY+=(y+0.5-player.posY)/2;
+					player.motionZ+=(z+0.5-player.posZ)/2;
+					return 3;
+				case 4:
+					if(player==null) XBoss.redRayHurtNearbyEntities(world,x,y,z,8,2,false,false);
+					else XBoss.redRayHurtNearbyEntities(world,player,12,4,true,false);
+					return 4;
+			}
+			return -1;
+		}
+		
+		public static int XItemUseWithoutCD(World world,EntityPlayer player,int x,int y,int z,ItemStack itemstack,EnumFacing side,float hitX,float hitY,float hitZ)
+		{
+			return XItemUseWithoutCD(world,player,new BlockPos(x,y,z),itemstack,side,hitX,hitY,hitZ);
+		}
+		
+		public static int getCooldownByMetadata(int metadata)
+		{
+			switch(metadata)
+			{
+				case 0:return 15;
+				case 1:return 0;
+				case 2:return 20;
+				case 3:return 7;
+				case 4:return 40;
+				default:return 0;
+			}
+		}
+		
+		public static boolean modeUseWithoutBlock(int metadata)
+		{
+			return (metadata==1||metadata==4);
 		}
 		
 		public void getSubItems(CreativeTabs tab,NonNullList<ItemStack> items)
 		{
 			if(this.isInCreativeTab(tab))
 			{
-				items.add(new ItemStack(this,1,0));
-				items.add(new ItemStack(this,1,1));
-				items.add(new ItemStack(this,1,2));
-				items.add(new ItemStack(this,1,3));
+				for(int i=0;i<XItem.NUM_MODES;i++)
+				{
+					items.add(new ItemStack(this,1,i));
+				}
 			}
 		}
 
 		@Override
 		public int getMaxItemUseDuration(ItemStack stack)
 		{
-			switch(this.getMetadata(stack))
-			{
-				case 0:return 8;
-				case 1:return 0;
-				case 2:return 16;
-				case 3:return 4;
-				default:return 0;
-			}
+			return getCooldownByMetadata(stack.getMetadata());
 		}
 		
 		public boolean canHarvestBlock(IBlockState blockIn)
 		{
 			Block block=blockIn.getBlock();
-			return (block==XCraftBlocks.X_LIQUID);
+			return (block==XCraftBlocks.X_LIQUID||block==XCraftBlocks.X_EXPLOSIVE||block==XCraftBlocks.X_REACTIVE_CORE);
 		}
 
 		@Override
@@ -354,7 +400,11 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			Block block=state.getBlock();
 			float result=super.getDestroySpeed(stack,state);
 			if(XCraftBlocks.isXOre(block)) result*=5;
+			//Liquid TODO: WILL BE REMOVED
 			if(block==XCraftBlocks.X_LIQUID) result*=12;
+			//Machine
+			else if(block==XCraftBlocks.X_EXPLOSIVE||block==XCraftBlocks.X_REACTIVE_CORE) result*=10;
+			//Default
 			else
 			{
 				Material material=state.getMaterial();
@@ -364,46 +414,55 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return result;
 		}
 		
+		//Click with Block
 		@Override
 		public EnumActionResult onItemUseFirst(EntityPlayer player,World world,BlockPos pos,EnumFacing side,float hitX,float hitY,float hitZ,EnumHand hand)
 		{
 			ItemStack itemstack=player.getHeldItem(hand);
-			if(player.isSneaking()) return EnumActionResult.PASS;
-			int x=pos.getX();
-			int y=pos.getY();
-			int z=pos.getZ();
-			double dx=x+0.5-player.posX;
-			double dy=y+0.5-player.posY;
-			double dz=z+0.5-player.posZ;
-			if(!player.getCooldownTracker().hasCooldown(this))
-			{
-				switch(this.getMetadata(itemstack))
-				{
-					case 0:
-						player.getCooldownTracker().setCooldown(this,15);
-						world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
-						return EnumActionResult.SUCCESS;
-					case 2:
-						player.getCooldownTracker().setCooldown(this,20);
-						XCraftTools.teleportBlock(world,pos,8);
-						return EnumActionResult.SUCCESS;
-					case 3:
-						player.getCooldownTracker().setCooldown(this,7);
-						player.motionX+=dx/2;
-						player.motionY+=dy/2;
-						player.motionZ+=dz/2;
-						return EnumActionResult.SUCCESS;
-				}
-			}
+			if(player.isSneaking()) return EnumActionResult.FAIL;
+			if(XItemUse(world,player,pos,itemstack,side,hitX,hitY,hitZ,true)) return EnumActionResult.SUCCESS;;
 			return EnumActionResult.FAIL;
 		}
 		
+		//Click at Block
+		public boolean XItemUse(World world,EntityPlayer player,BlockPos pos,ItemStack itemstack,EnumFacing side,float hitX,float hitY,float hitZ,boolean useCooldown)
+		{
+			if(!useCooldown||player.getCooldownTracker().hasCooldown(this)) return false;
+			int result=XItemUseWithoutCD(world,player,pos,itemstack,side,hitX,hitY,hitZ);
+			if(!world.isRemote&&player!=null&&useCooldown)
+			{
+				int cd=getCooldownByMetadata(result);
+				if(cd>0) player.getCooldownTracker().setCooldown(this,cd);
+			}
+			return false;
+		}
+		
+		//Click without Block
+		public boolean XItemUse(World world,EntityPlayer player,BlockPos pos,int metadata,EnumFacing side,float hitX,float hitY,float hitZ,boolean useCooldown)
+		{
+			if(!useCooldown||player.getCooldownTracker().hasCooldown(this)) return false;
+			int result=XItemUseWithoutCD(world,player,pos,metadata,side,hitX,hitY,hitZ);
+			if(!world.isRemote&&player!=null&&useCooldown)
+			{
+				int cd=getCooldownByMetadata(result);
+				if(cd>0) player.getCooldownTracker().setCooldown(this,cd);
+			}
+			return false;
+		}
+		
+		//Click without Block
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
 			ActionResult<ItemStack> actionResult=super.onItemRightClick(world,player,hand);
-			if(!player.isSneaking()) return actionResult;
+			if(!player.isSneaking())
+			{
+				return actionResult;
+			}
+			//Turn Mode
 			ItemStack itemstack=actionResult.getResult();
-			itemstack.setItemDamage((itemstack.getItem().getDamage(itemstack)+1)&3);
+			int data=itemstack.getMetadata();
+			itemstack.setItemDamage((data+1)%XItem.NUM_MODES);
+			//TODO: CLIENT MESSAGE
 			return actionResult;
 		}
 
@@ -908,6 +967,19 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public XShield()
 		{
 			super("x_shield",1024,1);
+			this.addPropertyOverride(new ResourceLocation("deactivated"), new IItemPropertyGetter()
+			{
+				@SideOnly(Side.CLIENT)
+				public float apply(ItemStack stack,@Nullable World worldIn,@Nullable EntityLivingBase entityIn)
+				{
+					return XShield.isUsable(stack)?0.0F:1.0F;
+				}
+			});
+		}
+		
+		public static boolean isUsable(ItemStack stack)
+		{
+			return stack.getItemDamage()<stack.getMaxDamage()-1;
 		}
 		
 		protected XShield(String name,int maxDamage)
@@ -918,6 +990,23 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public Item getRepairItem()
 		{
 			return XCraftMaterials.X_INGOT;
+		}
+		
+		/**
+		 * Return whether this item is repairable in an anvil.
+		 *
+		 * @param toRepair the {@code ItemStack} being repaired
+		 * @param repair the {@code ItemStack} being used to perform the repair
+		 */
+		@Override
+		public boolean getIsRepairable(ItemStack toRepair,ItemStack repair)
+		{
+			Item item=repair.getItem();
+			return (item==XCraftMaterials.X_CATALYST||
+					item==XCraftMaterials.X_CRYSTAL||
+					item==XCraftMaterials.X_CRYSTAL_LEFT||
+					item==XCraftMaterials.X_CRYSTAL_RIGHT
+			)?true:super.getIsRepairable(toRepair,repair);
 		}
 
 		@Override
@@ -935,80 +1024,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE,64,3,false,true));
 				player.addPotionEffect(new PotionEffect(MobEffects.SPEED,64,3,true,true));
 				player.addPotionEffect(new PotionEffect(MobEffects.GLOWING,64,1,true,true));
-				Item item=itemstack.getItem();
-				if(player.isSneaking()) XShield.trunMode(item==X_SHIELD?X_SHIELD_POWERED:X_SHIELD,itemstack,world,player,hand);
 			}
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS,itemstack);
-		}
-		
-		public static void trunMode(Item willTurnTo,ItemStack stack,World world,EntityPlayer player,EnumHand hand)
-		{
-			ItemStack newstack=new ItemStack(willTurnTo,stack.getCount(),stack.getItemDamage());
-			//TODO Transform Mode
-		}
-		
-		/**
-		 * Return whether this item is repairable in an anvil.
-		 *
-		 * @param toRepair the {@code ItemStack} being repaired
-		 * @param repair the {@code ItemStack} being used to perform the repair
-		 */
-		public boolean getIsRepairable(ItemStack toRepair,ItemStack repair)
-		{
-			return (repair.getItem()==XCraftMaterials.X_INGOT)?true:super.getIsRepairable(toRepair,repair);
-		}
-	}
-	
-	public static class XShieldPowered extends XShield
-	{
-		public XShieldPowered()
-		{
-			super("x_shield_powered",1024);
-		}
-
-		@Override
-		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
-		{
-			return super.onItemRightClick(world,player,hand);
-		}
-		
-		@Override
-		public boolean getIsRepairable(ItemStack toRepair,ItemStack repair)
-		{
-			Item item=repair.getItem();
-			return (item==XCraftMaterials.X_CATALYST||
-					item==XCraftMaterials.X_CRYSTAL||
-					item==XCraftMaterials.X_CRYSTAL_LEFT||
-					item==XCraftMaterials.X_CRYSTAL_RIGHT
-					)?true:super.getIsRepairable(toRepair,repair);
-		}
-		
-		public EnumAction getItemUseAction(ItemStack stack)
-		{
-			return EnumAction.BLOCK;
-		}
-		
-		@Override
-		public void onUpdate(ItemStack itemstack,World world,Entity entity,int par4,boolean par5)
-		{
-			super.onUpdate(itemstack,world,entity,par4,par5);
-			if(entity instanceof EntityLivingBase)
-			{
-				EntityLivingBase entityLiving=((EntityLivingBase)entity);
-				ItemStack shield=null;
-				if(entityLiving.getHeldItemMainhand().getItem()==X_SHIELD) shield=entityLiving.getHeldItemMainhand();
-				else if(entityLiving.getHeldItemOffhand().getItem()==X_SHIELD) shield=entityLiving.getHeldItemOffhand();
-				if(shield!=null)
-				{
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE,64,3,false,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.SPEED,64,3,true,true));
-					entityLiving.addPotionEffect(new PotionEffect(MobEffects.GLOWING,64,1,true,true));
-					if(Math.random()*100<1&&shield.getItemDamage()>0)
-					{
-						shield.setItemDamage(shield.getItemDamage()-1);
-					}
-				}
-			}
 		}
 	}
 }

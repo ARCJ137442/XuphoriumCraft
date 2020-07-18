@@ -1,5 +1,7 @@
 package com.xuphorium.xuphorium_craft;
 
+import jdk.nashorn.internal.ir.Block;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -44,6 +46,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.model.ModelCreeper;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -97,7 +100,7 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 			{
 				protected ResourceLocation getEntityTexture(Entity entity)
 				{
-					return new ResourceLocation("xuphorium_craft:textures/x_creeper.png");
+					return new ResourceLocation("xuphorium_craft:textures/entities/x_creeper.png");
 				}
 			};
 		});
@@ -105,6 +108,8 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 
 	public static class EntityXCreeper extends EntityCreeper
 	{
+		public static final ResourceLocation LOOT_TABLE_DEATH=LootTableList.register(new ResourceLocation("xuphorium_craft:entities/x_creeper"));
+		
 		public EntityXCreeper(World world)
 		{
 			super(world);
@@ -112,6 +117,12 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 			this.experienceValue=8;
 			this.isImmuneToFire=false;
 			this.setNoAI(false);
+		}
+		
+		@Override
+		protected ResourceLocation getLootTable()
+		{
+			return EntityXCreeper.LOOT_TABLE_DEATH;
 		}
 		
 		@Override
@@ -137,35 +148,35 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 		{
 			return EnumCreatureAttribute.UNDEFINED;
 		}
-
+/*
 		@Override
 		protected Item getDropItem()
 		{
 			return new ItemStack(XCraftMaterials.X_DUST,1).getItem();
-		}
+		}*/
 
 		@Override
 		public net.minecraft.util.SoundEvent getAmbientSound()
 		{
-			return (net.minecraft.util.SoundEvent)net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation(""));
+			return net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation(""));
 		}
 
 		@Override
 		public net.minecraft.util.SoundEvent getHurtSound(DamageSource ds)
 		{
-			return (net.minecraft.util.SoundEvent)net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.creeper.hurt"));
+			return net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.creeper.hurt"));
 		}
 
 		@Override
 		public net.minecraft.util.SoundEvent getDeathSound()
 		{
-			return (net.minecraft.util.SoundEvent)net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.creeper.death"));
+			return net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.creeper.death"));
 		}
 
 		@Override
 		protected float getSoundVolume()
 		{
-			return 1.0F;
+			return 1.2F;
 		}
 
 		@Override
@@ -173,6 +184,32 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 		{
 			if(source==DamageSource.LIGHTNING_BOLT) return false;
 			return super.attackEntityFrom(source,amount);
+		}
+		
+		@Override
+		public void setDead()
+		{
+			if(!world.isRemote)
+			{
+				if(this.getPowered())
+				{
+					List<Entity> entities=world.loadedEntityList;
+					double dx,dy,dz;
+					for(Entity entity : entities)
+					{
+						if(entity instanceof EntityLivingBase)
+						{
+							dx=this.posX-entity.posX;
+							dy=this.posY-entity.posY;
+							dz=this.posZ-entity.posZ;
+							if(dx*dx+dy*dy+dz*dz<=36) world.addWeatherEffect(new EntityLightningBolt(world,entity.posX,entity.posY,entity.posZ,false));
+						}
+					}
+				}
+				else world.addWeatherEffect(new EntityLightningBolt(world,this.posX,this.posY,this.posZ,false));
+				XCraftBlocks.XExplosive.XExplosiveExplode(world,new BlockPos(this.posX,this.posY,this.posZ),this.getPowered()?5:3,true,true);
+			}
+			super.setDead();
 		}
 
 		@Override
@@ -184,7 +221,8 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 			EntityItem entityToSpawn;
 			if(!world.isRemote)
 			{
-				for(i=0;i<Math.round(Math.random()*4+1);i++)
+				//XCraftBlocks.XExplosive.XExplosiveExplode(world,new BlockPos(this.posX,this.posY,this.posZ),this.getPowered()?5:3,true);
+				/*for(i=0;i<Math.round(Math.random()*4+1);i++)
 				{
 					entityToSpawn=new EntityItem(world,this.posX,this.posY,this.posZ,new ItemStack(XCraftMaterials.X_DUST,1));
 					entityToSpawn.setPickupDelay(10);
@@ -201,7 +239,7 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 					entityToSpawn=new EntityItem(world,this.posX,this.posY,this.posZ,new ItemStack(XCraftMaterials.X_CRYSTAL_CORE,1));
 					entityToSpawn.setPickupDelay(10);
 					world.spawnEntity(entityToSpawn);
-				}
+				}*/
 			}
 		}
 		/*
@@ -240,6 +278,7 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 			if(this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)!=null) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
 			if(this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH)!=null) this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20D);
 			if(this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5D);
+			if(this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32D);
 		}
 
 		protected void dropRareDrop(int par1)

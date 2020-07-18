@@ -2,5 +2,13 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "xuphorium_craft:items/x_shield"
-  }
+  },
+  "overrides": [
+      {
+          "predicate": {
+              "deactivated": 1
+          },
+          "model": "xuphorium_craft:item/x_shield_deactivated"
+      }
+    ]
 }

@@ -623,6 +623,7 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 		{
 			super("x_energy_unit",0,16);
 			this.setHasSubtypes(true);
+			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this,XuphoriumCraft.BehaviorXEnergyUnitDispenseItem.getInstance());
 		}
 		
 		public void getSubItems(CreativeTabs tab,NonNullList<ItemStack> items)

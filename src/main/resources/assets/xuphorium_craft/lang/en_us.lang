@@ -43,7 +43,7 @@ item.x_pickaxe.name=X-Pickaxe
 item.x_rod.name=X-Rod
 item.x_ruby.name=X-Ruby
 item.x_shield.name=X-Shield
-item.x_shield_powered.name=X-Shield-Powered
+item.x_shield_deactivated.name=Deactivated X-Shield
 item.x_shovel.name=X-Shovel
 item.x_star.name=X-Star
 item.x_sword.name=X-Sword
@@ -83,3 +83,6 @@ tile.x_phase_web_block.name=X-Phase-Web-Block
 tile.x_reactive_core.name=X-Reactive-Core
 tile.x_ruby_block.name=X-Ruby-Block
 tile.x_transporter.name=X-Transporter
+
+tile.x_fluid.name=X-Fluid
+tile.x_oxygen.name=X-Oxygen
