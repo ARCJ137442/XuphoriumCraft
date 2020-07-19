@@ -73,7 +73,19 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 	@Override
 	public void initElements()
 	{
-		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityXCreeper.class).id(new ResourceLocation("xuphorium_craft","x_creeper"),ENTITYID).name("x_creeper").tracker(64,1,true).egg(-13369549,-16776961).build());
+		elements.entities.add(()->
+				EntityEntryBuilder.create().entity(
+					EntityXCreeper.class
+				).id(
+					new ResourceLocation("xuphorium_craft","x_creeper"),ENTITYID
+				).name(
+					"x_creeper"
+				).tracker(
+					64,1,true
+				).egg(
+					-13369549,-16776961
+				).build()
+		);
 	}
 
 	@Override
@@ -108,6 +120,7 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 
 	public static class EntityXCreeper extends EntityCreeper
 	{
+		//============Register About============//
 		public static final ResourceLocation LOOT_TABLE_DEATH=LootTableList.register(new ResourceLocation("xuphorium_craft:entities/x_creeper"));
 		
 		public EntityXCreeper(World world)
@@ -115,7 +128,7 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 			super(world);
 			this.setSize(0.6f,1.7f);
 			this.experienceValue=8;
-			this.isImmuneToFire=false;
+			this.isImmuneToFire=true;
 			this.setNoAI(false);
 		}
 		
@@ -178,7 +191,20 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 		{
 			return 1.2F;
 		}
-
+		
+		@Override
+		protected void applyEntityAttributes()
+		{
+			super.applyEntityAttributes();
+			if(this.getEntityAttribute(SharedMonsterAttributes.ARMOR)!=null) this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
+			if(this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)!=null) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+			if(this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH)!=null) this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20D);
+			if(this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5D);
+			if(this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32D);
+		}
+		
+		
+		//============Events============//
 		@Override
 		public boolean attackEntityFrom(DamageSource source,float amount)
 		{
@@ -270,21 +296,5 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 			}
 		}
 */
-		@Override
-		protected void applyEntityAttributes()
-		{
-			super.applyEntityAttributes();
-			if(this.getEntityAttribute(SharedMonsterAttributes.ARMOR)!=null) this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)!=null) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH)!=null) this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32D);
-		}
-
-		protected void dropRareDrop(int par1)
-		{
-			this.dropItem(new ItemStack(XCraftMaterials.X_INGOT,1).getItem(),1);
-			this.dropItem(new ItemStack(XCraftMaterials.X_CATALYST,1).getItem(),1);
-		}
 	}
 }

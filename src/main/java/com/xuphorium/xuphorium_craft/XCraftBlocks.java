@@ -621,6 +621,11 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			super(X_BLOCK,true);
 		}
 		
+		protected ItemXBlock(Block block,boolean hasSubTypes)
+		{
+			super(block,hasSubTypes);
+		}
+		
 		public int getMetadata(int damage)
 		{
 			return damage;
@@ -631,20 +636,28 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		public static final PropertyInteger LEVEL=PropertyInteger.create("level",0,15);
 		
+		//Use for child class
+		protected XBlock(Material material,String name,SoundType soundType,
+		              float hardness,float resistance,float lightLevel,int lightOpacity)
+		{
+			super(material,name,soundType);
+			this.setHardness(hardness);
+			this.setResistance(resistance);
+			this.setLightLevel(lightLevel);
+			this.setLightOpacity(lightOpacity);
+			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
+		}
+		
+		//main
 		public XBlock()
 		{
-			super(Material.IRON,"x_block",SoundType.STONE);
+			this(Material.IRON,"x_block",SoundType.STONE,5.12F,64F,0F,255);
 			this.setHarvestLevel("pickaxe",3);
-			this.setHardness(5.12F);
-			this.setResistance(128F);
-			this.setLightLevel(0F);
-			this.setLightOpacity(255);
-			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
 		}
 		
 		public int getMetaFromState(IBlockState state)
 		{
-			return ((Integer)state.getValue(LEVEL)).intValue();
+			return state.getValue(LEVEL).intValue();
 		}
 		
 		public IBlockState getStateFromMeta(int meta)
@@ -659,7 +672,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		
 		public int damageDropped(IBlockState state)
 		{
-			return (int)state.getValue(LEVEL);
+			return state.getValue(LEVEL);
 		}
 		
 		public void getSubBlocks(CreativeTabs itemIn,NonNullList<ItemStack> items)
@@ -676,7 +689,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		@Override
 		public BlockRenderLayer getBlockLayer()
 		{
-			return BlockRenderLayer.SOLID;
+			return BlockRenderLayer.CUTOUT;
 		}
 
 		@Override
@@ -690,77 +703,25 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			super.neighborChanged(state,world,pos,neighborBlock,fromPos);
 			int power=world.isBlockIndirectlyGettingPowered(pos);
-			XCraftBlocks.testSummonXBOSS(world,pos.getX(),pos.getY(),pos.getZ(),state,world.isBlockIndirectlyGettingPowered(pos),neighborBlock,fromPos);
+			if(power>0) XCraftBlocks.testSummonXBOSS(world,pos.getX(),pos.getY(),pos.getZ(),state,world.isBlockIndirectlyGettingPowered(pos),neighborBlock,fromPos);
 		}
 	}
 	
 	//========X-Block-Advanced========//
-	public static class ItemXBlockAdvanced extends XCraftItemBlockCommon
+	public static class ItemXBlockAdvanced extends ItemXBlock
 	{
 		public ItemXBlockAdvanced()
 		{
 			super(X_BLOCK_ADVANCED,true);
 		}
-		
-		public int getMetadata(int damage)
-		{
-			return damage;
-		}
 	}
 
-	public static class XBlockAdvanced extends XCraftBlockCommon
+	public static class XBlockAdvanced extends XBlock
 	{
-		public static final PropertyInteger LEVEL=PropertyInteger.create("level",0,15);
-		
 		public XBlockAdvanced()
 		{
-			super(Material.IRON,"x_block_advanced",SoundType.METAL);
+			super(Material.IRON,"x_block_advanced",SoundType.METAL,5.12F,64F,0F,255);
 			setHarvestLevel("pickaxe",4);
-			setHardness(5.12F);
-			setResistance(256F);
-			setLightLevel(0F);
-			setLightOpacity(255);
-			setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(1)));
-		}
-		
-		public int getMetaFromState(IBlockState state)
-		{
-			return ((Integer)state.getValue(LEVEL)).intValue();
-		}
-		
-		public IBlockState getStateFromMeta(int meta)
-		{
-			return this.getDefaultState().withProperty(LEVEL,meta);
-		}
-
-		public ItemStack getItem(World worldIn,BlockPos pos,IBlockState state)
-		{
-			return new ItemStack(this,1,state.getBlock().getMetaFromState(state));
-		}
-		
-		public int damageDropped(IBlockState state)
-		{
-			return (int)state.getValue(LEVEL);
-		}
-		
-		public void getSubBlocks(CreativeTabs itemIn,NonNullList<ItemStack> items)
-		{
-			for (int i=0;i<16;i++)
-			{
-				items.add(new ItemStack(this,1,i));
-			}
-		}
-
-		protected BlockStateContainer createBlockState()
-		{
-			return new BlockStateContainer(this,new IProperty[]{LEVEL});
-		}
-
-		@SideOnly(Side.CLIENT)
-		@Override
-		public BlockRenderLayer getBlockLayer()
-		{
-			return BlockRenderLayer.SOLID;
 		}
 
 		@Override
@@ -768,7 +729,6 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			return true;
 		}
-		
 		
 		@Override
 		public void neighborChanged(IBlockState state,World world,BlockPos pos,Block neighborBlock,BlockPos fromPos)
@@ -788,7 +748,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 				{
 					((WorldServer)world).spawnParticle(EnumParticleTypes.CRIT_MAGIC,
 							cx,cy,cz,
-							8*(1+level/4),0.5,0.5,0.5,0,new int[0]
+							8*(1+level/4),
+							0.5,0.5,0.5,
+							0/*,new int[0]*/
 					);
 				}
 			}
@@ -944,7 +906,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		@Override
 		public BlockRenderLayer getBlockLayer()
 		{
-			return BlockRenderLayer.SOLID;
+			return BlockRenderLayer.CUTOUT;
 		}
 
 		@Override

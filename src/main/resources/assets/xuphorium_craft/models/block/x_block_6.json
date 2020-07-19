@@ -1,7 +1,6 @@
 {
-	"parent": "block/cube_all",
-	"textures":
-	{
-		"all": "xuphorium_craft:blocks/x_block_6"
-	}
+  "parent": "xuphorium_craft:block/x_block_common",
+  "textures": {
+    "overlay": "xuphorium_craft:blocks/x_block_overlay_6"
+  }
 }

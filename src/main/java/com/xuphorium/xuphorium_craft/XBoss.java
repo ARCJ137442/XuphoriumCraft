@@ -192,7 +192,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				if(entity instanceof EntityLivingBase)
 				{
 					//Ignore Special Entities
-					if(!ignoreXBoss&&entity instanceof EntityXBoss||!ignorePlayer&&entity instanceof EntityPlayer) continue;
+					if(ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer) continue;
 					//Select
 					double dx=x-entity.posX;
 					double dy=y-entity.posY;
@@ -246,10 +246,10 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				if(entity instanceof EntityLivingBase)
 				{
 					//Ignore Special Entities
-					if(entity==attacker||!ignoreXBoss&&entity instanceof EntityXBoss||!ignorePlayer&&entity instanceof EntityPlayer) continue;
+					if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer) continue;
 					//Select
 					double dx=attacker.posX-entity.posX;
-					double dy=attacker.posY+1.7-entity.posY;
+					double dy=attacker.posY+attacker.getEyeHeight()-entity.posY;
 					double dz=attacker.posZ-entity.posZ;
 					double distanceSquare=dx*dx+dy*dy+dz*dz;
 					if((radiusFlag==0&&Math.random()<Math.random())||
@@ -269,7 +269,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	
 	public static void redRayHurtNearbyEntities(World world,EntityLivingBase attacker,double radiusFlag,double attackDamageFlag)
 	{
-		redRayHurtNearbyEntities(world, attacker, radiusFlag, attackDamageFlag);
+		redRayHurtNearbyEntities(world,attacker,radiusFlag,attackDamageFlag,false,false);
 	}
 	
 	/**
@@ -320,6 +320,23 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		protected int randomHurtTick=20;
 		//protected EntityLivingBase lastMemEntity;
 		
+		public EntityXBoss(World world)
+		{
+			super(world);
+			this.setSize(0.6f,1.8f);
+			this.experienceValue=64;
+			this.isImmuneToFire=true;
+			this.setCustomNameTag("X-BOSS");
+			this.setAlwaysRenderNameTag(true);
+			this.enablePersistence();
+			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,getWeapon());
+			this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getShield());
+			this.setItemStackToSlot(EntityEquipmentSlot.HEAD,getHelmet());
+			this.setItemStackToSlot(EntityEquipmentSlot.CHEST,getChestplate());
+			this.setItemStackToSlot(EntityEquipmentSlot.LEGS,getLeggings());
+			this.setItemStackToSlot(EntityEquipmentSlot.FEET,getBoots());
+		}
+		
 		@Override
 		protected ResourceLocation getLootTable()
 		{
@@ -328,7 +345,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		
 		public static ItemStack getWeapon()
 		{
-			ItemStack result=new ItemStack(XCraftTools.X_SWORD);
+			ItemStack result=new ItemStack(XCraftTools.X_SWORD,1,1);
 			result.addEnchantment(Enchantments.SHARPNESS,5);
 			result.addEnchantment(Enchantments.SMITE,5);
 			result.addEnchantment(Enchantments.BANE_OF_ARTHROPODS,5);
@@ -385,23 +402,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			result.addEnchantment(Enchantments.UNBREAKING,3);
 			result.addEnchantment(Enchantments.MENDING,1);
 			return result;
-		}
-		
-		public EntityXBoss(World world)
-		{
-			super(world);
-			this.setSize(0.6f,1.8f);
-			this.experienceValue=64;
-			this.isImmuneToFire=true;
-			this.setCustomNameTag("X-BOSS");
-			this.setAlwaysRenderNameTag(true);
-			this.enablePersistence();
-			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,getWeapon());
-			this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getShield());
-			this.setItemStackToSlot(EntityEquipmentSlot.HEAD,getHelmet());
-			this.setItemStackToSlot(EntityEquipmentSlot.CHEST,getChestplate());
-			this.setItemStackToSlot(EntityEquipmentSlot.LEGS,getLeggings());
-			this.setItemStackToSlot(EntityEquipmentSlot.FEET,getBoots());
 		}
 		
 		@Override
@@ -539,7 +539,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 						}
 					}
 				}
-				redRayHurtNearbyEntities(world,this,8,-2,true,true);
+				redRayHurtNearbyEntities(world,this,8,-2,false,true);
 			}
 			
 			if(source.getImmediateSource()instanceof EntityPotion)return false;
