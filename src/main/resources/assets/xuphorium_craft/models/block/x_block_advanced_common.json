@@ -2,5 +2,6 @@
 	"parent": "xuphorium_craft:block/x_block_common_common",
 	"textures": {
 		"base": "xuphorium_craft:blocks/x_block_advanced",
+		"level_overlay": "#overlay"
 	}
 }

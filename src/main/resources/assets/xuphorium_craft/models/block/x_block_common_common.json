@@ -19,16 +19,16 @@
 			}
 		},
 		{
-			"name": "overlay",
+			"name": "level overlay",
 			"from": [-0.01, -0.01, -0.01],
 			"to": [16.01, 16.01, 16.01],
 			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "cullface": "north", "texture": "#overlay"},
-				"east": {"uv": [0, 0, 16, 16], "cullface": "east", "texture": "#overlay"},
-				"south": {"uv": [0, 0, 16, 16], "cullface": "south", "texture": "#overlay"},
-				"west": {"uv": [0, 0, 16, 16], "cullface": "west", "texture": "#overlay"},
-				"up": {"uv": [0, 0, 16, 16], "cullface": "up", "texture": "#overlay"},
-				"down": {"uv": [0, 0, 16, 16], "cullface": "down", "texture": "#overlay"}
+				"north": {"uv": [0, 0, 16, 16], "cullface": "north", "texture": "#level_overlay"},
+				"east": {"uv": [0, 0, 16, 16], "cullface": "east", "texture": "#level_overlay"},
+				"south": {"uv": [0, 0, 16, 16], "cullface": "south", "texture": "#level_overlay"},
+				"west": {"uv": [0, 0, 16, 16], "cullface": "west", "texture": "#level_overlay"},
+				"up": {"uv": [0, 0, 16, 16], "cullface": "up", "texture": "#level_overlay"},
+				"down": {"uv": [0, 0, 16, 16], "cullface": "down", "texture": "#level_overlay"}
 			}
 		}
 	]

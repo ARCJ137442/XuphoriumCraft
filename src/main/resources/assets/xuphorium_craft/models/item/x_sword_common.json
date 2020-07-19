@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:item/handheld",
+	"textures": {
+		"layer0": "xuphorium_craft:items/x_sword",
+		"layer1": "#overlay"
+	}
+}

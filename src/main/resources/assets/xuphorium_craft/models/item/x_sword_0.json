@@ -1,7 +1,7 @@
 {
-	"parent": "item/handheld",
+	"parent": "xuphorium_craft:item/x_sword_common",
 	"textures":
 	{
-		"layer0": "xuphorium_craft:items/x_sword_0"
+		"overlay": "xuphorium_craft:items/x_sword_overlay_0"
 	}
 }

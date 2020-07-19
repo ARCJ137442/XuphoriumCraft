@@ -278,7 +278,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	public static void redRayHurtEntity(EntityLivingBase attacker,EntityLivingBase entity,double distanceFlag)
 	{
 		generateRedWay(entity.world,attacker.posX,attacker.posY+1.7,attacker.posZ,entity.posX,entity.posY,entity.posZ);
-		if(attacker!=null&&distanceFlag==0) attacker.attackEntityAsMob(entity);
+		if(attacker!=null&&distanceFlag<0) attacker.attackEntityAsMob(entity);
 		else entity.attackEntityFrom(new EntityDamageSource("indirectMagic",attacker),distanceFlag>0?(float)distanceFlag:((float)(Math.abs(distanceFlag))));
 	}
 	

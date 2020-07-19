@@ -1,0 +1,27 @@
+{
+	"parent": "xuphorium_craft:item/x_sword_common",
+	"textures":
+	{
+		"overlay": "xuphorium_craft:items/x_sword_overlay_0"
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"mode": 1
+			},
+			"model": "xuphorium_craft:item/x_sword_1"
+		},
+		{
+			"predicate": {
+				"mode": 2
+			},
+			"model": "xuphorium_craft:item/x_sword_2"
+		},
+		{
+			"predicate": {
+				"mode": 3
+			},
+			"model": "xuphorium_craft:item/x_sword_3"
+		}
+	]
+}

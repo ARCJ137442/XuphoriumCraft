@@ -1165,7 +1165,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		public XOreNether()
 		{
-			super("x_ore_nether",2,0.5F);
+			super("x_ore_nether",2,0.75F);
 		}
 
 		@Override
@@ -1181,7 +1181,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		public XOreEnd()
 		{
-			super("x_ore_end",4,2);
+			super("x_ore_end",4,4);
 		}
 
 		@SideOnly(Side.CLIENT)

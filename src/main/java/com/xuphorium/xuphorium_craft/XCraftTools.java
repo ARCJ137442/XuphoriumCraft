@@ -2,7 +2,10 @@ package com.xuphorium.xuphorium_craft;
 
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -153,16 +156,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	public void registerModels(ModelRegistryEvent event)
 	{
 		int i;
-		for(i=0;i<XItem.NUM_MODES;i++)
-		{
-			ModelLoader.setCustomModelResourceLocation(X_ITEM,i,new ModelResourceLocation("xuphorium_craft:x_item_"+i,"inventory"));
-		}
-		for(i=0;i<4;i++)
-		{
-			ModelLoader.setCustomModelResourceLocation(X_SWORD,i,new ModelResourceLocation("xuphorium_craft:x_sword_"+i,"inventory"));
-		}
+		for(i=0;i<XItem.NUM_MODES;i++) ModelLoader.setCustomModelResourceLocation(X_ITEM,i,new ModelResourceLocation("xuphorium_craft:x_item_"+i,"inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_SWORD,0,new ModelResourceLocation("xuphorium_craft:x_sword","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_FOOD,0,new ModelResourceLocation("xuphorium_craft:x_food","inventory"));
-		
+		//X-Magnet
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,0,new ModelResourceLocation("xuphorium_craft:x_magnet","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,1,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_negative","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,2,new ModelResourceLocation("xuphorium_craft:x_magnet_powered","inventory"));
@@ -337,12 +334,23 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				Material material=state.getMaterial();
 				result=material!=Material.PLANTS&&material!=Material.VINE&&material!=Material.CORAL&&material!=Material.LEAVES&&material!=Material.GOURD?1.0F:1.25F;
 			}
-			if(this.getMetadata(stack)==1)result*=3;
+			if(getItemMode(stack)==1)result*=3;
 			return result;
 		}
 		
 		//========Static Variable & Function========//
 		public static final int NUM_MODES=5;
+		
+		public static int getItemMode(ItemStack stack)
+		{
+			return stack.getMetadata();
+		}
+		
+		public static boolean setItemMode(ItemStack stack,int mode)
+		{
+			stack.setItemDamage(mode);
+			return true;
+		}
 		
 		public static int getCooldownByMetadata(int metadata)
 		{
@@ -375,11 +383,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public static boolean modeCanBeAutomatize(int mode)
 		{
 			return (mode==0||mode==2||mode==4);
-		}
-		
-		public static int getItemMode(ItemStack stack)
-		{
-			return stack.getMetadata();
 		}
 		
 		/**
@@ -419,7 +422,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				z=player.posZ;
 			}
 			//In Use
-			switch(mode)//this.getMetadata(itemstack)
+			switch(mode)
 			{
 				case 0:
 					if(pos==null) break;
@@ -442,7 +445,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					return 3;
 				case 4:
 					if(player==null) XBoss.redRayHurtNearbyEntities(world,x,y,z,8,3,false,false);
-					else XBoss.redRayHurtNearbyEntities(world,player,12,-2,true,false);
+					else XBoss.redRayHurtNearbyEntities(world,player,12,5,true,false);
 					return 4;
 			}
 			return -1;
@@ -503,9 +506,13 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				return actionResult;
 			}
 			//Turn Mode ( metadata <=> mode )
-			int nowMode=XItem.getItemMode(itemstack);
-			itemstack.setItemDamage((nowMode+1)%XItem.NUM_MODES);
-			//TODO: CLIENT MESSAGE
+			int oldMode=getItemMode(itemstack),newMode=(oldMode+1)%NUM_MODES;
+			if(newMode!=oldMode)
+			{
+				setItemMode(itemstack,newMode);
+				//TODO: CLIENT MESSAGE
+				player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Now turn to mode "+newMode));
+			}
 			return actionResult;
 		}
 
@@ -559,23 +566,48 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	//================X-Magnet================//
 	public static class XMagnet extends XCraftToolCommon
 	{
+		//========Static Variable & Function========//
+		public static int NUM_MODES=4;
+		
+		public static int getItemMode(ItemStack stack)
+		{
+			return stack.getMetadata();
+		}
+		
+		public static boolean setItemMode(ItemStack stack,int mode)
+		{
+			stack.setItemDamage(mode);
+			return true;
+		}
+		
+		public static double[] calculateGravityVector(double dx,double dy,double dz,double value)
+		{
+			return calculateGravityVector(dx,dy,dz,value,0);
+		}
+		
+		public static double[] calculateGravityVector(double dx,double dy,double dz,double value,double distanceSquareOffset)
+		{
+			//From Newton's universal gravitation formula
+			//From point to Origin
+			double distanceSquare=dx*dx+dy*dy+dz*dz+distanceSquareOffset;//Avoid from zero
+			if(distanceSquare<=0) return new double[]{0,0,0};
+			return new double[]{
+					-value*(dx/distanceSquare),
+					-value*(dy/distanceSquare),
+					-value*(dz/distanceSquare)
+			};
+		}
+		
+		//============Register About============//
 		public XMagnet()
 		{
 			super("x_magnet",0,1,true);
 			this.setContainerItem(this);
 		}
 		
-		public static int NUM_MODES=4;
-		
 		public void getSubItems(CreativeTabs tab,NonNullList<ItemStack> items)
 		{
-			if(this.isInCreativeTab(tab))
-			{
-				items.add(new ItemStack(this,1,0));
-				items.add(new ItemStack(this,1,1));
-				items.add(new ItemStack(this,1,2));
-				items.add(new ItemStack(this,1,3));
-			}
+			if(this.isInCreativeTab(tab)) for(int i=0;i<NUM_MODES;i++) items.add(new ItemStack(this,1,i));
 		}
 
 		@Override
@@ -596,29 +628,23 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return 1F;
 		}*/
 		
-		public static double[] calculateGravityVector(double dx,double dy,double dz,double value)
-		{
-			return calculateGravityVector(dx,dy,dz,value,0);
-		}
-		
-		public static double[] calculateGravityVector(double dx,double dy,double dz,double value,double distanceSquareOffset)
-		{
-			//From Newton's universal gravitation formula
-			//From point to Origin
-			double distanceSquare=dx*dx+dy*dy+dz*dz+distanceSquareOffset;//Avoid from zero
-			if(distanceSquare<=0) return new double[]{0,0,0};
-			return new double[]{
-				-value*(dx/distanceSquare),
-				-value*(dy/distanceSquare),
-				-value*(dz/distanceSquare)
-			};
-		}
-		
+		//========Item Events========//
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
 			ActionResult<ItemStack> ar=super.onItemRightClick(world,player,hand);
 			ItemStack itemstack=ar.getResult();
-			if(player.isSneaking())itemstack.setItemDamage((itemstack.getMetadata()+1)%NUM_MODES);
+			//Turn Mode with Cooldown
+			if(!world.isRemote&&player.isSneaking()&&!player.getCooldownTracker().hasCooldown(X_MAGNET))
+			{
+				int oldMode=getItemMode(itemstack),newMode=(oldMode+1)%NUM_MODES;
+				if(newMode!=oldMode)
+				{
+					setItemMode(itemstack,newMode);
+					//TODO: TRANSLATED CLIENT MESSAGE
+					player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Now turn to mode "+newMode));
+					player.getCooldownTracker().setCooldown(X_MAGNET,20);
+				}
+			}
 			return ar;
 		}
 
@@ -626,7 +652,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public void onUpdate(ItemStack itemstack,World world,Entity entity,int par4,boolean par5)
 		{
 			super.onUpdate(itemstack,world,entity,par4,par5);
-			int level=this.getMetadata(itemstack);
+			int level=getItemMode(itemstack);
 			if(entity instanceof EntityLivingBase&&level>0)
 			{
 				if(((EntityLivingBase)entity).getHeldItemMainhand().equals(itemstack)||
@@ -657,6 +683,35 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	//================X-Sword================//
 	public static class XSword extends ItemSword
 	{
+		//========Static Variable & Function========//
+		public static int NUM_MODES=4;
+		
+		/**
+		 * Get Sword's Mode by NBT.
+		 * @param stack the item stack.
+		 * @return the mode,default 0.
+		 */
+		public static int getSwordMode(ItemStack stack)
+		{
+			if(stack.hasTagCompound()&&stack.getTagCompound().hasKey("Mode")) return stack.getTagCompound().getInteger("Mode");
+			return 0;
+		}
+		
+		/**
+		 * Set Sword's Mode with NBT.
+		 * @param stack the item stack.
+		 * @return if setting successfully.
+		 */
+		public static boolean setSwordMode(ItemStack stack,int mode)
+		{
+			NBTTagCompound compound;
+			if(stack.hasTagCompound()) compound=stack.getTagCompound();
+			else compound=new NBTTagCompound();
+			compound.setInteger("Mode",mode);
+			stack.setTagCompound(compound);
+			return true;
+		}
+		
 		//============Register About============//
 		public XSword()
 		{
@@ -665,15 +720,27 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			this.setRegistryName("x_sword");
 			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
 			this.setHasSubtypes(true);
-			this.setMaxDamage(0);
-			//this.maxStackSize=1;
+			this.setMaxDamage(1024);
+			//Model by Mode
+			this.addPropertyOverride(new ResourceLocation("mode"), new IItemPropertyGetter()
+			{
+				@SideOnly(Side.CLIENT)
+				public float apply(ItemStack stack,@Nullable World worldIn,@Nullable EntityLivingBase entityIn)
+				{
+					return (float)getSwordMode(stack);
+				}
+			});
 		}
-		
-		public static int NUM_MODES=4;
 		
 		public void getSubItems(CreativeTabs tab,NonNullList<ItemStack> items)
 		{
-			if(this.isInCreativeTab(tab))for(int i=0;i<4;++i)items.add(new ItemStack(this,1,i));
+			ItemStack stack;
+			if(this.isInCreativeTab(tab)) for(int i=0;i<NUM_MODES;++i)
+			{
+				stack=new ItemStack(this,1,0);
+				setSwordMode(stack,i);
+				items.add(stack);
+			}
 		}
 		
 		public Item getRepairItem()
@@ -695,11 +762,44 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		}
 		
 		@Override
+		public float getDestroySpeed(ItemStack stack,IBlockState state)
+		{
+			float result=(this.getMetadata(stack)==0?3:1)*super.getDestroySpeed(stack,state);
+			//result*=2-this.getMetadata(stack)/this.getMaxDamage();
+			return result;
+		}/*
+		
+		@Override
+		public float getAttackDamage()
+		{
+			return (this.getMetadata(this.getDefaultInstance())==0?2:1)*super.getAttackDamage();
+		}*/
+		
+		//========Item Events========//
+		@Override
+		public boolean onBlockDestroyed(ItemStack stack,World worldIn,IBlockState state,BlockPos pos,EntityLivingBase entityLiving)
+		{
+			if(this.getMetadata(stack)==0)return true;
+			return super.onBlockDestroyed(stack,worldIn,state,pos,entityLiving);
+		}
+		
+		@Override
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
 			ActionResult<ItemStack> result=super.onItemRightClick(world,player,hand);
 			ItemStack itemstack=result.getResult();
-			if(player.isSneaking())itemstack.setItemDamage((itemstack.getItem().getDamage(itemstack)+1)%NUM_MODES);
+			//Turn Mode with Cooldown
+			if(!world.isRemote&&player.isSneaking()&&!player.getCooldownTracker().hasCooldown(X_SWORD))
+			{
+				int oldMode=getSwordMode(itemstack),newMode=(oldMode+1)%NUM_MODES;
+				if(newMode!=oldMode)
+				{
+					setSwordMode(itemstack,newMode);
+					//TODO: TRANSLATED CLIENT MESSAGE
+					player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Now turn to mode "+newMode));
+					player.getCooldownTracker().setCooldown(X_SWORD,20);
+				}
+			}
 			else XCraftTools.addToolBoostEffects(player);
 			return result;
 		}
@@ -712,7 +812,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			super.hitEntity(itemstack,attacker,target);
 			if(target!=null&&target instanceof EntityLiving)
 			{
-				swordEnrageTarget(world,attacker,(EntityLiving)target,this.getMetadata(itemstack));
+				swordEnrageTarget(world,attacker,(EntityLiving)target,getSwordMode(itemstack));
 			}
 			return true;
 		}
@@ -769,7 +869,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			//Enrage Target Without Attack
 			if(!entity.world.isRemote&&entity!=null&&entity instanceof EntityLiving)
 			{
-				swordEnrageTarget(entity.world,player,(EntityLiving)entity,itemstack.getMetadata());
+				swordEnrageTarget(entity.world,player,(EntityLiving)entity,getSwordMode(itemstack));
 			}
 			return false;
 			/* if(entity.world.isRemote)
@@ -798,27 +898,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				return true;
 			}
 			return false; */
-		}
-
-		@Override
-		public float getDestroySpeed(ItemStack stack,IBlockState state)
-		{
-			float result=(this.getMetadata(stack)==0?3:1)*super.getDestroySpeed(stack,state);
-			//result*=2-this.getMetadata(stack)/this.getMaxDamage();
-			return result;
-		}/*
-		
-		@Override
-		public float getAttackDamage()
-		{
-			return (this.getMetadata(this.getDefaultInstance())==0?2:1)*super.getAttackDamage();
-		}*/
-		
-		@Override
-		public boolean onBlockDestroyed(ItemStack stack,World worldIn,IBlockState state,BlockPos pos,EntityLivingBase entityLiving)
-		{
-			if(this.getMetadata(stack)==0)return true;
-			return super.onBlockDestroyed(stack,worldIn,state,pos,entityLiving);
 		}
 	}
 	

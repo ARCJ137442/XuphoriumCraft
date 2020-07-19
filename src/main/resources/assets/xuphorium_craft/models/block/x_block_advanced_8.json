@@ -1,6 +1,6 @@
 {
 	"parent": "xuphorium_craft:block/x_block_advanced_common",
 	"textures": {
-		"overlay": "xuphorium_craft:blocks/x_block_overlay_8",
+		"overlay": "xuphorium_craft:blocks/x_block_overlay_8"
 	}
 }
