@@ -13,6 +13,7 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
@@ -72,7 +73,7 @@ public class XuphoriumCraft
 	public static final String MODID="xuphorium_craft";
 	public static final String VERSION="1.0.0";
 	public static final SimpleNetworkWrapper PACKET_HANDLER=NetworkRegistry.INSTANCE.newSimpleChannel("xuphorium_craft");
-	@SidedProxy(clientSide="com.xuphorium.xuphorium_craft.XuphoriumCraftClientProxy", serverSide="com.xuphorium.xuphorium_craft.XuphoriumCraftServerProxy")
+	@SidedProxy(clientSide="com.xuphorium.xuphorium_craft.XuphoriumCraftClientProxy",serverSide="com.xuphorium.xuphorium_craft.XuphoriumCraftServerProxy")
 	public static XuphoriumCraftIProxy proxy;
 	@Mod.Instance(MODID)
 	public static XuphoriumCraft instance;
@@ -160,7 +161,7 @@ public class XuphoriumCraft
 	}
 	
 	
-	//============Xuphorium-Craft Global Variables============//
+	//============Xuphorium-Craft Global Variable&Function============//
 	public static final int[] xArmorHardness=new int[]{4,7,8,5};
 	public static final ItemArmor.ArmorMaterial xArmorMaterial=EnumHelper.addArmorMaterial("X","xuphorium_craft:x_armor",25,XuphoriumCraft.xArmorHardness,100,null,4f);
 	
@@ -189,79 +190,6 @@ public class XuphoriumCraft
 			return false;
 		}
 	};
-	
-	public static class BehaviorXDustDispenseItem extends BehaviorDefaultDispenseItem
-	{
-		private static final BehaviorXDustDispenseItem INSTANCE = new BehaviorXDustDispenseItem();
-		
-		public static BehaviorXDustDispenseItem getInstance()
-		{
-			return INSTANCE;
-		}
-		
-		@Override
-		public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack)
-		{
-			BlockPos pos=source.getBlockPos().offset(source.getBlockState().getValue(BlockDispenser.FACING));
-			if(blockReaction(pos,source.getWorld()))
-			{
-				ItemStack stackCopy=stack.copy();
-				stackCopy.shrink(1);
-				return stackCopy;
-			}
-			else return stack;
-		}
-	}
-	
-	public static class BehaviorXItemDispenseItem extends BehaviorDefaultDispenseItem
-	{
-		private static final BehaviorXItemDispenseItem INSTANCE = new BehaviorXItemDispenseItem();
-		
-		public static BehaviorXItemDispenseItem getInstance()
-		{
-			return INSTANCE;
-		}
-		
-		@Override
-		public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack)
-		{
-			IPosition position=BlockDispenser.getDispensePosition(source);
-			//ItemStack itemstack=stack.splitStack(1);
-			EnumFacing dispenserFacing=source.getBlockState().getValue(BlockDispenser.FACING);
-			BlockPos pos=source.getBlockPos().offset(dispenserFacing);
-			XCraftTools.XItem.XItemUseWithoutCD(
-					source.getWorld(),null,pos,stack,dispenserFacing,
-					(float)position.getX(),(float)position.getY(),(float)position.getZ()
-			);
-			return stack;
-		}
-	}
-	
-	public static class BehaviorXEnergyUnitDispenseItem extends BehaviorDefaultDispenseItem
-	{
-		private static final BehaviorXEnergyUnitDispenseItem INSTANCE = new BehaviorXEnergyUnitDispenseItem();
-		
-		public static BehaviorXEnergyUnitDispenseItem getInstance()
-		{
-			return INSTANCE;
-		}
-		
-		@Override
-		public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack)
-		{
-			IPosition position=BlockDispenser.getDispensePosition(source);
-			//ItemStack itemstack=stack.splitStack(1);
-			EnumFacing dispenserFacing=source.getBlockState().getValue(BlockDispenser.FACING);
-			BlockPos offsetPos=source.getBlockPos().offset(dispenserFacing);
-			World world=source.getWorld();
-			IBlockState offsetState=world.getBlockState(offsetPos);
-			XCraftBlocks.XBlockAdvanced.XEnergyUnitUse(
-					world,offsetPos,offsetState,stack,dispenserFacing,
-					(float)position.getX(),(float)position.getY(),(float)position.getZ()
-			);
-			return stack;
-		}
-	}
 	
 	public static boolean blockReaction(int x,int y,int z,World world)
 	{
@@ -448,13 +376,39 @@ public class XuphoriumCraft
 		}
 	}
 	
-	@SubscribeEvent
-	public void onUseHoe(PlayerInteractEvent.RightClickBlock event)
+	public static void generateParticleRay(World world,double x1,double y1,double z1,double x2,double y2,double z2,
+	                                       int numPosition,int numEachPosition,EnumParticleTypes particleType,double offsetEachPosition,double particleSpeed)
 	{
-	
+		double dx,dy,dz,step=1/((double)numPosition);
+		if(step==0) return;
+		for(double i=0;i<=1;i+=step)
+		{
+			dx=i*x1+(1-i)*x2;
+			dy=i*y1+(1-i)*y2;
+			dz=i*z1+(1-i)*z2;
+			if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(particleType,dx,dy,dz,numEachPosition,offsetEachPosition,offsetEachPosition,offsetEachPosition,particleSpeed,new int[0]);
+		}
 	}
 	
-	//========Material-Common========//
+	public static void generateParticleRay(World world,double x1,double y1,double z1,double x2,double y2,double z2,
+	                                       int numPosition,EnumParticleTypes particleType)
+	{
+		generateParticleRay(world,x1,y1,z1,x2,y2,z2,numPosition,1,particleType,0,0);
+	}
+	
+	public static void generateParticleRay(World world,Entity entity1,Entity entity2,
+	                                       int numPosition,EnumParticleTypes particleType)
+	{
+		generateParticleRay(world,entity1,entity2,true,numPosition,particleType);
+	}
+	
+	public static void generateParticleRay(World world,Entity entity1,Entity entity2,boolean useEyeHeight,
+	                                       int numPosition,EnumParticleTypes particleType)
+	{
+		generateParticleRay(world,entity1.posX,entity1.posY+(useEyeHeight?entity1.getEyeHeight():0),entity1.posZ,entity2.posX,entity2.posY+(useEyeHeight?entity1.getEyeHeight():0),entity2.posZ,numPosition,particleType);
+	}
+	
+	//============Xuphorium-Craft Global Classes============//
 	public static class XCraftItemCommon extends Item
 	{
 		public XCraftItemCommon(String name,int maxDamage,int maxStackSize)
@@ -464,6 +418,79 @@ public class XuphoriumCraft
 			this.setUnlocalizedName(name);
 			this.setRegistryName(name);
 			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
+		}
+	}
+	
+	public static class BehaviorXDustDispenseItem extends BehaviorDefaultDispenseItem
+	{
+		private static final BehaviorXDustDispenseItem INSTANCE = new BehaviorXDustDispenseItem();
+		
+		public static BehaviorXDustDispenseItem getInstance()
+		{
+			return INSTANCE;
+		}
+		
+		@Override
+		public ItemStack dispenseStack(@Nonnull IBlockSource source,@Nonnull ItemStack stack)
+		{
+			BlockPos pos=source.getBlockPos().offset(source.getBlockState().getValue(BlockDispenser.FACING));
+			if(blockReaction(pos,source.getWorld()))
+			{
+				ItemStack stackCopy=stack.copy();
+				stackCopy.shrink(1);
+				return stackCopy;
+			}
+			else return stack;
+		}
+	}
+	
+	public static class BehaviorXItemDispenseItem extends BehaviorDefaultDispenseItem
+	{
+		private static final BehaviorXItemDispenseItem INSTANCE = new BehaviorXItemDispenseItem();
+		
+		public static BehaviorXItemDispenseItem getInstance()
+		{
+			return INSTANCE;
+		}
+		
+		@Override
+		public ItemStack dispenseStack(@Nonnull IBlockSource source,@Nonnull ItemStack stack)
+		{
+			IPosition position=BlockDispenser.getDispensePosition(source);
+			//ItemStack itemstack=stack.splitStack(1);
+			EnumFacing dispenserFacing=source.getBlockState().getValue(BlockDispenser.FACING);
+			BlockPos pos=source.getBlockPos().offset(dispenserFacing);
+			XCraftTools.XItem.XItemUseWithoutCD(
+					source.getWorld(),null,pos,stack,dispenserFacing,
+					(float)position.getX(),(float)position.getY(),(float)position.getZ()
+			);
+			return stack;
+		}
+	}
+	
+	public static class BehaviorXEnergyUnitDispenseItem extends BehaviorDefaultDispenseItem
+	{
+		private static final BehaviorXEnergyUnitDispenseItem INSTANCE = new BehaviorXEnergyUnitDispenseItem();
+		
+		public static BehaviorXEnergyUnitDispenseItem getInstance()
+		{
+			return INSTANCE;
+		}
+		
+		@Override
+		public ItemStack dispenseStack(@Nonnull IBlockSource source,@Nonnull ItemStack stack)
+		{
+			IPosition position=BlockDispenser.getDispensePosition(source);
+			//ItemStack itemstack=stack.splitStack(1);
+			EnumFacing dispenserFacing=source.getBlockState().getValue(BlockDispenser.FACING);
+			BlockPos offsetPos=source.getBlockPos().offset(dispenserFacing);
+			World world=source.getWorld();
+			IBlockState offsetState=world.getBlockState(offsetPos);
+			XCraftBlocks.XBlockAdvanced.XEnergyUnitUse(
+					world,offsetPos,offsetState,stack,dispenserFacing,
+					(float)position.getX(),(float)position.getY(),(float)position.getZ()
+			);
+			return stack;
 		}
 	}
 }

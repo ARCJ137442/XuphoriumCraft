@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -68,6 +69,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 {
 	public static Logger LOGGER;
 	
+	//================Static Global Variable&Function================//
 	public static void teleportBlock(World worldIn,BlockPos pos,int range)
 	{
 		IBlockState iblockstate=worldIn.getBlockState(pos);
@@ -102,15 +104,17 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	
 	public static void addToolBoostEffects(EntityPlayer player)
 	{
+		if(player.world.isRemote) return;
 		player.addPotionEffect(new PotionEffect(MobEffects.SPEED,5,4,false,false));
 		player.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,5,4,false,false));
 	}
 	
+	//================Register About================//
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_item")
 	public static final Item X_ITEM=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_food")
-	public static final Item X_FOOD=null;
+	/*@GameRegistry.ObjectHolder("xuphorium_craft:x_food")
+	public static final Item X_FOOD=null;TODO: WILL BE DELETED*/
 	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_magnet")
 	public static final Item X_MAGNET=null;
@@ -142,7 +146,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	public void initElements()
 	{
 		elements.items.add(()->new XItem());
-		elements.items.add(()->new XFood());
+		//elements.items.add(()->new XFood());TODO: WILL BE DELETED
 		elements.items.add(()->new XMagnet());
 		elements.items.add(()->new XSword());
 		elements.items.add(()->new XAxe());
@@ -158,7 +162,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		int i;
 		for(i=0;i<XItem.NUM_MODES;i++) ModelLoader.setCustomModelResourceLocation(X_ITEM,i,new ModelResourceLocation("xuphorium_craft:x_item_"+i,"inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_SWORD,0,new ModelResourceLocation("xuphorium_craft:x_sword","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_FOOD,0,new ModelResourceLocation("xuphorium_craft:x_food","inventory"));
+		//ModelLoader.setCustomModelResourceLocation(X_FOOD,0,new ModelResourceLocation("xuphorium_craft:x_food","inventory"));TODO: WILL BE DELETED
 		//X-Magnet
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,0,new ModelResourceLocation("xuphorium_craft:x_magnet","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,1,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_negative","inventory"));
@@ -398,10 +402,12 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		/**
 		 * Without Block Mode (Click at Air) : pos=side=null;
 		 * Automatic Mode ( such as Dispenser ) : player=null;
-		 * @return The Succeeded Mode or -1 ( Item usage failed ) , -2 ( Invalid item usage mode )
+		 * @return The Succeeded Mode or -1 ( Item usage failed ) ,-2 ( Invalid item usage mode ),-3 ( Invalid params )
 		 */
 		public static int XItemUseWithoutCD(World world,EntityPlayer player,BlockPos pos,int mode,EnumFacing side,float hitX,float hitY,float hitZ)
 		{
+			//Check Params
+			if(player==null&&pos==null) return -3;
 			//Check Valid (Automatic Mode & Without Block Mode)
 			if(player==null&&!modeCanBeAutomatize(mode)||
 				pos==null&&!modeUseWithoutBlock(mode)
@@ -434,10 +440,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					return 2;
 				case 3:
 					if(player==null||pos==null) break;
-					//x -> dx , y -> dy , z -> dz
-					x=(x+0.5-player.posX);
-					y=(y+0.5-player.posY);
-					z=(z+0.5-player.posZ);
+					//x -> dx ,y -> dy ,z -> dz
+					x=x+0.5-player.posX;
+					y=y+0.5-player.posY;
+					z=z+0.5-player.posZ;
 					double distanceValue=1+x*x+y*y+z*z;
 					player.motionX+=(x*Math.abs(x))/distanceValue;
 					player.motionY+=(y*Math.abs(y))/distanceValue;
@@ -493,17 +499,16 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		//Click without Block
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
-			ActionResult<ItemStack> actionResult=super.onItemRightClick(world,player,hand);
 			//Get Stack
-			ItemStack itemstack=actionResult.getResult();
+			ItemStack itemstack=player.getHeldItem(hand);
 			if(!player.isSneaking())
 			{
 				//Some Mode Uses Without Block
 				if(XItem.modeUseWithoutBlock(XItem.getItemMode(itemstack)))
 				{
 					XItemUse(world,player,null,itemstack,null,(float)player.posX,(float)player.posY,(float)player.posZ,true);
+					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS,itemstack);
 				}
-				return actionResult;
 			}
 			//Turn Mode ( metadata <=> mode )
 			int oldMode=getItemMode(itemstack),newMode=(oldMode+1)%NUM_MODES;
@@ -513,7 +518,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				//TODO: CLIENT MESSAGE
 				player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Now turn to mode "+newMode));
 			}
-			return actionResult;
+			return new ActionResult<ItemStack>(EnumActionResult.FAIL,itemstack);
 		}
 
 		@Override
@@ -536,7 +541,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			}
 		}
 	}
-	
+	/*
+	TODO: WILL BE DELETED
 	//================X-Food================//
 	public static class XFood extends ItemFood
 	{
@@ -561,7 +567,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			player.addPotionEffect(new PotionEffect(MobEffects.SATURATION,(int)Math.round(Math.random()*10),1,true,true));
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION,(int)Math.round(Math.random()*10),2,true,true));
 		}
-	}
+	}*/
 	
 	//================X-Magnet================//
 	public static class XMagnet extends XCraftToolCommon
@@ -631,8 +637,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		//========Item Events========//
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
-			ActionResult<ItemStack> ar=super.onItemRightClick(world,player,hand);
-			ItemStack itemstack=ar.getResult();
+			ItemStack itemstack=player.getHeldItem(hand);
 			//Turn Mode with Cooldown
 			if(!world.isRemote&&player.isSneaking()&&!player.getCooldownTracker().hasCooldown(X_MAGNET))
 			{
@@ -643,9 +648,10 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					//TODO: TRANSLATED CLIENT MESSAGE
 					player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Now turn to mode "+newMode));
 					player.getCooldownTracker().setCooldown(X_MAGNET,20);
+					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS,itemstack);
 				}
 			}
-			return ar;
+			return new ActionResult<ItemStack>(EnumActionResult.FAIL,itemstack);
 		}
 
 		@Override
@@ -722,7 +728,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			this.setHasSubtypes(true);
 			this.setMaxDamage(1024);
 			//Model by Mode
-			this.addPropertyOverride(new ResourceLocation("mode"), new IItemPropertyGetter()
+			this.addPropertyOverride(new ResourceLocation("mode"),new IItemPropertyGetter()
 			{
 				@SideOnly(Side.CLIENT)
 				public float apply(ItemStack stack,@Nullable World worldIn,@Nullable EntityLivingBase entityIn)
@@ -786,8 +792,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		@Override
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
-			ActionResult<ItemStack> result=super.onItemRightClick(world,player,hand);
-			ItemStack itemstack=result.getResult();
+			ItemStack itemstack=player.getHeldItem(hand);
 			//Turn Mode with Cooldown
 			if(!world.isRemote&&player.isSneaking()&&!player.getCooldownTracker().hasCooldown(X_SWORD))
 			{
@@ -798,10 +803,11 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					//TODO: TRANSLATED CLIENT MESSAGE
 					player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Now turn to mode "+newMode));
 					player.getCooldownTracker().setCooldown(X_SWORD,20);
+					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
 				}
 			}
-			else XCraftTools.addToolBoostEffects(player);
-			return result;
+			//else XCraftTools.addToolBoostEffects(player);
+			return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
 		}
 
 		@Override
@@ -817,7 +823,26 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			return true;
 		}
 		
+		@Override
+		public boolean itemInteractionForEntity(ItemStack itemstack,EntityPlayer player,EntityLivingBase target,EnumHand hand)
+		{
+			if(target.world.isRemote) return false;
+			//Enrage Target Without Attack
+			if(target instanceof EntityLiving)
+			{
+				swordEnrageTarget(target.world,player,(EntityLiving)target,getSwordMode(itemstack));
+				return true;
+			}
+			return false;
+		}
+	}
+		
 		public static void swordEnrageTarget(World world,EntityLivingBase attacker,EntityLiving target,int mode)
+		{
+			swordEnrageTarget(world,attacker,target,mode,true);
+		}
+		
+		public static void swordEnrageTarget(World world,EntityLivingBase attacker,EntityLiving target,int mode,boolean generateParticle)
 		{
 			EntityLiving nearestEntity;
 			List<Entity> entities;
@@ -826,6 +851,15 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			{
 				case 1:
 					target.setAttackTarget(target);
+					//Particle
+					if(world instanceof WorldServer)
+					{
+						((WorldServer)world).spawnParticle(EnumParticleTypes.END_ROD,
+								target.posX,target.posY,target.posZ,16,
+								target.width*0.5,target.height*0.5,target.width*0.5,
+								0
+						);
+					}
 					break;
 				case 2:
 					entities=world.loadedEntityList;
@@ -833,7 +867,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					nearestEntity=null;
 					for(Entity entity3 : entities)
 					{
-						if(entity3==null||entity3==target||!(entity3 instanceof EntityLiving)) continue;
+						if(entity3==target||!(entity3 instanceof EntityLiving)) continue;
 						dx=target.posX-entity3.posX;
 						dy=target.posY-entity3.posY;
 						dz=target.posZ-entity3.posZ;
@@ -844,8 +878,11 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 							nearestDistanceSquare=distanceSquare;
 						}
 					}
-					nearestEntity.setAttackTarget(target);
+					//Target
+					if(nearestEntity!=null) nearestEntity.setAttackTarget(target);
 					target.setAttackTarget(nearestEntity);
+					//Particle
+					if(generateParticle) XuphoriumCraft.generateParticleRay(world,nearestEntity,target,32,EnumParticleTypes.END_ROD);
 					break;
 				case 3:
 					entities=world.loadedEntityList;
@@ -856,50 +893,18 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 							dx=target.posX-entity4.posX;
 							dy=target.posY-entity4.posY;
 							dz=target.posZ-entity4.posZ;
-							if(dx*dx+dy*dy+dz*dz<=256)((EntityLiving)entity4).setAttackTarget(target);
+							if(dx*dx+dy*dy+dz*dz<=256)
+							{
+								//Target
+								((EntityLiving)entity4).setAttackTarget(target);
+								//Particle
+								if(generateParticle) XuphoriumCraft.generateParticleRay(world,entity4,target,32,EnumParticleTypes.END_ROD);
+							}
 						}
 					}
 					break;
 			}
 		}
-		
-		@Override
-		public boolean itemInteractionForEntity(ItemStack itemstack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
-		{
-			//Enrage Target Without Attack
-			if(!entity.world.isRemote&&entity!=null&&entity instanceof EntityLiving)
-			{
-				swordEnrageTarget(entity.world,player,(EntityLiving)entity,getSwordMode(itemstack));
-			}
-			return false;
-			/* if(entity.world.isRemote)
-			{
-				return false;
-			}
-			if(entity instanceof net.minecraftforge.common.IShearable)
-			{
-				net.minecraftforge.common.IShearable target =(net.minecraftforge.common.IShearable)entity;
-				BlockPos pos=new BlockPos(entity.posX, entity.posY, entity.posZ);
-				if(target.isShearable(itemstack, entity.world, pos))
-				{
-					java.util.List<ItemStack> drops =target.onSheared(itemstack, entity.world, pos,
-							net.minecraft.enchantment.EnchantmentHelper.getEnchantmentLevel(net.minecraft.init.Enchantments.FORTUNE, itemstack));
-
-					java.util.Random rand =new java.util.Random();
-					for(ItemStack stack : drops)
-					{
-						net.minecraft.entity.item.EntityItem ent =entity.entityDropItem(stack, 1.0F);
-						ent.motionY +=rand.nextFloat() * 0.05F;
-						ent.motionX +=(rand.nextFloat() - rand.nextFloat()) * 0.1F;
-						ent.motionZ +=(rand.nextFloat() - rand.nextFloat()) * 0.1F;
-					}
-					itemstack.damageItem(1, entity);
-				}
-				return true;
-			}
-			return false; */
-		}
-	}
 	
 	//========Tool-Common-2========//
 	public static class XCraftToolCommon2 extends ItemTool
@@ -1088,7 +1093,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public XShield()
 		{
 			super("x_shield",1024,1);
-			this.addPropertyOverride(new ResourceLocation("deactivated"), new IItemPropertyGetter()
+			this.addPropertyOverride(new ResourceLocation("deactivated"),new IItemPropertyGetter()
 			{
 				@SideOnly(Side.CLIENT)
 				public float apply(ItemStack stack,@Nullable World worldIn,@Nullable EntityLivingBase entityIn)

@@ -127,7 +127,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			this(stone,ore,center,true);
 		}
 		
-		public WorldGenOreBall randomize(Random rand, IBlockState randOre, IBlockState randCenter)
+		public WorldGenOreBall randomize(Random rand,IBlockState randOre,IBlockState randCenter)
 		{
 			if(rand.nextInt(10)*rand.nextInt(10)<rand.nextInt(10)+rand.nextInt(10))
 			{
@@ -137,7 +137,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			return this;
 		}
 
-		public boolean generate(World worldIn, Random rand, BlockPos position)
+		public boolean generate(World worldIn,Random rand,BlockPos position)
 		{
 			int x=position.getX();
 			int y=position.getY();
@@ -750,7 +750,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 							cx,cy,cz,
 							8*(1+level/4),
 							0.5,0.5,0.5,
-							0/*,new int[0]*/
+							0
 					);
 				}
 			}

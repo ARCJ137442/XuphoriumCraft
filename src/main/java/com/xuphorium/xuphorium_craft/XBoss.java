@@ -277,7 +277,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	 */
 	public static void redRayHurtEntity(EntityLivingBase attacker,EntityLivingBase entity,double distanceFlag)
 	{
-		generateRedWay(entity.world,attacker.posX,attacker.posY+1.7,attacker.posZ,entity.posX,entity.posY,entity.posZ);
+		generateRedWay(entity.world,attacker.posX,attacker.posY+attacker.getEyeHeight(),attacker.posZ,entity.posX,entity.posY,entity.posZ);
 		if(attacker!=null&&distanceFlag<0) attacker.attackEntityAsMob(entity);
 		else entity.attackEntityFrom(new EntityDamageSource("indirectMagic",attacker),distanceFlag>0?(float)distanceFlag:((float)(Math.abs(distanceFlag))));
 	}
@@ -290,27 +290,15 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	
 	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2)
 	{
-		generateRedWay(world,x1,y1,x2,x2,y2,z2,32);
+		generateRedWay(world,x1,y1,z1,x2,y2,z2,32);
 	}
 	
 	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2,int numParticle)
 	{
-		double dx,dy,dz,step=1/(double)numParticle;
-		if(step==0) return;
-		for(double i=0;i<=1;i+=step)
-		{
-			dx=i*x1+(1-i)*x2;
-			dy=i*y1+(1-i)*y2;
-			dz=i*z1+(1-i)*z2;
-			if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(EnumParticleTypes.REDSTONE,dx,dy,dz,0,0,0,0,0,new int[0]);
-		}
+		XuphoriumCraft.generateParticleRay(world,x1,y1,z1,x2,y2,z2,numParticle,EnumParticleTypes.REDSTONE);
 	}
 	
 	//====Tool Functions====//
-	public static double getDiatance(Entity e1,Entity e2)
-	{
-		return Math.sqrt((e1.posX-e2.posX)*(e1.posX-e2.posX)+(e1.posY-e2.posY)*(e1.posY-e2.posY)+(e1.posZ-e2.posZ)*(e1.posZ-e2.posZ));
-	}
 	
 	//============Entity Classes============//
 	public static class EntityXBoss extends EntityMob implements IRangedAttackMob
@@ -733,7 +721,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			}
 			else if(target!=null)
 			{
-				double targetDistance=getDiatance(this,target);
+				double targetDistance=this.getDistance(target);
 				double dx=target.posX-this.posX;
 				double dy=target.posY-this.posY;
 				double dz=target.posZ-this.posZ;
