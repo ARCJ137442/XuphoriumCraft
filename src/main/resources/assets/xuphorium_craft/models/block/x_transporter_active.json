@@ -3,7 +3,7 @@
 	"textures":
 	{
 		"top": "xuphorium_craft:blocks/x_transporter_top_actived",
-		"side": "xuphorium_craft:blocks/x_transporter_side",
-		"bottom": "xuphorium_craft:blocks/x_transporter_side"
+		"side": "xuphorium_craft:blocks/standard_x_block_base",
+		"bottom": "xuphorium_craft:blocks/standard_x_block_base"
 	}
 }

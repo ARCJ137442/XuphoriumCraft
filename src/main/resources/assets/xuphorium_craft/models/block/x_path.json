@@ -4,8 +4,8 @@
 	{
 		"particle": "xuphorium_craft:blocks/x_path",
 		"top": "xuphorium_craft:blocks/x_path",
-		"side": "xuphorium_craft:blocks/x_path",
-		"bottom": "xuphorium_craft:blocks/x_path"
+		"side": "xuphorium_craft:blocks/x_path_side",
+		"bottom": "xuphorium_craft:blocks/standard_x_block_base"
 	},
 	"elements":
 	[

@@ -3,8 +3,8 @@
 	"pattern":
 	[
 		"xED",
-		"/PE",
-		"//x"
+		"!PE",
+		"/!x"
 	],
 	"key":
 	{
@@ -28,6 +28,11 @@
 		{
 			"item": "xuphorium_craft:x_rod",
 			"data": 0
+		},
+		"!":
+		{
+			"item": "xuphorium_craft:x_rod",
+			"data": 1
 		}
 	},
 	"result":

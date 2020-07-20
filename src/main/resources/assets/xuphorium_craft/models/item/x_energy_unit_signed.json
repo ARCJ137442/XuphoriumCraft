@@ -1,8 +1,6 @@
 {
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "xuphorium_craft:items/x_energy_unit",
-		"layer1": "#sign",
-		"layer2": "#value"
+		"layer0": "xuphorium_craft:items/x_energy_unit"
 	}
 }

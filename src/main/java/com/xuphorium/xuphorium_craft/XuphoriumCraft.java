@@ -14,6 +14,7 @@ import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
@@ -411,6 +412,7 @@ public class XuphoriumCraft
 	//============Xuphorium-Craft Global Classes============//
 	public static class XCraftItemCommon extends Item
 	{
+		//====Register====//
 		public XCraftItemCommon(String name,int maxDamage,int maxStackSize)
 		{
 			this.setMaxDamage(maxDamage);
@@ -418,6 +420,33 @@ public class XuphoriumCraft
 			this.setUnlocalizedName(name);
 			this.setRegistryName(name);
 			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
+		}
+		
+		//====Common Methods====//
+		/**
+		 * Get Item's Mode by NBT.
+		 * @param stack the item stack.
+		 * @return the mode,default 0.
+		 */
+		public static int getItemNBTMode(ItemStack stack)
+		{
+			if(stack.hasTagCompound()&&stack.getTagCompound().hasKey("Mode")) return stack.getTagCompound().getInteger("Mode");
+			return 0;
+		}
+		
+		/**
+		 * Set Item's Mode with NBT.
+		 * @param stack the item stack.
+		 * @return if setting successfully.
+		 */
+		public static boolean setItemNBTMode(ItemStack stack,int mode)
+		{
+			NBTTagCompound compound;
+			if(stack.hasTagCompound()) compound=stack.getTagCompound();
+			else compound=new NBTTagCompound();
+			compound.setInteger("Mode",mode);
+			stack.setTagCompound(compound);
+			return true;
 		}
 	}
 	
@@ -462,7 +491,7 @@ public class XuphoriumCraft
 			BlockPos pos=source.getBlockPos().offset(dispenserFacing);
 			XCraftTools.XItem.XItemUseWithoutCD(
 					source.getWorld(),null,pos,stack,dispenserFacing,
-					(float)position.getX(),(float)position.getY(),(float)position.getZ()
+					(float)(position.getX()+0.5),(float)(position.getY()+0.5),(float)(position.getZ()+0.5)
 			);
 			return stack;
 		}

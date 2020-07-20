@@ -2,19 +2,19 @@
 	"type": "minecraft:crafting_shaped",
 	"pattern":
 	[
-		"#/#",
-		"!s!",
-		"#/#"
+		"c/c",
+		"!p!",
+		"c/c"
 	],
 	"key":
 	{
-		"#":
+		"c":
 		{
-			"item": "xuphorium_craft:x_ingot"
+			"item": "xuphorium_craft:x_crystal"
 		},
-		"s":
+		"p":
 		{
-			"item": "xuphorium_craft:x_crystal_core"
+			"item": "xuphorium_craft:x_pearl"
 		},
 		"/":
 		{

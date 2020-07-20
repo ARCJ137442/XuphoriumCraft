@@ -1,7 +1,7 @@
 {
 	"parent": "xuphorium_craft:item/x_energy_unit_signed",
 	"textures": {
-		"sign": "xuphorium_craft:items/x_energy_unit_overlay_5",
-		"value": "xuphorium_craft:items/x_energy_unit_overlay_positive"
+		"layer1": "xuphorium_craft:items/x_energy_unit_overlay_5",
+		"layer2": "xuphorium_craft:items/x_energy_unit_overlay_positive"
 	}
 }

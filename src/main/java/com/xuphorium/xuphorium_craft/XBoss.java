@@ -127,15 +127,16 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			});
 			return customRender;
 		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityXBossBullet.class,renderManager -> {
-			return new RenderSnowball<EntityXBossBullet>(renderManager,null,Minecraft.getMinecraft().getRenderItem())
+		RenderingRegistry.registerEntityRenderingHandler(
+			EntityXBossBullet.class,renderManager ->new RenderSnowball<EntityXBossBullet>(
+				renderManager,null,Minecraft.getMinecraft().getRenderItem()
+			)
 			{
 				public ItemStack getStackToRender(EntityXBossBullet entity)
 				{
-					return new ItemStack(XCraftTools.X_ITEM,1);
+					return new ItemStack(XCraftMaterials.X_CRYSTAL,1);
 				}
-			};
-		});
+			});
 	}
 	
 	//====X-Boss's Punch====//
@@ -187,27 +188,35 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		try
 		{
 			List<Entity> entities=world.loadedEntityList;
-			for(Entity entity : entities)
+			for(Entity entity: entities)
 			{
-				if(entity instanceof EntityLivingBase)
+				try
 				{
-					//Ignore Special Entities
-					if(ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer) continue;
-					//Select
-					double dx=x-entity.posX;
-					double dy=y-entity.posY;
-					double dz=z-entity.posZ;
-					double distanceSquare=dx*dx+dy*dy+dz*dz;
-					if((radiusFlag==0&&Math.random()<Math.random())||
-						radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
+					if(entity instanceof EntityLivingBase)
 					{
-						//Damage the Target
-						redRayHurtEntity(x,y,z,(EntityLivingBase)entity,attackDamageFlag>=0?attackDamageFlag:Math.sqrt(distanceSquare));
+						//Ignore Special Entities
+						if(ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer)
+							continue;
+						//Select
+						double dx=x-entity.posX;
+						double dy=y-entity.posY;
+						double dz=z-entity.posZ;
+						double distanceSquare=dx*dx+dy*dy+dz*dz;
+						if((radiusFlag==0&&Math.random()<Math.random())||
+								radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
+						{
+							//Damage the Target
+							redRayHurtEntity(x,y,z,(EntityLivingBase)entity,attackDamageFlag >= 0?attackDamageFlag:Math.sqrt(distanceSquare));
+						}
 					}
+				}
+				catch(Exception e)
+				{
+					XCraftBlocks.LOGGER.warn(e);
 				}
 			}
 		}
-		catch(Exception e)
+		catch(Exception ignored)
 		{
 		
 		}
@@ -232,10 +241,17 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	                                            double radiusFlag,double attackDamageFlag,
 	                                            boolean ignorePlayer,boolean ignoreXBoss)
 	{
+		redRayHurtNearbyEntities(world, attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(), attacker.posZ,radiusFlag, attackDamageFlag, ignorePlayer, ignoreXBoss);
+	}
+	
+	public static void redRayHurtNearbyEntities(World world,EntityLivingBase attacker,double sourceX,double sourceY,double sourceZ,
+	                                            double radiusFlag,double attackDamageFlag,
+	                                            boolean ignorePlayer,boolean ignoreXBoss)
+	{
 		try
 		{
-			/**
-			 * damage : The same as attackDamageFlag
+			/*
+			  damage : The same as attackDamageFlag
 			 */
 			double damage=attackDamageFlag;
 			if(attacker!=null&&attackDamageFlag<-1) damage=-2;//means uses as attacker's attack
@@ -248,20 +264,23 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 					//Ignore Special Entities
 					if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer) continue;
 					//Select
-					double dx=attacker.posX-entity.posX;
-					double dy=attacker.posY+attacker.getEyeHeight()-entity.posY;
-					double dz=attacker.posZ-entity.posZ;
+					double dx=sourceX-entity.posX;
+					double dy=sourceY-entity.posY;
+					double dz=sourceZ-entity.posZ;
 					double distanceSquare=dx*dx+dy*dy+dz*dz;
 					if((radiusFlag==0&&Math.random()<Math.random())||
 						radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
 					{
+						//damage -> damageFlag
+						damage=(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage;
 						//Damage the Target
-						redRayHurtEntity(attacker,(EntityLivingBase)entity,(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage);
+						if(attacker!=null) redRayHurtEntity(attacker,sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
+						else redRayHurtEntity(sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
 					}
 				}
 			}
 		}
-		catch(Exception e)
+		catch(Exception ignored)
 		{
 		
 		}
@@ -275,17 +294,30 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	/**
 	 * @param distanceFlag =0 : attack as attacker. >0 : static damage. <0 : damage by distance
 	 */
-	public static void redRayHurtEntity(EntityLivingBase attacker,EntityLivingBase entity,double distanceFlag)
+	public static void redRayHurtEntity(EntityLivingBase attacker,EntityLivingBase target,double distanceFlag)
 	{
-		generateRedWay(entity.world,attacker.posX,attacker.posY+attacker.getEyeHeight(),attacker.posZ,entity.posX,entity.posY,entity.posZ);
-		if(attacker!=null&&distanceFlag<0) attacker.attackEntityAsMob(entity);
-		else entity.attackEntityFrom(new EntityDamageSource("indirectMagic",attacker),distanceFlag>0?(float)distanceFlag:((float)(Math.abs(distanceFlag))));
+		redRayHurtEntity(attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(), attacker.posZ, target, distanceFlag);
 	}
 	
-	public static void redRayHurtEntity(double x,double y,double z,EntityLivingBase entity,double damage)
+	public static void redRayHurtEntity(EntityLivingBase attacker,
+	                                    double sourceX,double sourceY,double sourceZ,
+	                                    EntityLivingBase target,double distanceFlag)
 	{
-		generateRedWay(entity.world,x,y,z,entity.posX,entity.posY,entity.posZ);
-		entity.attackEntityFrom(new EntityDamageSource("indirectMagic",null),(float)damage);
+		generateRedWay(target.world,sourceX,sourceY,sourceZ,target.posX,target.posY,target.posZ);
+		//Attack Entity as Direct Attack
+		if(distanceFlag<0)
+		{
+			if(attacker instanceof EntityPlayer) ((EntityPlayer)attacker).attackTargetEntityWithCurrentItem(target);
+			else attacker.attackEntityAsMob(target);
+		}
+		//Attack Entity as Magic
+		else target.attackEntityFrom(new EntityDamageSource("indirectMagic",attacker),distanceFlag>0?(float)distanceFlag:((float)(Math.abs(distanceFlag))));
+	}
+	
+	public static void redRayHurtEntity(double x,double y,double z,EntityLivingBase target,double damage)
+	{
+		generateRedWay(target.world,x,y,z,target.posX,target.posY,target.posZ);
+		target.attackEntityFrom(new EntityDamageSource("indirectMagic",null),(float)damage);
 	}
 	
 	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2)
@@ -488,6 +520,14 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		public boolean attackEntityFrom(DamageSource source,float amount)
 		{
 			//====Block Damage====//
+			//Immune Directly
+			if(source==DamageSource.CACTUS||source==DamageSource.DROWN||source==DamageSource.LIGHTNING_BOLT||
+				source==DamageSource.MAGIC||source==DamageSource.LAVA||source==DamageSource.FIREWORKS||
+				source==DamageSource.IN_WALL||source==DamageSource.HOT_FLOOR||source==DamageSource.FALLING_BLOCK||
+				source==DamageSource.DRAGON_BREATH||source==DamageSource.CRAMMING||source==DamageSource.WITHER
+			) return false;
+			//Immune Thorns Damage
+			if(source instanceof EntityDamageSource&&((EntityDamageSource)source).getIsThornsDamage()) return false;
 			//Rebound
 			if(source.getImmediateSource() instanceof EntityArrow||source==DamageSource.FALL||Math.random()<Math.random())
 			{
@@ -495,23 +535,23 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,4);
 				return false;
 			}
-			//Immune Directly
-			if(source==DamageSource.CACTUS||source==DamageSource.DROWN||source==DamageSource.LIGHTNING_BOLT||
-				source==DamageSource.MAGIC||source==DamageSource.LAVA||source==DamageSource.FIREWORKS||
-				source==DamageSource.IN_WALL||source==DamageSource.HOT_FLOOR||source==DamageSource.FALLING_BLOCK||
-				source==DamageSource.DRAGON_BREATH||source==DamageSource.CRAMMING||source==DamageSource.WITHER) return false;
-			//Immune Thorns Damage
-			if(source instanceof EntityDamageSource&&((EntityDamageSource)source).getIsThornsDamage()) return false;
 			
 			//====Suffer From Damage====//
-			if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(EnumParticleTypes.REDSTONE,this.posX,this.posY,this.posZ,12,1,2,1,0,new int[0]);
-			
+			//Particle
+			if(world instanceof WorldServer)
+			{
+				((WorldServer)world).spawnParticle(EnumParticleTypes.REDSTONE,
+						this.posX,this.posY,this.posZ,12,
+						this.width*0.5,this.height*0.5,this.width*0.5,
+						0
+				);
+			}
+			//Potion Effects
 			this.clearActivePotions();
 			this.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,1000000,2,true,false));
-			this.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION,1000000,2,true,false));
 			this.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,40,2,true,false));
 			this.addPotionEffect(new PotionEffect(MobEffects.INVISIBILITY,40,1,true,false));
-			
+			//Spawn Bullet
 			if(!world.isRemote)
 			{
 				double dx,dy,dz;EntityXBossBullet bullet;
@@ -521,7 +561,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 					{
 						for(dz=-1D;dz<2;dz+=2)
 						{
-							bullet=new EntityXBossBullet(world,this.posX+dx,this.posY+dy,this.posZ+dz,0,-0.0375,0);
+							bullet=new EntityXBossBullet(world,this,this.posX+dx,this.posY+dy,this.posZ+dz,dx*0.01,-0.0375,dz*0.01);
 							bullet.setVelocity(dx,dy,dz);
 							world.spawnEntity(bullet);
 						}
@@ -530,8 +570,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				redRayHurtNearbyEntities(world,this,8,-2,false,true);
 			}
 			
-			if(source.getImmediateSource()instanceof EntityPotion)return false;
-			if(source==DamageSource.FALL)return false;
 			return super.attackEntityFrom(source,amount);
 		}
 		
@@ -727,18 +765,20 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				double dz=target.posZ-this.posZ;
 				if(targetDistance>=8)
 				{
+					//Motion
 					this.motionX+=dx/targetDistance*0.2;
 					this.motionY+=dy/targetDistance*0.2;
 					this.motionZ+=dz/targetDistance*0.2;
+					//Particle
+					if(world instanceof WorldServer) world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
 				}
-				if(!world.isRemote) world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
 			}
 		}
 	}
 	
 	public static class EntityXBossBullet extends EntityFireball
 	{
-		public Entity target;
+		//public Entity target;
 		
 		protected void initSize()
 		{
@@ -761,7 +801,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		{
 			this(worldIn,x,y,z,ax,ay,az);
 			this.shootingEntity=shooter;
-			this.initSize();
 		}
 		
 		public EntityXBossBullet(World worldIn,EntityLivingBase shooter,double ax,double ay,double az)
@@ -770,6 +809,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			this.initSize();
 		}
 		
+		//========Functional Methods========//
 		protected void onImpact(RayTraceResult result)
 		{
 			if(!this.world.isRemote)
@@ -782,10 +822,23 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 						//result.entityHit.setFire(20);
 					}
 				}
-				this.playSound(SoundEvents.BLOCK_ANVIL_LAND,1.0F,1.0F);
-				XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,2);
+				this.explode();
+				this.setDead();
 			}
-			this.setDead();
+		}
+		
+		public void explode()
+		{
+			if(!this.world.isRemote)
+			{
+				//Sound
+				this.playSound(SoundEvents.BLOCK_ANVIL_LAND,0.5F,1.0F);
+				//Effects
+				XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,2);
+				XBoss.redRayHurtNearbyEntities(world,this.shootingEntity,this.posX,this.posY,this.posZ,5,4,this.shootingEntity instanceof EntityPlayer,this.shootingEntity instanceof EntityXBoss);
+			}
+			//Particle
+			if(world instanceof WorldServer) world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE,this.posX,this.posY,this.posZ,0,0,0);
 		}
 		
 		public boolean canBeCollidedWith()
@@ -793,8 +846,19 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			return false;
 		}
 		
+		protected boolean isFireballFiery()
+		{
+			return false;
+		}
+		
+		protected EnumParticleTypes getParticleType()
+		{
+			return EnumParticleTypes.SPELL_INSTANT;
+		}
+		
 		public boolean attackEntityFrom(DamageSource source,float amount)
 		{
+			this.explode();
 			return false;
 		}
 		

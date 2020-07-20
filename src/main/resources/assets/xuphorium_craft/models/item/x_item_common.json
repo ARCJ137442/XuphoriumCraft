@@ -1,7 +1,6 @@
 {
 	"parent": "minecraft:item/handheld",
 	"textures": {
-		"layer0": "xuphorium_craft:items/x_item",
-		"layer1": "#overlay"
+		"layer0": "xuphorium_craft:items/x_item"
 	}
 }

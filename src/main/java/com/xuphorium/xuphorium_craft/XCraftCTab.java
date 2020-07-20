@@ -110,20 +110,6 @@ public class XCraftCTab extends XuphoriumCraftElements.ModElement
 				new ItemStack(XCraftMaterials.X_ROD,1,1-i),
 				Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_ROD,1,i)));
 		}
-		//X_ITEM/X_SWORD
-		for(i=0;i<4;i++)
-		{
-			GameRegistry.addShapelessRecipe(
-				new ResourceLocation("xuphorium_craft:x_item_t"+(i+1)%4),
-				new ResourceLocation("x_item_"+(i+1)%4),
-				new ItemStack(XCraftTools.X_ITEM,1,(i+1)%4),
-				Ingredient.fromStacks(new ItemStack(XCraftTools.X_ITEM,1,i)));
-			GameRegistry.addShapelessRecipe(
-				new ResourceLocation("xuphorium_craft:x_sword_t"+(i+1)%4),
-				new ResourceLocation("x_sword_"+(i+1)%4),
-				new ItemStack(XCraftTools.X_SWORD,1,(i+1)%4),
-				Ingredient.fromStacks(new ItemStack(XCraftTools.X_SWORD,1,i)));
-		}
 		//X_ENERGY_UNIT
 		GameRegistry.addShapedRecipe(
 			new ResourceLocation("xuphorium_craft:x_energy_unit_0"),
@@ -155,124 +141,124 @@ public class XCraftCTab extends XuphoriumCraftElements.ModElement
 		}
 		//X_TRANSPORTER
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_transporter"),
-				null,
-				new ItemStack(XCraftBlocks.X_TRANSPORTER,4),
-				new Object[]
-				{
-					"CCC",
-					"#P#",
-					"###",
-					'C',new ItemStack(XCraftMaterials.X_CATALYST),
-					'#',new ItemStack(XCraftMaterials.X_INGOT),
-					'P',new ItemStack(XCraftBlocks.X_PATH)
-				});
+			new ResourceLocation("xuphorium_craft:x_transporter"),
+			null,
+			new ItemStack(XCraftBlocks.X_TRANSPORTER,4),
+			new Object[]
+			{
+				"CCC",
+				"#P#",
+				"###",
+				'C',new ItemStack(XCraftMaterials.X_CATALYST),
+				'#',new ItemStack(XCraftMaterials.X_INGOT),
+				'P',new ItemStack(XCraftBlocks.X_PATH)
+			});
 		//X_RESOURCE_BLOCKS
 		//Diamond
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_diamond_block"),
-				null,
-				new ItemStack(XCraftBlocks.X_DIAMOND_BLOCK),
-				new Object[]
-				{
-					"###",
-					"#F#",
-					"###",
-					'#',new ItemStack(XCraftMaterials.X_DIAMOND),
-					'F',new ItemStack(XCraftMaterials.X_FUEL)
-				});
-				GameRegistry.addShapelessRecipe(
-					new ResourceLocation("xuphorium_craft:x_diamond_from_block"),
-					new ResourceLocation("x_diamond"),
-					new ItemStack(XCraftMaterials.X_DIAMOND,8),
-					Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_DIAMOND_BLOCK)),
-					Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
-				);
+			new ResourceLocation("xuphorium_craft:x_diamond_block"),
+			null,
+			new ItemStack(XCraftBlocks.X_DIAMOND_BLOCK),
+			new Object[]
+			{
+				"###",
+				"#F#",
+				"###",
+				'#',new ItemStack(XCraftMaterials.X_DIAMOND),
+				'F',new ItemStack(XCraftMaterials.X_FUEL)
+			});
+		GameRegistry.addShapelessRecipe(
+			new ResourceLocation("xuphorium_craft:x_diamond_from_block"),
+			new ResourceLocation("x_diamond"),
+			new ItemStack(XCraftMaterials.X_DIAMOND,8),
+			Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_DIAMOND_BLOCK)),
+			Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
+		);
 		//Emerald
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_emerald_block"),
-				null,
-				new ItemStack(XCraftBlocks.X_EMERALD_BLOCK),
-				new Object[]
-				{
-					"###",
-					"#F#",
-					"###",
-					'#',new ItemStack(XCraftMaterials.X_EMERALD),
-					'F',new ItemStack(XCraftMaterials.X_FUEL)
-				});
-				GameRegistry.addShapelessRecipe(
-					new ResourceLocation("xuphorium_craft:x_emerald_from_block"),
-					new ResourceLocation("x_emerald"),
-					new ItemStack(XCraftMaterials.X_EMERALD,8),
-					Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_EMERALD_BLOCK)),
-					Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
-				);
+			new ResourceLocation("xuphorium_craft:x_emerald_block"),
+			null,
+			new ItemStack(XCraftBlocks.X_EMERALD_BLOCK),
+			new Object[]
+			{
+				"###",
+				"#F#",
+				"###",
+				'#',new ItemStack(XCraftMaterials.X_EMERALD),
+				'F',new ItemStack(XCraftMaterials.X_FUEL)
+			});
+		GameRegistry.addShapelessRecipe(
+			new ResourceLocation("xuphorium_craft:x_emerald_from_block"),
+			new ResourceLocation("x_emerald"),
+			new ItemStack(XCraftMaterials.X_EMERALD,8),
+			Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_EMERALD_BLOCK)),
+			Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
+		);
 		//Ruby
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_ruby_block"),
-				null,
-				new ItemStack(XCraftBlocks.X_RUBY_BLOCK),
-				new Object[]
-				{
-					"###",
-					"#F#",
-					"###",
-					'#',new ItemStack(XCraftMaterials.X_RUBY),
-					'F',new ItemStack(XCraftMaterials.X_FUEL)
-				});
-				GameRegistry.addShapelessRecipe(
-					new ResourceLocation("xuphorium_craft:x_ruby_from_block"),
-					new ResourceLocation("x_ruby"),
-					new ItemStack(XCraftMaterials.X_RUBY,8),
-					Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_RUBY_BLOCK)),
-					Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
-				);
+			new ResourceLocation("xuphorium_craft:x_ruby_block"),
+			null,
+			new ItemStack(XCraftBlocks.X_RUBY_BLOCK),
+			new Object[]
+			{
+				"###",
+				"#F#",
+				"###",
+				'#',new ItemStack(XCraftMaterials.X_RUBY),
+				'F',new ItemStack(XCraftMaterials.X_FUEL)
+			});
+		GameRegistry.addShapelessRecipe(
+			new ResourceLocation("xuphorium_craft:x_ruby_from_block"),
+			new ResourceLocation("x_ruby"),
+			new ItemStack(XCraftMaterials.X_RUBY,8),
+			Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_RUBY_BLOCK)),
+			Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
+		);
 		//Advanced
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_metal_block"),
-				null,
-				new ItemStack(XCraftBlocks.X_METAL_BLOCK),
-				new Object[]
-				{
-					"###",
-					"#F#",
-					"###",
-					'#',new ItemStack(XCraftMaterials.X_METAL),
-					'F',new ItemStack(XCraftMaterials.X_FUEL)
-				});
+			new ResourceLocation("xuphorium_craft:x_metal_block"),
+			null,
+			new ItemStack(XCraftBlocks.X_METAL_BLOCK),
+			new Object[]
+			{
+				"###",
+				"#F#",
+				"###",
+				'#',new ItemStack(XCraftMaterials.X_METAL),
+				'F',new ItemStack(XCraftMaterials.X_FUEL)
+			});
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_covalent_solid"),
-				null,
-				new ItemStack(XCraftBlocks.X_COVALENT_SOLID),
-				new Object[]
-				{
-					"###",
-					"#F#",
-					"###",
-					'#',new ItemStack(XCraftMaterials.X_COVALENT_SHARD),
-					'F',new ItemStack(XCraftMaterials.X_FUEL)
-				});
+			new ResourceLocation("xuphorium_craft:x_covalent_solid"),
+			null,
+			new ItemStack(XCraftBlocks.X_COVALENT_SOLID),
+			new Object[]
+			{
+				"###",
+				"#F#",
+				"###",
+				'#',new ItemStack(XCraftMaterials.X_COVALENT_SHARD),
+				'F',new ItemStack(XCraftMaterials.X_FUEL)
+			});
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_phase_fiber_block"),
-				null,
-				new ItemStack(XCraftBlocks.X_PHASE_FIBER_BLOCK),
-				new Object[]
-				{
-					"%%",
-					"%%",
-					'%',new ItemStack(XCraftMaterials.X_PHASE_FIBER)
-				});
+			new ResourceLocation("xuphorium_craft:x_phase_fiber_block"),
+			null,
+			new ItemStack(XCraftBlocks.X_PHASE_FIBER_BLOCK),
+			new Object[]
+			{
+				"%%",
+				"%%",
+				'%',new ItemStack(XCraftMaterials.X_PHASE_FIBER)
+			});
 		GameRegistry.addShapedRecipe(
-				new ResourceLocation("xuphorium_craft:x_phase_web_block"),
-				null,
-				new ItemStack(XCraftBlocks.X_PHASE_WEB_BLOCK),
-				new Object[]
-				{
-					"##",
-					"##",
-					'#',new ItemStack(XCraftMaterials.X_PHASE_WEB)
-				});
+			new ResourceLocation("xuphorium_craft:x_phase_web_block"),
+			null,
+			new ItemStack(XCraftBlocks.X_PHASE_WEB_BLOCK),
+			new Object[]
+			{
+				"##",
+				"##",
+				'#',new ItemStack(XCraftMaterials.X_PHASE_WEB)
+			});
 		//GameRegistry.addSmelting(new ItemStack(X_DUST_BLOCK,1),new ItemStack(X_BLOCK,1),1F);
 		//X_ORE_SMELTING
 		GameRegistry.addSmelting(new ItemStack(XCraftBlocks.X_ORE,1),new ItemStack(XCraftMaterials.X_INGOT,1),5F);

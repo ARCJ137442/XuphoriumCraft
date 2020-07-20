@@ -1,0 +1,39 @@
+{
+	"parent": "xuphorium_craft:item/x_item_common",
+	"textures":
+	{
+		"layer1": "xuphorium_craft:items/x_item_overlay_0"
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"mode": 1
+			},
+			"model": "xuphorium_craft:item/x_item_1"
+		},
+		{
+			"predicate": {
+				"mode": 2
+			},
+			"model": "xuphorium_craft:item/x_item_2"
+		},
+		{
+			"predicate": {
+				"mode": 3
+			},
+			"model": "xuphorium_craft:item/x_item_3"
+		},
+		{
+			"predicate": {
+				"mode": 4
+			},
+			"model": "xuphorium_craft:item/x_item_4"
+		},
+		{
+			"predicate": {
+				"mode": 5
+			},
+			"model": "xuphorium_craft:item/x_item_5"
+		}
+	]
+}

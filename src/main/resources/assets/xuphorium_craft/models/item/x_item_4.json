@@ -2,6 +2,6 @@
 	"parent": "xuphorium_craft:item/x_item_common",
 	"textures":
 	{
-		"overlay": "xuphorium_craft:items/x_item_overlay_4"
+		"layer1": "xuphorium_craft:items/x_item_overlay_4"
 	}
 }
