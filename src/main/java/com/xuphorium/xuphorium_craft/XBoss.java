@@ -172,59 +172,31 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	
 	//====X-Boss's Red Ray====//
 	/**
-	 * No Attacker Hurt (Use for X-Item's Mod 5)
-	 * @param attackDamageFlag
-	 *  >=0 : const damage as the flag.
-	 *  negative number : uses distance as damage.
-	 * @param radiusFlag
-	 *  positive number : uses distance to select target.
-	 *  0 : random select target all the list.
-	 *  negative number : random select target in distance.
+	 * @see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
 	 */
 	public static void redRayHurtNearbyEntities(World world,double x,double y,double z,
 	                                            double radiusFlag,double attackDamageFlag,
 	                                            boolean ignorePlayer,boolean ignoreXBoss)
 	{
-		try
-		{
-			List<Entity> entities=world.loadedEntityList;
-			for(Entity entity: entities)
-			{
-				try
-				{
-					if(entity instanceof EntityLivingBase)
-					{
-						//Ignore Special Entities
-						if(ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer)
-							continue;
-						//Select
-						double dx=x-entity.posX;
-						double dy=y-entity.posY;
-						double dz=z-entity.posZ;
-						double distanceSquare=dx*dx+dy*dy+dz*dz;
-						if((radiusFlag==0&&Math.random()<Math.random())||
-								radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
-						{
-							//Damage the Target
-							redRayHurtEntity(x,y,z,(EntityLivingBase)entity,attackDamageFlag >= 0?attackDamageFlag:Math.sqrt(distanceSquare));
-						}
-					}
-				}
-				catch(Exception e)
-				{
-					XCraftBlocks.LOGGER.warn(e);
-				}
-			}
-		}
-		catch(Exception ignored)
-		{
-		
-		}
+		redRayHurtNearbyEntities(world,null, x, y, z, radiusFlag, attackDamageFlag, ignorePlayer, ignoreXBoss);
 	}
 	
+	/**
+	 * @see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
+	 */
 	public static void redRayHurtNearbyEntities(World world,double x,double y,double z,double radiusFlag,double attackDamageFlag)
 	{
 		redRayHurtNearbyEntities(world,x,y,z,radiusFlag,attackDamageFlag,false,false);
+	}
+	
+	/**
+	 * @see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
+	 */
+	public static void redRayHurtNearbyEntities(World world,EntityLivingBase attacker,
+	                                            double radiusFlag,double attackDamageFlag,
+	                                            boolean ignorePlayer,boolean ignoreXBoss)
+	{
+		redRayHurtNearbyEntities(world, attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(), attacker.posZ,radiusFlag, attackDamageFlag, ignorePlayer, ignoreXBoss);
 	}
 	
 	/**
@@ -237,13 +209,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	 *  0 : random select target all the list.
 	 *  negative number : random select target in distance.
 	 */
-	public static void redRayHurtNearbyEntities(World world,EntityLivingBase attacker,
-	                                            double radiusFlag,double attackDamageFlag,
-	                                            boolean ignorePlayer,boolean ignoreXBoss)
-	{
-		redRayHurtNearbyEntities(world, attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(), attacker.posZ,radiusFlag, attackDamageFlag, ignorePlayer, ignoreXBoss);
-	}
-	
 	public static void redRayHurtNearbyEntities(World world,EntityLivingBase attacker,double sourceX,double sourceY,double sourceZ,
 	                                            double radiusFlag,double attackDamageFlag,
 	                                            boolean ignorePlayer,boolean ignoreXBoss)
@@ -280,9 +245,9 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				}
 			}
 		}
-		catch(Exception ignored)
+		catch(Exception exception)
 		{
-		
+			XuphoriumCraft.LOGGER.warn(exception);
 		}
 	}
 	
@@ -292,18 +257,21 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	}
 	
 	/**
-	 * @param distanceFlag =0 : attack as attacker. >0 : static damage. <0 : damage by distance
+	 * @see #redRayHurtEntity(EntityLivingBase,double,double,double,EntityLivingBase,double)
 	 */
 	public static void redRayHurtEntity(EntityLivingBase attacker,EntityLivingBase target,double distanceFlag)
 	{
 		redRayHurtEntity(attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(), attacker.posZ, target, distanceFlag);
 	}
 	
+	/**
+	 * @param distanceFlag '=0'"' : attack as attacker. '>0' : static damage. '<0' : damage by distance
+	 */
 	public static void redRayHurtEntity(EntityLivingBase attacker,
 	                                    double sourceX,double sourceY,double sourceZ,
 	                                    EntityLivingBase target,double distanceFlag)
 	{
-		generateRedWay(target.world,sourceX,sourceY,sourceZ,target.posX,target.posY,target.posZ);
+		if(target==null||target.isDead) return;
 		//Attack Entity as Direct Attack
 		if(distanceFlag<0)
 		{
@@ -312,12 +280,16 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		}
 		//Attack Entity as Magic
 		else target.attackEntityFrom(new EntityDamageSource("indirectMagic",attacker),distanceFlag>0?(float)distanceFlag:((float)(Math.abs(distanceFlag))));
+		generateRedWay(target.world,sourceX,sourceY,sourceZ,target.posX,target.posY,target.posZ);
 	}
 	
 	public static void redRayHurtEntity(double x,double y,double z,EntityLivingBase target,double damage)
 	{
-		generateRedWay(target.world,x,y,z,target.posX,target.posY,target.posZ);
-		target.attackEntityFrom(new EntityDamageSource("indirectMagic",null),(float)damage);
+		if(target!=null&&!target.isDead)
+		{
+			generateRedWay(target.world,x,y,z,target.posX,target.posY,target.posZ);
+			target.attackEntityFrom(new EntityDamageSource("indirectMagic",null),(float)damage);
+		}
 	}
 	
 	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2)
@@ -745,6 +717,13 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		public void onUpdate()
 		{
 			super.onUpdate();
+			//No Clip
+			/*this.noClip = true;
+			super.onUpdate();
+			this.noClip = false;*/
+			//Tick set
+			this.setNoGravity(true);
+			//Boss Bar
 			this.bossInfo.setPercent(this.getHealth()/this.getMaxHealth());
 			if(--randomHurtTick<0)
 			{

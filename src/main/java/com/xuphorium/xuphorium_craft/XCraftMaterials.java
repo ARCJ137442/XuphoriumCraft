@@ -1,7 +1,7 @@
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
-import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -11,10 +11,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 
-import net.minecraftforge.client.event.ModelRegistryEvent;
-
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.World;
 
 import net.minecraft.util.NonNullList;
@@ -22,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.ActionResult;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item;
@@ -37,22 +32,9 @@ import net.minecraft.block.state.IBlockState;
 
 import net.minecraft.creativetab.CreativeTabs;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.Enchantments;
-
 import net.minecraft.potion.PotionEffect;
 
 import net.minecraft.init.MobEffects;
-
-import java.util.Random;
-
-/*import com.xuphorium.xuphorium_craft.*;
-import com.xuphorium.xuphorium_craft.common.*;
-import com.xuphorium.xuphorium_craft.proxy.*;
-import com.xuphorium.xuphorium_craft.entity.*;
-import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*;*/
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftMaterials extends XuphoriumCraftElements.ModElement
@@ -102,9 +84,6 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_star")
 	public static final Item X_STAR=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_fuel")
-	public static final Item X_FUEL=null;
-	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_metal")
 	public static final Item X_METAL=null;
 	
@@ -124,16 +103,16 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	public static final Item X_ENERGY_UNIT=null;
 	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_alpha_metal")
-	public static final Item X_ALPHA_METAL=null;
+	public static final Block X_ALPHA_METAL=null;
 	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_gamma_metal")
-	public static final Item X_GAMMA_METAL=null;
+	public static final Block X_GAMMA_METAL=null;
 	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_delta_metal")
-	public static final Item X_DELTA_METAL=null;
+	public static final Block X_DELTA_METAL=null;
 	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_omega_metal")
-	public static final Item X_OMEGA_METAL=null;
+	public static final Block X_OMEGA_METAL=null;
 	
 	public XCraftMaterials(XuphoriumCraftElements instance)
 	{
@@ -144,35 +123,39 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	public void initElements()
 	{
 		//I
-		elements.items.add(()->new XDust());
-		elements.items.add(()->new XIngot());
-		elements.items.add(()->new XNugget());
-		elements.items.add(()->new XRod());
+		elements.items.add(XDust::new);
+		elements.items.add(XIngot::new);
+		elements.items.add(XNugget::new);
+		elements.items.add(XRod::new);
 		//II
-		elements.items.add(()->new XCatalyst());
-		elements.items.add(()->new XCrystalLeft());
-		elements.items.add(()->new XCrystalRight());
-		elements.items.add(()->new XCrystal());
-		elements.items.add(()->new XCrystalCore());
-		elements.items.add(()->new XDiamond());
-		elements.items.add(()->new XEmerald());
-		elements.items.add(()->new XRuby());
-		elements.items.add(()->new XPearl());
-		elements.items.add(()->new XEye());
-		elements.items.add(()->new XStar());
-		elements.items.add(()->new XFuel());
-		//III
-		elements.items.add(()->new XMetal());
-		elements.items.add(()->new XIonPiece());
-		elements.items.add(()->new XCovalentShard());
-		elements.items.add(()->new XPhaseFiber());
-		elements.items.add(()->new XPhaseWeb());
-		elements.items.add(()->new XEnergyUnit());
-		//IV
-		elements.items.add(()->new XAlphaMetal());
-		elements.items.add(()->new XGammaMetal());
-		elements.items.add(()->new XDeltaMetal());
-		elements.items.add(()->new XOmegaMetal());
+		elements.items.add(XCatalyst::new);
+		elements.items.add(XCrystalLeft::new);
+		elements.items.add(XCrystalRight::new);
+		elements.items.add(XCrystal::new);
+		elements.items.add(XCrystalCore::new);
+		elements.items.add(XDiamond::new);
+		elements.items.add(XEmerald::new);
+		elements.items.add(XRuby::new);
+		elements.items.add(XPearl::new);
+		elements.items.add(XEye::new);
+		elements.items.add(XStar::new);
+		//III - Metal,Ion,Covalent,PhaseFiber,EnergyUnit
+		elements.items.add(XMetal::new);
+		elements.items.add(XIonPiece::new);
+		elements.items.add(XCovalentShard::new);
+		elements.items.add(XPhaseFiber::new);
+		elements.items.add(XPhaseWeb::new);
+		elements.items.add(XEnergyUnit::new);
+		//IV - X_METALS(A,G,D,O)
+		//Block_
+		elements.blocks.add(()->new BlockXMetalsCommon("x_alpha_metal"));
+		elements.items.add(()->new XMetalsCommon(X_ALPHA_METAL));
+		elements.blocks.add(()->new BlockXMetalsCommon("x_gamma_metal"));
+		elements.items.add(()->new XMetalsCommon(X_GAMMA_METAL));
+		elements.blocks.add(()->new BlockXMetalsCommon("x_delta_metal"));
+		elements.items.add(()->new XMetalsCommon(X_DELTA_METAL));
+		elements.blocks.add(()->new BlockXMetalsCommon("x_omega_metal"));
+		elements.items.add(()->new XMetalsCommon(X_OMEGA_METAL));
 	}
 
 	@Override
@@ -196,42 +179,28 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 		ModelLoader.setCustomModelResourceLocation(X_PEARL,0,new ModelResourceLocation("xuphorium_craft:x_pearl","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_EYE,0,new ModelResourceLocation("xuphorium_craft:x_eye","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_STAR,0,new ModelResourceLocation("xuphorium_craft:x_star","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_FUEL,0,new ModelResourceLocation("xuphorium_craft:x_fuel","inventory"));
 		//III
 		ModelLoader.setCustomModelResourceLocation(X_METAL,0,new ModelResourceLocation("xuphorium_craft:x_metal","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_ION_PIECE,0,new ModelResourceLocation("xuphorium_craft:x_ion_piece","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_COVALENT_SHARD,0,new ModelResourceLocation("xuphorium_craft:x_covalent_shard","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_PHASE_FIBER,0,new ModelResourceLocation("xuphorium_craft:x_phase_fiber","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_PHASE_WEB,0,new ModelResourceLocation("xuphorium_craft:x_phase_web","inventory"));
-		/*ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,0,new ModelResourceLocation("xuphorium_craft:x_energy_unit_n6","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,1,new ModelResourceLocation("xuphorium_craft:x_energy_unit_n5","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,2,new ModelResourceLocation("xuphorium_craft:x_energy_unit_n4","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,3,new ModelResourceLocation("xuphorium_craft:x_energy_unit_n3","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,4,new ModelResourceLocation("xuphorium_craft:x_energy_unit_n2","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,5,new ModelResourceLocation("xuphorium_craft:x_energy_unit_n1","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,6,new ModelResourceLocation("xuphorium_craft:x_energy_unit_0","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,7,new ModelResourceLocation("xuphorium_craft:x_energy_unit_p1","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,8,new ModelResourceLocation("xuphorium_craft:x_energy_unit_p2","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,9,new ModelResourceLocation("xuphorium_craft:x_energy_unit_p3","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,10,new ModelResourceLocation("xuphorium_craft:x_energy_unit_p4","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,11,new ModelResourceLocation("xuphorium_craft:x_energy_unit_p5","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,12,new ModelResourceLocation("xuphorium_craft:x_energy_unit_p6","inventory"));*/
 		int i;
 		for(i=-6;i<7;i++)
 		{
 			ModelLoader.setCustomModelResourceLocation(X_ENERGY_UNIT,i+6,new ModelResourceLocation("xuphorium_craft:x_energy_unit_"+((i==0?"":(i>0?"p":"n"))+Math.abs(i)),"inventory"));
 		}
 		//
-		ModelLoader.setCustomModelResourceLocation(X_ALPHA_METAL,0,new ModelResourceLocation("xuphorium_craft:x_alpha_metal","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_GAMMA_METAL,0,new ModelResourceLocation("xuphorium_craft:x_gamma_metal","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_DELTA_METAL,0,new ModelResourceLocation("xuphorium_craft:x_delta_metal","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_OMEGA_METAL,0,new ModelResourceLocation("xuphorium_craft:x_omega_metal","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ALPHA_METAL),0,new ModelResourceLocation("xuphorium_craft:x_alpha_metal","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_GAMMA_METAL),0,new ModelResourceLocation("xuphorium_craft:x_gamma_metal","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_DELTA_METAL),0,new ModelResourceLocation("xuphorium_craft:x_delta_metal","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_OMEGA_METAL),0,new ModelResourceLocation("xuphorium_craft:x_omega_metal","inventory"));
 	}
 
 	@Override
 	public int addFuel(ItemStack fuel)
 	{
-		if(fuel.getItem()==new ItemStack(X_FUEL,1).getItem()) return 16384;
+		//if(fuel.getItem()==new ItemStack(X_FUEL,1).getItem()) return 16384;
 		return 0;
 	}
 
@@ -539,37 +508,6 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 			}
 		}
 	}
-
-	//========X-Fuel========//
-	public static class XFuel extends XCraftMaterialCommon
-	{
-		public XFuel()
-		{
-			super("x_fuel",0,16);
-			setContainerItem(this);
-		}
-		/*
-		public void getSubItems(CreativeTabs tab,NonNullList<ItemStack> items)
-		{
-			if(this.isInCreativeTab(tab))
-			{
-				items.add(getCreativeStack());
-			}
-		}
-	
-		public ItemStack getCreativeStack()
-		{
-			ItemStack creativeStack=new ItemStack(this,1,0);
-			creativeStack.addEnchantment(Enchantments.FIRE_ASPECT,10);
-			return creativeStack;
-		}*/
-
-		@Override
-		public float getDestroySpeed(ItemStack par1ItemStack,IBlockState par2Block)
-		{
-			return super.getDestroySpeed(par1ItemStack,par2Block)*(float)1.5;
-		}
-	}
 	
 	//========X-Metal========//
 	public static class XMetal extends XCraftMaterialCommon
@@ -639,47 +577,50 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	}
 	
 	//========X-Metals(Alpha,Gamma,Delta,Omega)========//
-	public static class XMetalCommon extends XCraftMaterialCommon
+	public static class XMetalsCommon extends XCraftBlocks.XCraftItemBlockCommon
 	{
-		public XMetalCommon(String name)
+		public XMetalsCommon(Block block)
 		{
-			super(name,0,8);
+			this(block,0,8);
+		}
+		
+		public XMetalsCommon(Block block,int maxDamage,int maxStackSize)
+		{
+			super(block,false,true);
+			this.setMaxDamage(maxDamage);
+			this.maxStackSize=maxStackSize;
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
+		}
+		
+		@Override
+		public int getItemEnchantability()
+		{
+			return 64;
+		}
+		
+		@Override
+		public float getDestroySpeed(ItemStack par1ItemStack,IBlockState par2Block)
+		{
+			return 1.25F;
+		}
+		
+		@Override
+		public int getMaxItemUseDuration(ItemStack par1ItemStack)
+		{
+			return 0;
 		}
 	}
 	
-	//Alpha
-	public static class XAlphaMetal extends XMetalCommon
+	public static class BlockXMetalsCommon extends XCraftBlocks.XResourceBlockCommon
 	{
-		public XAlphaMetal()
+		public BlockXMetalsCommon(String name)
 		{
-			super("x_alpha_metal");
-		}
-	}
-	
-	//Gamma
-	public static class XGammaMetal extends XMetalCommon
-	{
-		public XGammaMetal()
-		{
-			super("x_gamma_metal");
-		}
-	}
-	
-	//Delta
-	public static class XDeltaMetal extends XMetalCommon
-	{
-		public XDeltaMetal()
-		{
-			super("x_delta_metal");
-		}
-	}
-	
-	//Omega
-	public static class XOmegaMetal extends XMetalCommon
-	{
-		public XOmegaMetal()
-		{
-			super("x_omega_metal");
+			super(name);
+			this.setHardness(128F);
+			this.setResistance(2048F);
+			this.setLightLevel(0.0625F);
+			this.setLightOpacity(0);
+			this.setDefaultSlipperiness(0.7F);
 		}
 	}
 }

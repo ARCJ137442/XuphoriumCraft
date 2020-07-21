@@ -52,13 +52,6 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
-/*import com.xuphorium.xuphorium_craft.*;
-import com.xuphorium.xuphorium_craft.common.*;
-import com.xuphorium.xuphorium_craft.proxy.*;
-import com.xuphorium.xuphorium_craft.entity.*;
-import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*;*/
-
 @XuphoriumCraftElements.ModElement.Tag
 public class XCreeper extends XuphoriumCraftElements.ModElement
 {

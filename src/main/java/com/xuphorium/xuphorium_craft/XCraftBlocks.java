@@ -1,6 +1,8 @@
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.item.*;
+import net.minecraft.util.*;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +23,6 @@ import net.minecraftforge.fluids.BlockFluidClassic;
 
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-
-import net.minecraft.util.ResourceLocation;
 
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -46,15 +46,6 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.NonNullList;
-
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.Mirror;
 
 import net.minecraft.init.Blocks;
 
@@ -83,22 +74,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-
-/*import com.xuphorium.xuphorium_craft.*;
-import com.xuphorium.xuphorium_craft.common.*;
-import com.xuphorium.xuphorium_craft.proxy.*;
-import com.xuphorium.xuphorium_craft.entity.*;
-import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*;*/
+import javax.annotation.Nullable;
 
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 {
-	public static Logger LOGGER;
-	
 	public static class WorldGenOreBall extends WorldGenerator
 	{
-		public boolean mustFull=true;
+		public boolean mustFull;
 		public IBlockState stone;
 		public IBlockState ore;
 		public IBlockState center;
@@ -190,17 +173,16 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			if(!world.isRemote)
 			{
+				//World Event
+				world.setBlockToAir(currentPos);
+				world.setBlockToAir(currentPos2);
+				world.setBlockToAir(currentPos3);
+				world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
+				world.createExplosion(null,x,y,z,5,true);
+				//Summon Entity
 				Entity entityToSpawn=new XBoss.EntityXBoss(world);
-				if (entityToSpawn!=null)
-				{
-					world.setBlockToAir(currentPos);
-					world.setBlockToAir(currentPos2);
-					world.setBlockToAir(currentPos3);
-					world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
-					world.createExplosion(null,x,y,z,4,true);
-					entityToSpawn.setLocationAndAngles(x+0.5,y,z+0.5,world.rand.nextFloat()*360F,0.0F);
-					world.spawnEntity(entityToSpawn);
-				}
+				entityToSpawn.setLocationAndAngles(x+0.5,y,z+0.5,world.rand.nextFloat()*360F,0.0F);
+				world.spawnEntity(entityToSpawn);
 			}
 		}
 	}
@@ -322,70 +304,70 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	public void initElements()
 	{
 		//Ore
-		elements.blocks.add(()->new XOre());
+		elements.blocks.add(XOre::new);
 		elements.items.add(()->new ItemBlock(X_ORE).setRegistryName(X_ORE.getRegistryName()));
 		//Ore_Nether
-		elements.blocks.add(()->new XOreNether());
+		elements.blocks.add(XOreNether::new);
 		elements.items.add(()->new ItemBlock(X_ORE_NETHER).setRegistryName(X_ORE_NETHER.getRegistryName()));
 		//Ore_End
-		elements.blocks.add(()->new XOreEnd());
+		elements.blocks.add(XOreEnd::new);
 		elements.items.add(()->new ItemBlock(X_ORE_END).setRegistryName(X_ORE_END.getRegistryName()));
 		//Block
-		elements.blocks.add(()->new XBlock());
-		elements.items.add(()->new ItemXBlock());
+		elements.blocks.add(XBlock::new);
+		elements.items.add(ItemXBlock::new);
 		//Block_Advanced
-		elements.blocks.add(()->new XBlockAdvanced());
-		elements.items.add(()->new ItemXBlockAdvanced());
+		elements.blocks.add(XBlockAdvanced::new);
+		elements.items.add(ItemXBlockAdvanced::new);
 		//Crystal_Block
-		elements.blocks.add(()->new XCrystalBlock());
-		elements.items.add(()->new ItemXCrystalBlock());
+		elements.blocks.add(XCrystalBlock::new);
+		elements.items.add(ItemXCrystalBlock::new);
 		//Dust_Block
-		elements.blocks.add(()->new XDustBlock());
+		elements.blocks.add(XDustBlock::new);
 		elements.items.add(()->new ItemBlock(X_DUST_BLOCK).setRegistryName(X_DUST_BLOCK.getRegistryName()));
 		//Path
-		elements.blocks.add(()->new XPath());
+		elements.blocks.add(XPath::new);
 		elements.items.add(()->new ItemBlock(X_PATH).setRegistryName(X_PATH.getRegistryName()));
 		//Reactive_Core
-		elements.blocks.add(()->new XReactiveCore());
+		elements.blocks.add(XReactiveCore::new);
 		elements.items.add(()->new ItemBlock(X_REACTIVE_CORE).setRegistryName(X_REACTIVE_CORE.getRegistryName()));
 		//Explosive
-		elements.blocks.add(()->new XExplosive());
+		elements.blocks.add(XExplosive::new);
 		elements.items.add(()->new ItemBlock(X_EXPLOSIVE).setRegistryName(X_EXPLOSIVE.getRegistryName()));
 		//Curer
-		elements.blocks.add(()->new XCurer());
+		elements.blocks.add(XCurer::new);
 		elements.items.add(()->new ItemBlock(X_CURER).setRegistryName(X_CURER.getRegistryName()));
 		//Dust_Generater
-		elements.blocks.add(()->new XDustGenerater());
-		elements.items.add(()->new ItemXDustGenerater());
+		elements.blocks.add(XDustGenerater::new);
+		elements.items.add(ItemXDustGenerater::new);
 		//Liquid
-		elements.blocks.add(()->new XLiquid());
-		elements.items.add(()->new ItemXLiquid());
+		elements.blocks.add(XLiquid::new);
+		elements.items.add(ItemXLiquid::new);
 		//Glass
-		elements.blocks.add(()->new XGlass());
+		elements.blocks.add(XGlass::new);
 		elements.items.add(()->new ItemBlock(X_GLASS).setRegistryName(X_GLASS.getRegistryName()));
 		//Diamond_Block
-		elements.blocks.add(()->new XDiamondBlock());
+		elements.blocks.add(XDiamondBlock::new);
 		elements.items.add(()->new ItemBlock(X_DIAMOND_BLOCK).setRegistryName(X_DIAMOND_BLOCK.getRegistryName()));
 		//Emerald_Block
-		elements.blocks.add(()->new XEmeraldBlock());
+		elements.blocks.add(XEmeraldBlock::new);
 		elements.items.add(()->new ItemBlock(X_EMERALD_BLOCK).setRegistryName(X_EMERALD_BLOCK.getRegistryName()));
 		//Ruby_Block
-		elements.blocks.add(()->new XRubyBlock());
+		elements.blocks.add(XRubyBlock::new);
 		elements.items.add(()->new ItemBlock(X_RUBY_BLOCK).setRegistryName(X_RUBY_BLOCK.getRegistryName()));
 		//Transporter
-		elements.blocks.add(()->new XTransporter());
+		elements.blocks.add(XTransporter::new);
 		elements.items.add(()->new ItemBlock(X_TRANSPORTER).setRegistryName(X_TRANSPORTER.getRegistryName()));
 		//Metal_Block
-		elements.blocks.add(()->new XMetalBlock());
+		elements.blocks.add(XMetalBlock::new);
 		elements.items.add(()->new ItemBlock(X_METAL_BLOCK).setRegistryName(X_METAL_BLOCK.getRegistryName()));
 		//Covalent_Solid
-		elements.blocks.add(()->new XCovalentSolid());
+		elements.blocks.add(XCovalentSolid::new);
 		elements.items.add(()->new ItemBlock(X_COVALENT_SOLID).setRegistryName(X_COVALENT_SOLID.getRegistryName()));
 		//Phase_Fiber_Block
-		elements.blocks.add(()->new XPhaseFiberBlock());
+		elements.blocks.add(XPhaseFiberBlock::new);
 		elements.items.add(()->new ItemBlock(X_PHASE_FIBER_BLOCK).setRegistryName(X_PHASE_FIBER_BLOCK.getRegistryName()));
 		//Phase_Web_Block
-		elements.blocks.add(()->new XPhaseWebBlock());
+		elements.blocks.add(XPhaseWebBlock::new);
 		elements.items.add(()->new ItemBlock(X_PHASE_WEB_BLOCK).setRegistryName(X_PHASE_WEB_BLOCK.getRegistryName()));
 		//Fluid
 		elements.blocks.add(()->new BlockFluidClassic(X_FLUID_Fluid,Material.WATER)
@@ -401,6 +383,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	@Override
 	public void registerModels(ModelRegistryEvent event)
 	{
+		//====Inventory Models====//
 		int i;
 		//Ore,OreNether,OreEnd
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE),0,new ModelResourceLocation("xuphorium_craft:x_ore","inventory"));
@@ -496,8 +479,6 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		//EventBus
 		MinecraftForge.EVENT_BUS.register(this);
-		//Logger
-		LOGGER=event.getModLog();
 		//Fluid
 		FluidRegistry.registerFluid(X_FLUID_Fluid);
 		FluidRegistry.addBucketForFluid(X_FLUID_Fluid);
@@ -522,9 +503,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			case 0:
 			for(int i=0;i<3;i++)
 			{
-				x=chunkX+random.nextInt(14)+1;
+				x=chunkX+random.nextInt(13)+1;
 				y=random.nextInt(6)+9;
-				z=chunkZ+random.nextInt(14)+1;
+				z=chunkZ+random.nextInt(13)+1;
 				new WorldGenOreBall(
 					Blocks.STONE.getDefaultState(),
 					X_ORE.getDefaultState()
@@ -535,9 +516,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			case -1:
 			for(int i=0;i<13;i++)
 			{
-				x=chunkX+random.nextInt(14)+1;
+				x=chunkX+random.nextInt(13)+1;
 				y=random.nextInt(253)+1;
-				z=chunkZ+random.nextInt(14)+1;
+				z=chunkZ+random.nextInt(13)+1;
 				new WorldGenOreBall(
 					Blocks.NETHERRACK.getDefaultState(),X_ORE_NETHER.getDefaultState()
 					).generate(world,random,new BlockPos(x,y,z));
@@ -546,9 +527,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			case 1:
 			for(int i=0;i<7;i++)
 			{
-				x=chunkX+random.nextInt(14)+1;
+				x=chunkX+random.nextInt(13)+1;
 				y=random.nextInt(253)+1;
-				z=chunkZ+random.nextInt(14)+1;
+				z=chunkZ+random.nextInt(13)+1;
 				new WorldGenOreBall(
 					Blocks.END_STONE.getDefaultState(),X_ORE_END.getDefaultState()
 					).randomize(random,X_ORE_END.getDefaultState(),X_OXYGEN.getDefaultState()
@@ -567,15 +548,12 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		if(event.getEntity() instanceof EntityDragon)
 		{
 			if(isXOre(block)||
-			   block==X_OXYGEN||
-			   block==X_CRYSTAL_BLOCK||
-			   block==X_METAL_BLOCK||
-			   block==X_COVALENT_SOLID||
-			   block==X_PHASE_FIBER_BLOCK||
-			   block==X_PHASE_WEB_BLOCK||
-			   block==X_EXPLOSIVE||
-			   block==X_REACTIVE_CORE||
-			   block==X_GLASS);
+				block==X_OXYGEN||
+			    block==X_CRYSTAL_BLOCK||
+				block==XCraftMaterials.X_ALPHA_METAL||
+				block==XCraftMaterials.X_DELTA_METAL||
+				block==XCraftMaterials.X_GAMMA_METAL||
+				block==XCraftMaterials.X_OMEGA_METAL)
 			{
 				if(event.isCancelable()&&!event.isCanceled()) event.setCanceled(true);
 				return false;
@@ -600,6 +578,8 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	
 	public static class XCraftItemBlockCommon extends ItemBlock
 	{
+		public boolean placeNeedSneaking=false;
+		
 		public XCraftItemBlockCommon(Block block)
 		{
 			super(block);
@@ -610,6 +590,21 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			this(block);
 			this.setHasSubtypes(hasSubtypes);
+		}
+		
+		public XCraftItemBlockCommon(Block block,boolean hasSubtypes,boolean placeNeedSneaking)
+		{
+			this(block,hasSubtypes);
+			this.placeNeedSneaking=placeNeedSneaking;
+		}
+		
+		/**
+		 * Called when a Block is right-clicked with this Item
+		 */
+		public EnumActionResult onItemUse(EntityPlayer player,World worldIn,BlockPos pos,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ)
+		{
+			if(this.placeNeedSneaking&&!player.isSneaking()) return EnumActionResult.FAIL;
+			return super.onItemUse(player,worldIn,pos,hand,facing,hitX,hitY,hitZ);
 		}
 	}
 	
@@ -1111,7 +1106,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			setLightLevel(0F);
 			setLightOpacity(255);
 			setHardness(multiHardness*5.12F);
-			setResistance(multiHardness*64F);
+			setResistance(multiHardness*32F);
 		}
 
 		@SideOnly(Side.CLIENT)
@@ -1151,7 +1146,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		public XOre()
 		{
-			super("x_ore",3,1);
+			super("x_ore",XuphoriumCraft.HARVEST_LEVEL_DIAMOND_PICKAXE,1);
 		}
 		
 		public int getExpDrop(IBlockState state,IBlockAccess world,BlockPos pos,int fortune)
@@ -1165,7 +1160,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		public XOreNether()
 		{
-			super("x_ore_nether",2,0.75F);
+			super("x_ore_nether",XuphoriumCraft.HARVEST_LEVEL_IRON_PICKAXE,0.75F);
 		}
 
 		@Override
@@ -1181,7 +1176,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		public XOreEnd()
 		{
-			super("x_ore_end",4,4);
+			super("x_ore_end",XuphoriumCraft.HARVEST_LEVEL_X_PICKAXE,4);
 		}
 
 		@SideOnly(Side.CLIENT)
@@ -1208,7 +1203,11 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	public static class XPath extends XCraftBlockCommon
 	{
 		protected static final AxisAlignedBB X_PATH_AABB=new AxisAlignedBB(0.0D,0.0D,0.0D,1.0D,1.0D,1.0D);//0.9375 or it dosn't work
-	
+		
+		protected static final float SLIPPERINESS_FOR_ENTITY_LIVING_BASE=1.099F;
+		protected static final float SLIPPERINESS_FOR_ENTITY_ITEM=1.0205F;
+		protected static final float SLIPPERINESS_FOR_ENTITY_FISH_HOOK=1.0870F;
+		
 		public XPath()
 		{
 			super(Material.IRON,"x_path",SoundType.METAL);
@@ -1256,6 +1255,14 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn,IBlockState state,BlockPos pos,EnumFacing face)
 		{
 			return face==EnumFacing.DOWN?BlockFaceShape.SOLID:BlockFaceShape.UNDEFINED;
+		}
+		
+		public float getSlipperiness(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable Entity entity)
+		{
+			if(entity instanceof EntityLivingBase) return SLIPPERINESS_FOR_ENTITY_LIVING_BASE;
+			if(entity instanceof EntityItem) return SLIPPERINESS_FOR_ENTITY_ITEM;
+			if(entity instanceof EntityFishHook) return SLIPPERINESS_FOR_ENTITY_FISH_HOOK;
+			return slipperiness;
 		}
 	}
 	
@@ -1311,7 +1318,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			XCraftReactions.ReactionContainer container=XCraftReactions.detectContainer(world,pos);
 			if(container!=null/*&&!reactiveItems.isEmpty()*/)
 			{
-				XCraftBlocks.LOGGER.info("has "+container.getName()+" in "+pos.toString());
+				XuphoriumCraft.LOGGER.info("has "+container.getName()+" in "+pos.toString());
 				/*List<XCraftReactions.ReactionItem> newItems=XCraftReactions.reactiveAndReturnNew(reactiveItems,container);
 				//Change Old Item
 				ItemStack changedItem;
@@ -2111,7 +2118,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		public XResourceBlockCommon(String name)
 		{
-			super(Material.IRON,name,SoundType.METAL);
+			this(name,Material.IRON);
 		}
 		
 		public XResourceBlockCommon(String name,Material material)

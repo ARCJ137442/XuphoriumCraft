@@ -94,13 +94,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-/*import com.xuphorium.xuphorium_craft.*;
-import com.xuphorium.xuphorium_craft.common.*;
-import com.xuphorium.xuphorium_craft.proxy.*;
-import com.xuphorium.xuphorium_craft.entity.*;
-import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*;*/
-
 @XuphoriumCraftElements.ModElement.Tag
 public class XCraftReactions extends XuphoriumCraftElements.ModElement
 {
@@ -286,7 +279,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 				new ItemStack(XCraftMaterials.X_CRYSTAL,2)
 				),
 			(List<ItemStack>)Arrays.asList(
-				new ItemStack(XCraftMaterials.X_FUEL)
+				new ItemStack(XCraftTools.X_ITEM)
 				),
 				XCraftBlocks.X_OXYGEN,
 				XCraftBlocks.X_LIQUID,2);
@@ -311,7 +304,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 				new ItemStack(XCraftMaterials.X_PHASE_FIBER)
 				),
 			(List<ItemStack>)Arrays.asList(
-				new ItemStack(XCraftMaterials.X_FUEL)
+				new ItemStack(XCraftTools.X_ITEM)
 				),-16);
 		//VII
 		REACTION_VII=new Reaction(
@@ -379,7 +372,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 				new ItemStack(XCraftMaterials.X_DELTA_METAL)
 				),
 			(List<ItemStack>)Arrays.asList(
-				new ItemStack(XCraftMaterials.X_FUEL)
+				new ItemStack(XCraftTools.X_ITEM)
 				),-12);
 		//XII
 		REACTION_XII=new Reaction(
@@ -387,7 +380,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 				new ItemStack(XCraftMaterials.X_DELTA_METAL),
 				new ItemStack(XCraftMaterials.X_GAMMA_METAL),
 				new ItemStack(XCraftMaterials.X_EYE),
-				new ItemStack(XCraftMaterials.X_FUEL),
+				new ItemStack(XCraftTools.X_ITEM),
 				new ItemStack(XCraftMaterials.X_STAR)
 				),
 			(List<ItemStack>)Arrays.asList(
@@ -463,7 +456,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 				),
 			(List<ItemStack>)Arrays.asList(
 				new ItemStack(XCraftMaterials.X_CATALYST),
-				new ItemStack(XCraftMaterials.X_FUEL)
+				new ItemStack(XCraftTools.X_ITEM)
 				),-1);
 		REACTION_XIII_7=new Reaction(
 			(List<ItemStack>)Arrays.asList(
@@ -504,7 +497,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 			new ItemStack(XCraftMaterials.X_COVALENT_SHARD),
 			new ItemStack(XCraftMaterials.X_ION_PIECE),
 			new ItemStack(XCraftMaterials.X_CRYSTAL,8),
-			new ItemStack(XCraftMaterials.X_FUEL),
+			new ItemStack(XCraftTools.X_ITEM),
 			new ItemStack(XCraftMaterials.X_EYE)
 			),
 		(List<ItemStack>)Arrays.asList(

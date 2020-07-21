@@ -8,14 +8,17 @@
  */
 package com.xuphorium.xuphorium_craft;
 
+import com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftIProxy;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +48,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.potion.Potion;
 import net.minecraft.item.Item;
 import net.minecraft.block.Block;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.block.state.IBlockState;
@@ -54,13 +56,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.init.Blocks;
 import net.minecraft.creativetab.CreativeTabs;
-
-/*import com.xuphorium.xuphorium_craft.*;
-import com.xuphorium.xuphorium_craft.common.*;
-import com.xuphorium.xuphorium_craft.proxy.*;
-import com.xuphorium.xuphorium_craft.entity.*;
-import com.xuphorium.xuphorium_craft.block.*;
-import com.xuphorium.xuphorium_craft.item.*;*/
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -74,11 +70,13 @@ public class XuphoriumCraft
 	public static final String MODID="xuphorium_craft";
 	public static final String VERSION="1.0.0";
 	public static final SimpleNetworkWrapper PACKET_HANDLER=NetworkRegistry.INSTANCE.newSimpleChannel("xuphorium_craft");
-	@SidedProxy(clientSide="com.xuphorium.xuphorium_craft.XuphoriumCraftClientProxy",serverSide="com.xuphorium.xuphorium_craft.XuphoriumCraftServerProxy")
+	@SidedProxy(clientSide="com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftClientProxy",serverSide="com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftServerProxy")
 	public static XuphoriumCraftIProxy proxy;
 	@Mod.Instance(MODID)
 	public static XuphoriumCraft instance;
 	public XuphoriumCraftElements elements=new XuphoriumCraftElements();
+	
+	public static Logger LOGGER;
 	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -91,6 +89,8 @@ public class XuphoriumCraft
 		MinecraftForge.EVENT_BUS.register(elements);
 		elements.getElements().forEach(element->element.preInit(event));
 		proxy.preInit(event);
+		//Logger
+		LOGGER=event.getModLog();
 	}
 	
 	@Mod.EventHandler
@@ -161,19 +161,21 @@ public class XuphoriumCraft
 		FluidRegistry.enableUniversalBucket();
 	}
 	
+	//========Tool Variable========//
+	public static final int HARVEST_LEVEL_IRON_PICKAXE=2;
+	public static final int HARVEST_LEVEL_DIAMOND_PICKAXE=3;
+	public static final int HARVEST_LEVEL_X_PICKAXE=4;
 	
 	//============Xuphorium-Craft Global Variable&Function============//
 	public static final int[] xArmorHardness=new int[]{4,7,8,5};
-	public static final ItemArmor.ArmorMaterial xArmorMaterial=EnumHelper.addArmorMaterial("X","xuphorium_craft:x_armor",25,XuphoriumCraft.xArmorHardness,100,null,4f);
+	public static final ItemArmor.ArmorMaterial xArmorMaterial=EnumHelper.addArmorMaterial("XArmorMaterial","xuphorium_craft:x_armor",25,XuphoriumCraft.xArmorHardness,100,null,4f);
 	
 	public static final ToolMaterial xSwordMaterial=EnumHelper.addToolMaterial("X_SWORD",3,2048,9f,8f,100);
 	public static final ToolMaterial xToolsMaterial=EnumHelper.addToolMaterial("X_TOOLS",6,2048,25.6f,12.8f,64);
 	public static final Set<Block> xAxeEffectiveItemsSet=com.google.common.collect.Sets.newHashSet(
-			new Block[]{
-					Blocks.PLANKS,Blocks.BOOKSHELF,Blocks.LOG,Blocks.LOG2,Blocks.CHEST,
-					Blocks.PUMPKIN,Blocks.LIT_PUMPKIN,Blocks.MELON_BLOCK,Blocks.LADDER,
-					Blocks.WOODEN_BUTTON,Blocks.WOODEN_PRESSURE_PLATE
-			}
+			Blocks.PLANKS,Blocks.BOOKSHELF,Blocks.LOG,Blocks.LOG2,Blocks.CHEST,
+			Blocks.PUMPKIN,Blocks.LIT_PUMPKIN,Blocks.MELON_BLOCK,Blocks.LADDER,
+			Blocks.WOODEN_BUTTON,Blocks.WOODEN_PRESSURE_PLATE
 	);
 	
 	public static CreativeTabs CREATIVE_TAB=new CreativeTabs("xuphorium_craft")
@@ -448,6 +450,24 @@ public class XuphoriumCraft
 			stack.setTagCompound(compound);
 			return true;
 		}
+	}
+	
+	public static ItemStack findItemInPlayerInventory(EntityPlayer player,Item item)
+	{
+		if(item!=null)
+		{
+			ItemStack itemStack;
+			itemStack=player.getHeldItem(EnumHand.OFF_HAND);
+			if(itemStack.getItem()==item) return itemStack;
+			itemStack=player.getHeldItem(EnumHand.MAIN_HAND);
+			if(itemStack.getItem()==item) return itemStack;
+			for(int i=player.inventory.getSizeInventory()-1;i>=0;i--)
+			{
+				itemStack=player.inventory.getStackInSlot(i);
+				if(itemStack.getItem()==item) return itemStack;
+			}
+		}
+		return ItemStack.EMPTY;
 	}
 	
 	public static class BehaviorXDustDispenseItem extends BehaviorDefaultDispenseItem

@@ -18,7 +18,8 @@
 		},
 		"X":
 		{
-			"item": "xuphorium_craft:x_item","data":0
+			"item": "xuphorium_craft:x_item",
+			"data":0
 		}
 	},
 	"result":
