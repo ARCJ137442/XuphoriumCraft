@@ -189,7 +189,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	
 	public static boolean isXOre(Block block)
 	{
-		return (block==X_ORE||block==X_ORE_NETHER||block==X_ORE_END);
+		return (block==X_ORE||block==X_ORE_EMERALD||block==X_ORE_NETHER||block==X_ORE_END);
 	}
 	
 	public static boolean getIsReplaceable(World world,BlockPos pos,IBlockState state)
@@ -204,6 +204,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_ore")
 	public static final Block X_ORE=null;
+	
+	@GameRegistry.ObjectHolder("xuphorium_craft:x_ore_emerald")
+	public static final Block X_ORE_EMERALD=null;
 	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_ore_nether")
 	public static final Block X_ORE_NETHER=null;
@@ -306,6 +309,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		//Ore
 		elements.blocks.add(XOre::new);
 		elements.items.add(()->new ItemBlock(X_ORE).setRegistryName(X_ORE.getRegistryName()));
+		//Ore_Emerald
+		elements.blocks.add(XOreEmerald::new);
+		elements.items.add(()->new ItemBlock(X_ORE_EMERALD).setRegistryName(X_ORE_EMERALD.getRegistryName()));
 		//Ore_Nether
 		elements.blocks.add(XOreNether::new);
 		elements.items.add(()->new ItemBlock(X_ORE_NETHER).setRegistryName(X_ORE_NETHER.getRegistryName()));
@@ -497,47 +503,73 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	public void generateWorld(Random random,int chunkX,int chunkZ,World world,int dimID,IChunkGenerator chunkGenerator,IChunkProvider chunkProvider)
 	{
 		if(world.isRemote) return;
-		int x,y,z;
+		int x,y,z,i;
 		switch(dimID)
 		{
 			case 0:
-			for(int i=0;i<3;i++)
+			for(i=0;i<1;i++)
 			{
 				x=chunkX+random.nextInt(13)+1;
 				y=random.nextInt(6)+9;
 				z=chunkZ+random.nextInt(13)+1;
 				new WorldGenOreBall(
 					Blocks.STONE.getDefaultState(),
-					X_ORE.getDefaultState()
-					).randomize(random,X_ORE.getDefaultState(),X_FLUID.getDefaultState()
-				).generate(world,random,new BlockPos(x,y,z));
-			}
-			break;
-			case -1:
-			for(int i=0;i<13;i++)
-			{
-				x=chunkX+random.nextInt(13)+1;
-				y=random.nextInt(253)+1;
-				z=chunkZ+random.nextInt(13)+1;
-				new WorldGenOreBall(
-					Blocks.NETHERRACK.getDefaultState(),X_ORE_NETHER.getDefaultState()
+					X_ORE.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE).getDefaultState()
 					).generate(world,random,new BlockPos(x,y,z));
 			}
 			break;
-			case 1:
-			for(int i=0;i<7;i++)
+			case -1:
+			for(i=0;i<5;i++)
 			{
 				x=chunkX+random.nextInt(13)+1;
 				y=random.nextInt(253)+1;
 				z=chunkZ+random.nextInt(13)+1;
 				new WorldGenOreBall(
-					Blocks.END_STONE.getDefaultState(),X_ORE_END.getDefaultState()
-					).randomize(random,X_ORE_END.getDefaultState(),X_OXYGEN.getDefaultState()
+						Blocks.NETHERRACK.getDefaultState(),
+						X_ORE_NETHER.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE_NETHER).getDefaultState()
+				).generate(world,random,new BlockPos(x,y,z));
+			}
+			break;
+			case 1:
+			for(i=0;i<9;i++)
+			{
+				x=chunkX+random.nextInt(13)+1;
+				y=random.nextInt(253)+1;
+				z=chunkZ+random.nextInt(13)+1;
+				new WorldGenOreBall(
+					Blocks.END_STONE.getDefaultState(),X_ORE_END.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE_END).getDefaultState()
 				).generate(world,random,new BlockPos(x,y,z));
 				//X_CRYSTAL_BLOCK.getDefaultState().withProperty(XCrystalBlock.LEVEL,Integer.valueOf(random.nextInt(8)))
 			}
 			break;
 		}
+	}
+	
+	public static Block getRandomizedXOreBlock(Random random,int dimensionID,Block defaultBlock)
+	{
+		int randInt=random.nextInt(100);
+		switch(dimensionID)
+		{
+			case XuphoriumCraft.DIMENSION_ID_OVERWORLD:
+				if(randInt<20) return X_ORE_EMERALD;
+				if(randInt<40) return X_FLUID;
+				if(randInt<70) return Blocks.WATER;
+				else return Blocks.LAVA;
+			case XuphoriumCraft.DIMENSION_ID_THE_NETHER:
+				if(randInt<70) return Blocks.LAVA;
+				if(randInt<80) return Blocks.NETHER_BRICK;
+				if(randInt<87) return Blocks.OBSIDIAN;
+				if(randInt<94) return Blocks.RED_NETHER_BRICK;
+				if(randInt<99) return Blocks.GLOWSTONE;
+				return X_LIQUID;
+			case XuphoriumCraft.DIMENSION_ID_THE_END:
+				if(randInt<50) return Blocks.END_BRICKS;
+				if(randInt<85) return Blocks.OBSIDIAN;
+				if(randInt<88) return X_FLUID;
+				if(randInt<90) return X_LIQUID;
+				return X_OXYGEN;
+		}
+		return defaultBlock;
 	}
 	
 	//============Current Events============//
@@ -1155,6 +1187,27 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		}
 	}
 	
+	//========X-Ore-Emerald========//
+	public static class XOreEmerald extends XOreCommon
+	{
+		public XOreEmerald()
+		{
+			super("x_ore_emerald",XuphoriumCraft.HARVEST_LEVEL_IRON_PICKAXE,0.75F);
+		}
+
+		@Override
+		public void getDrops(NonNullList<ItemStack> drops,IBlockAccess world,BlockPos pos,IBlockState state,int fortune)
+		{
+			int randInt=(world instanceof World ? ((World)world).rand : RANDOM).nextInt(100);
+			Item itemMain=XCraftMaterials.X_EMERALD;
+			if(randInt==0) itemMain=XCraftMaterials.X_DIAMOND;
+			else if(randInt==1) itemMain=XCraftMaterials.X_RUBY;
+			else if(randInt==2) itemMain=XCraftMaterials.X_CRYSTAL_CORE;
+			drops.add(new ItemStack(itemMain,1));
+			drops.add(new ItemStack(Blocks.COBBLESTONE,1));
+		}
+	}
+	
 	//========X-Ore-Nether========//
 	public static class XOreNether extends XOreCommon
 	{
@@ -1162,7 +1215,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			super("x_ore_nether",XuphoriumCraft.HARVEST_LEVEL_IRON_PICKAXE,0.75F);
 		}
-
+		
 		@Override
 		public void getDrops(NonNullList<ItemStack> drops,IBlockAccess world,BlockPos pos,IBlockState state,int fortune)
 		{

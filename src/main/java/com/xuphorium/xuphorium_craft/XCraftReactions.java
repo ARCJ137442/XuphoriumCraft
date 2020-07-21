@@ -645,7 +645,11 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 	{
 		for(ReactionContainer container : REACTION_CONUAINERS)
 		{
-			if(container.isCurrentBlocks(world,pos)) return container;
+			if(container.isCurrentBlocks(world,pos))
+			{
+				XuphoriumCraft.LOGGER.debug("Detect Container Succeed! name="+container.getName());
+				return container;
+			}
 		}
 		return null;
 	}
@@ -907,7 +911,7 @@ public class XCraftReactions extends XuphoriumCraftElements.ModElement
 				for(int iy=0;iy<3;iy++)
 					for(int iz=0;iz<3;iz++)
 					{
-						XCraftBlocks.LOGGER.info("ReactionContainer detecting: containerBlock: "+this.getBlockAt(ix,iy,iz)+",otherBlock: "+world.getBlockState(new BlockPos(x+ix,y+iy,z+iz)).getBlock());
+						//XuphoriumCraft.LOGGER.info("ReactionContainer detecting: containerBlock: "+this.getBlockAt(ix,iy,iz)+",otherBlock: "+world.getBlockState(new BlockPos(x+ix,y+iy,z+iz)).getBlock());
 						if(this.getBlockAt(ix,iy,iz)!=null&&
 						   this.getBlockAt(ix,iy,iz)!=world.getBlockState(new BlockPos(x+ix,y+iy,z+iz)).getBlock()
 						   ) return false;

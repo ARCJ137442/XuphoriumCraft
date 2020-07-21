@@ -2,20 +2,12 @@
 	"type": "minecraft:crafting_shaped",
 	"pattern":
 	[
-		"/x!",
-		"#X#",
-		"OxO"
+		"xxx",
+		"iXi",
+		"ixi"
 	],
 	"key":
 	{
-		"O":
-		{
-			"item": "xuphorium_craft:x_block_advanced","data":0
-		},
-		"#":
-		{
-			"item": "xuphorium_craft:x_block","data":0
-		},
 		"X":
 		{
 			"item": "xuphorium_craft:x_item",
@@ -25,15 +17,9 @@
 		{
 			"item": "xuphorium_craft:x_dust"
 		},
-		"/":
+		"i":
 		{
-			"item": "xuphorium_craft:x_rod",
-			"data": 0
-		},
-		"!":
-		{
-			"item": "xuphorium_craft:x_rod",
-			"data": 1
+			"item": "xuphorium_craft:x_ingot"
 		}
 	},
 	"result":

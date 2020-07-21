@@ -166,6 +166,10 @@ public class XuphoriumCraft
 	public static final int HARVEST_LEVEL_DIAMOND_PICKAXE=3;
 	public static final int HARVEST_LEVEL_X_PICKAXE=4;
 	
+	public static final int DIMENSION_ID_OVERWORLD=0;
+	public static final int DIMENSION_ID_THE_NETHER=-1;
+	public static final int DIMENSION_ID_THE_END=1;
+	
 	//============Xuphorium-Craft Global Variable&Function============//
 	public static final int[] xArmorHardness=new int[]{4,7,8,5};
 	public static final ItemArmor.ArmorMaterial xArmorMaterial=EnumHelper.addArmorMaterial("XArmorMaterial","xuphorium_craft:x_armor",25,XuphoriumCraft.xArmorHardness,100,null,4f);

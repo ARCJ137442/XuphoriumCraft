@@ -72,6 +72,7 @@ tile.x_magnet_block.name=X-磁铁-方块
 tile.x_metal_block.name=X-金属-方块
 tile.x_omega_metal.name=X-欧米伽-合金
 tile.x_ore.name=X-矿石
+tile.x_ore_emerald.name=X-宝石-矿石
 tile.x_ore_end.name=末地X-矿石
 tile.x_ore_nether.name=下界X-矿石
 tile.x_path.name=X-径

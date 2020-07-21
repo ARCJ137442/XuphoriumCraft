@@ -2,20 +2,12 @@
 	"type": "minecraft:crafting_shaped",
 	"pattern":
 	[
-		"#O#",
-		"OXO",
-		"#x#"
+		"idi",
+		"iXi",
+		"ixi"
 	],
 	"key":
 	{
-		"O":
-		{
-			"item": "xuphorium_craft:x_block_advanced","data":0
-		},
-		"#":
-		{
-			"item": "xuphorium_craft:x_block","data":0
-		},
 		"X":
 		{
 			"item": "xuphorium_craft:x_item",
@@ -24,10 +16,18 @@
 		"x":
 		{
 			"item": "xuphorium_craft:x_dust"
+		},
+		"i":
+		{
+			"item": "xuphorium_craft:x_ingot"
+		},
+		"d":
+		{
+			"item": "xuphorium_craft:x_diamond"
 		}
 	},
 	"result":
 	{
-		"item": "xuphorium_craft:x_leggings"
+		"item": "xuphorium_craft:leggings"
 	}
 }

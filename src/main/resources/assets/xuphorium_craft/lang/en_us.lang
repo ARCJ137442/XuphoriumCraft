@@ -72,6 +72,7 @@ tile.x_magnet_block.name=X-Magnet-Block
 tile.x_metal_block.name=X-Metal-Block
 tile.x_omega_metal.name=X-Omega-Metal
 tile.x_ore.name=X-Ore
+tile.x_ore_emerald.name=X-Emerald-Ore
 tile.x_ore_end.name=X-Ore-End
 tile.x_ore_nether.name=X-Ore-Nether
 tile.x_path.name=X-Path
