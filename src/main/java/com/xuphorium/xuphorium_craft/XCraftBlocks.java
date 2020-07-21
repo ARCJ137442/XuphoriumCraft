@@ -393,6 +393,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		int i;
 		//Ore,OreNether,OreEnd
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE),0,new ModelResourceLocation("xuphorium_craft:x_ore","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_EMERALD),0,new ModelResourceLocation("xuphorium_craft:x_ore_emerald","inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_NETHER),0,new ModelResourceLocation("xuphorium_craft:x_ore_nether","inventory"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_END),0,new ModelResourceLocation("xuphorium_craft:x_ore_end","inventory"));
 		//Block,BlockAdvanced
@@ -504,18 +505,20 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		if(world.isRemote) return;
 		int x,y,z,i;
+		WorldGenerator worldGenerator;
 		switch(dimID)
 		{
 			case 0:
+			worldGenerator=new WorldGenOreBall(
+				Blocks.STONE.getDefaultState(),
+				X_ORE.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE).getDefaultState()
+			);
 			for(i=0;i<1;i++)
 			{
 				x=chunkX+random.nextInt(13)+1;
 				y=random.nextInt(6)+9;
 				z=chunkZ+random.nextInt(13)+1;
-				new WorldGenOreBall(
-					Blocks.STONE.getDefaultState(),
-					X_ORE.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE).getDefaultState()
-					).generate(world,random,new BlockPos(x,y,z));
+				worldGenerator.generate(world,random,new BlockPos(x,y,z));
 			}
 			break;
 			case -1:

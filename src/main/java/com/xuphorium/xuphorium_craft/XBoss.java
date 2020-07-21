@@ -213,41 +213,52 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	                                            double radiusFlag,double attackDamageFlag,
 	                                            boolean ignorePlayer,boolean ignoreXBoss)
 	{
+		/*
+		  damage : The same as attackDamageFlag
+		 */
+		double damage=attackDamageFlag;
+		if(attacker!=null&&attackDamageFlag<-1) damage=-2;//means uses as attacker's attack
+		else if(attackDamageFlag<-1) damage=-1;
 		try
 		{
-			/*
-			  damage : The same as attackDamageFlag
-			 */
-			double damage=attackDamageFlag;
-			if(attacker!=null&&attackDamageFlag<-1) damage=-2;//means uses as attacker's attack
-			else if(attackDamageFlag<-1) damage=-1;
 			List<Entity> entities=world.loadedEntityList;
-			for(Entity entity : entities)
+			for(Entity entity: entities)
 			{
 				if(entity instanceof EntityLivingBase)
 				{
-					//Ignore Special Entities
-					if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer) continue;
-					//Select
-					double dx=sourceX-entity.posX;
-					double dy=sourceY-entity.posY;
-					double dz=sourceZ-entity.posZ;
-					double distanceSquare=dx*dx+dy*dy+dz*dz;
-					if((radiusFlag==0&&Math.random()<Math.random())||
-						radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
+					try
 					{
-						//damage -> damageFlag
-						damage=(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage;
-						//Damage the Target
-						if(attacker!=null) redRayHurtEntity(attacker,sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
-						else redRayHurtEntity(sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
+						//Ignore Special Entities
+						if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer)
+							continue;
+						//Select
+						double dx=sourceX-entity.posX;
+						double dy=sourceY-entity.posY;
+						double dz=sourceZ-entity.posZ;
+						double distanceSquare=dx*dx+dy*dy+dz*dz;
+						if((radiusFlag==0&&Math.random()<Math.random())||
+								radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
+						{
+							//damage -> damageFlag
+							damage=(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage;
+							//Damage the Target
+							if(attacker!=null)
+								redRayHurtEntity(attacker,sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
+							else redRayHurtEntity(sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
+						}
+					}
+					catch(Exception exception)
+					{
+						XuphoriumCraft.LOGGER.warn(exception.toString());
+						exception.printStackTrace();
 					}
 				}
 			}
 		}
 		catch(Exception exception)
 		{
-			XuphoriumCraft.LOGGER.warn(exception);
+			XuphoriumCraft.LOGGER.error(exception.toString());
+			exception.printStackTrace();
 		}
 	}
 	
@@ -272,6 +283,8 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	                                    EntityLivingBase target,double distanceFlag)
 	{
 		if(target==null||target.isDead) return;
+		//Particle
+		generateRedWay(target.world,sourceX,sourceY,sourceZ,target.posX,target.posY,target.posZ);
 		//Attack Entity as Direct Attack
 		if(distanceFlag<0)
 		{
@@ -279,17 +292,16 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			else attacker.attackEntityAsMob(target);
 		}
 		//Attack Entity as Magic
-		else target.attackEntityFrom(new EntityDamageSource("indirectMagic",attacker),distanceFlag>0?(float)distanceFlag:((float)(Math.abs(distanceFlag))));
-		generateRedWay(target.world,sourceX,sourceY,sourceZ,target.posX,target.posY,target.posZ);
+		else target.attackEntityFrom(DamageSource.causeMobDamage(null),distanceFlag>0?(float)distanceFlag:((float)(Math.abs(distanceFlag))));
 	}
 	
 	public static void redRayHurtEntity(double x,double y,double z,EntityLivingBase target,double damage)
 	{
-		if(target!=null&&!target.isDead)
-		{
-			generateRedWay(target.world,x,y,z,target.posX,target.posY,target.posZ);
-			target.attackEntityFrom(new EntityDamageSource("indirectMagic",null),(float)damage);
-		}
+		if(target==null||target.isDead) return;
+		//Particle
+		generateRedWay(target.world,x,y,z,target.posX,target.posY,target.posZ);
+		//Attack Entity as Magic
+		target.attackEntityFrom(DamageSource.causeMobDamage(null),(float)damage);
 	}
 	
 	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2)
