@@ -1,6 +1,7 @@
 package com.xuphorium.xuphorium_craft;
 
 import net.minecraft.item.*;
+import net.minecraft.util.*;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +22,6 @@ import net.minecraftforge.fluids.BlockFluidClassic;
 
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-
-import net.minecraft.util.ResourceLocation;
 
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -46,15 +45,6 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.NonNullList;
-
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.Mirror;
 
 import net.minecraft.init.Blocks;
 
@@ -98,7 +88,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	
 	public static class WorldGenOreBall extends WorldGenerator
 	{
-		public boolean mustFull=true;
+		public boolean mustFull;
 		public IBlockState stone;
 		public IBlockState ore;
 		public IBlockState center;
@@ -190,17 +180,16 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			if(!world.isRemote)
 			{
+				//World Event
+				world.setBlockToAir(currentPos);
+				world.setBlockToAir(currentPos2);
+				world.setBlockToAir(currentPos3);
+				world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
+				world.createExplosion(null,x,y,z,5,true);
+				//Summon Entity
 				Entity entityToSpawn=new XBoss.EntityXBoss(world);
-				if (entityToSpawn!=null)
-				{
-					world.setBlockToAir(currentPos);
-					world.setBlockToAir(currentPos2);
-					world.setBlockToAir(currentPos3);
-					world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
-					world.createExplosion(null,x,y,z,4,true);
-					entityToSpawn.setLocationAndAngles(x+0.5,y,z+0.5,world.rand.nextFloat()*360F,0.0F);
-					world.spawnEntity(entityToSpawn);
-				}
+				entityToSpawn.setLocationAndAngles(x+0.5,y,z+0.5,world.rand.nextFloat()*360F,0.0F);
+				world.spawnEntity(entityToSpawn);
 			}
 		}
 	}
@@ -286,6 +275,18 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_phase_web_block")
 	public static final Block X_PHASE_WEB_BLOCK=null;
 	
+	@GameRegistry.ObjectHolder("xuphorium_craft:x_alpha_metal")
+	public static final Block BLOCK_X_ALPHA_METAL=null;
+	
+	@GameRegistry.ObjectHolder("xuphorium_craft:x_gamma_metal")
+	public static final Block BLOCK_X_GAMMA_METAL=null;
+	
+	@GameRegistry.ObjectHolder("xuphorium_craft:x_delta_metal")
+	public static final Block BLOCK_X_DELTA_METAL=null;
+	
+	@GameRegistry.ObjectHolder("xuphorium_craft:x_omega_metal")
+	public static final Block BLOCK_X_OMEGA_METAL=null;
+	
 	//Fluid
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_fluid")
 	public static final Block X_FLUID=null;
@@ -322,71 +323,76 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	public void initElements()
 	{
 		//Ore
-		elements.blocks.add(()->new XOre());
+		elements.blocks.add(XOre::new);
 		elements.items.add(()->new ItemBlock(X_ORE).setRegistryName(X_ORE.getRegistryName()));
 		//Ore_Nether
-		elements.blocks.add(()->new XOreNether());
+		elements.blocks.add(XOreNether::new);
 		elements.items.add(()->new ItemBlock(X_ORE_NETHER).setRegistryName(X_ORE_NETHER.getRegistryName()));
 		//Ore_End
-		elements.blocks.add(()->new XOreEnd());
+		elements.blocks.add(XOreEnd::new);
 		elements.items.add(()->new ItemBlock(X_ORE_END).setRegistryName(X_ORE_END.getRegistryName()));
 		//Block
-		elements.blocks.add(()->new XBlock());
-		elements.items.add(()->new ItemXBlock());
+		elements.blocks.add(XBlock::new);
+		elements.items.add(ItemXBlock::new);
 		//Block_Advanced
-		elements.blocks.add(()->new XBlockAdvanced());
-		elements.items.add(()->new ItemXBlockAdvanced());
+		elements.blocks.add(XBlockAdvanced::new);
+		elements.items.add(ItemXBlockAdvanced::new);
 		//Crystal_Block
-		elements.blocks.add(()->new XCrystalBlock());
-		elements.items.add(()->new ItemXCrystalBlock());
+		elements.blocks.add(XCrystalBlock::new);
+		elements.items.add(ItemXCrystalBlock::new);
 		//Dust_Block
-		elements.blocks.add(()->new XDustBlock());
+		elements.blocks.add(XDustBlock::new);
 		elements.items.add(()->new ItemBlock(X_DUST_BLOCK).setRegistryName(X_DUST_BLOCK.getRegistryName()));
 		//Path
-		elements.blocks.add(()->new XPath());
+		elements.blocks.add(XPath::new);
 		elements.items.add(()->new ItemBlock(X_PATH).setRegistryName(X_PATH.getRegistryName()));
 		//Reactive_Core
-		elements.blocks.add(()->new XReactiveCore());
+		elements.blocks.add(XReactiveCore::new);
 		elements.items.add(()->new ItemBlock(X_REACTIVE_CORE).setRegistryName(X_REACTIVE_CORE.getRegistryName()));
 		//Explosive
-		elements.blocks.add(()->new XExplosive());
+		elements.blocks.add(XExplosive::new);
 		elements.items.add(()->new ItemBlock(X_EXPLOSIVE).setRegistryName(X_EXPLOSIVE.getRegistryName()));
 		//Curer
-		elements.blocks.add(()->new XCurer());
+		elements.blocks.add(XCurer::new);
 		elements.items.add(()->new ItemBlock(X_CURER).setRegistryName(X_CURER.getRegistryName()));
 		//Dust_Generater
-		elements.blocks.add(()->new XDustGenerater());
-		elements.items.add(()->new ItemXDustGenerater());
+		elements.blocks.add(XDustGenerater::new);
+		elements.items.add(ItemXDustGenerater::new);
 		//Liquid
-		elements.blocks.add(()->new XLiquid());
-		elements.items.add(()->new ItemXLiquid());
+		elements.blocks.add(XLiquid::new);
+		elements.items.add(ItemXLiquid::new);
 		//Glass
-		elements.blocks.add(()->new XGlass());
+		elements.blocks.add(XGlass::new);
 		elements.items.add(()->new ItemBlock(X_GLASS).setRegistryName(X_GLASS.getRegistryName()));
 		//Diamond_Block
-		elements.blocks.add(()->new XDiamondBlock());
+		elements.blocks.add(XDiamondBlock::new);
 		elements.items.add(()->new ItemBlock(X_DIAMOND_BLOCK).setRegistryName(X_DIAMOND_BLOCK.getRegistryName()));
 		//Emerald_Block
-		elements.blocks.add(()->new XEmeraldBlock());
+		elements.blocks.add(XEmeraldBlock::new);
 		elements.items.add(()->new ItemBlock(X_EMERALD_BLOCK).setRegistryName(X_EMERALD_BLOCK.getRegistryName()));
 		//Ruby_Block
-		elements.blocks.add(()->new XRubyBlock());
+		elements.blocks.add(XRubyBlock::new);
 		elements.items.add(()->new ItemBlock(X_RUBY_BLOCK).setRegistryName(X_RUBY_BLOCK.getRegistryName()));
 		//Transporter
-		elements.blocks.add(()->new XTransporter());
+		elements.blocks.add(XTransporter::new);
 		elements.items.add(()->new ItemBlock(X_TRANSPORTER).setRegistryName(X_TRANSPORTER.getRegistryName()));
 		//Metal_Block
-		elements.blocks.add(()->new XMetalBlock());
+		elements.blocks.add(XMetalBlock::new);
 		elements.items.add(()->new ItemBlock(X_METAL_BLOCK).setRegistryName(X_METAL_BLOCK.getRegistryName()));
 		//Covalent_Solid
-		elements.blocks.add(()->new XCovalentSolid());
+		elements.blocks.add(XCovalentSolid::new);
 		elements.items.add(()->new ItemBlock(X_COVALENT_SOLID).setRegistryName(X_COVALENT_SOLID.getRegistryName()));
 		//Phase_Fiber_Block
-		elements.blocks.add(()->new XPhaseFiberBlock());
+		elements.blocks.add(XPhaseFiberBlock::new);
 		elements.items.add(()->new ItemBlock(X_PHASE_FIBER_BLOCK).setRegistryName(X_PHASE_FIBER_BLOCK.getRegistryName()));
 		//Phase_Web_Block
-		elements.blocks.add(()->new XPhaseWebBlock());
+		elements.blocks.add(XPhaseWebBlock::new);
 		elements.items.add(()->new ItemBlock(X_PHASE_WEB_BLOCK).setRegistryName(X_PHASE_WEB_BLOCK.getRegistryName()));
+		//Block_X_METALS(A,G,D,O)
+		elements.blocks.add(BlockXAlphaMetal::new);
+		elements.blocks.add(BlockXGammaMetal::new);
+		elements.blocks.add(BlockXDeltaMetal::new);
+		elements.blocks.add(BlockXOmegaMetal::new);
 		//Fluid
 		elements.blocks.add(()->new BlockFluidClassic(X_FLUID_Fluid,Material.WATER)
 		{}.setUnlocalizedName("x_fluid").setRegistryName("x_fluid"));
@@ -401,6 +407,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	@Override
 	public void registerModels(ModelRegistryEvent event)
 	{
+		//====Inventory Models====//
 		int i;
 		//Ore,OreNether,OreEnd
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE),0,new ModelResourceLocation("xuphorium_craft:x_ore","inventory"));
@@ -567,15 +574,12 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		if(event.getEntity() instanceof EntityDragon)
 		{
 			if(isXOre(block)||
-			   block==X_OXYGEN||
-			   block==X_CRYSTAL_BLOCK||
-			   block==X_METAL_BLOCK||
-			   block==X_COVALENT_SOLID||
-			   block==X_PHASE_FIBER_BLOCK||
-			   block==X_PHASE_WEB_BLOCK||
-			   block==X_EXPLOSIVE||
-			   block==X_REACTIVE_CORE||
-			   block==X_GLASS);
+				block==X_OXYGEN||
+			    block==X_CRYSTAL_BLOCK||
+				block==BLOCK_X_ALPHA_METAL||
+				block==BLOCK_X_DELTA_METAL||
+				block==BLOCK_X_GAMMA_METAL||
+				block==BLOCK_X_OMEGA_METAL)
 			{
 				if(event.isCancelable()&&!event.isCanceled()) event.setCanceled(true);
 				return false;
@@ -600,6 +604,8 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	
 	public static class XCraftItemBlockCommon extends ItemBlock
 	{
+		public boolean placeNeedSneaking=false;
+		
 		public XCraftItemBlockCommon(Block block)
 		{
 			super(block);
@@ -610,6 +616,21 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			this(block);
 			this.setHasSubtypes(hasSubtypes);
+		}
+		
+		public XCraftItemBlockCommon(Block block,boolean hasSubtypes,boolean placeNeedSneaking)
+		{
+			this(block,hasSubtypes);
+			this.placeNeedSneaking=placeNeedSneaking;
+		}
+		
+		/**
+		 * Called when a Block is right-clicked with this Item
+		 */
+		public EnumActionResult onItemUse(EntityPlayer player,World worldIn,BlockPos pos,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ)
+		{
+			if(this.placeNeedSneaking&&!player.isSneaking()) return EnumActionResult.FAIL;
+			return super.onItemUse(player,worldIn,pos,hand,facing,hitX,hitY,hitZ);
 		}
 	}
 	
@@ -2109,9 +2130,15 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	//========X-Resource-Block-Common========//
 	public static class XResourceBlockCommon extends XCraftBlockCommon
 	{
+		//Use as Block of Item
+		public XResourceBlockCommon(Item item)
+		{
+			this(item.getRegistryName().toString());
+		}
+		
 		public XResourceBlockCommon(String name)
 		{
-			super(Material.IRON,name,SoundType.METAL);
+			this(name,Material.IRON);
 		}
 		
 		public XResourceBlockCommon(String name,Material material)
@@ -2249,6 +2276,51 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		public void getDrops(NonNullList<ItemStack> drops,IBlockAccess world,BlockPos pos,IBlockState state,int fortune)
 		{
 			for(int i=0;i<4;i++) drops.add(new ItemStack(XCraftMaterials.X_PHASE_WEB,1));
+		}
+	}
+	
+	//========Block-X-Metals========//
+	public static class BlockXMetalsCommon extends XResourceBlockCommon
+	{
+		public BlockXMetalsCommon(Item materialItem)
+		{
+			super(materialItem);
+			setHardness(128F);
+			setResistance(2048F);
+			setLightLevel(1F);
+			setLightOpacity(0);
+		}
+	}
+	
+	public static class BlockXAlphaMetal extends BlockXMetalsCommon
+	{
+		public BlockXAlphaMetal()
+		{
+			super(XCraftMaterials.X_ALPHA_METAL);
+		}
+	}
+	
+	public static class BlockXGammaMetal extends BlockXMetalsCommon
+	{
+		public BlockXGammaMetal()
+		{
+			super(XCraftMaterials.X_GAMMA_METAL);
+		}
+	}
+	
+	public static class BlockXDeltaMetal extends BlockXMetalsCommon
+	{
+		public BlockXDeltaMetal()
+		{
+			super(XCraftMaterials.X_DELTA_METAL);
+		}
+	}
+	
+	public static class BlockXOmegaMetal extends BlockXMetalsCommon
+	{
+		public BlockXOmegaMetal()
+		{
+			super(XCraftMaterials.X_OMEGA_METAL);
 		}
 	}
 }

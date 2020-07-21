@@ -8,14 +8,17 @@
  */
 package com.xuphorium.xuphorium_craft;
 
+import com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftIProxy;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +48,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.potion.Potion;
 import net.minecraft.item.Item;
 import net.minecraft.block.Block;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.block.state.IBlockState;
@@ -74,7 +76,7 @@ public class XuphoriumCraft
 	public static final String MODID="xuphorium_craft";
 	public static final String VERSION="1.0.0";
 	public static final SimpleNetworkWrapper PACKET_HANDLER=NetworkRegistry.INSTANCE.newSimpleChannel("xuphorium_craft");
-	@SidedProxy(clientSide="com.xuphorium.xuphorium_craft.XuphoriumCraftClientProxy",serverSide="com.xuphorium.xuphorium_craft.XuphoriumCraftServerProxy")
+	@SidedProxy(clientSide="com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftClientProxy",serverSide="com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftServerProxy")
 	public static XuphoriumCraftIProxy proxy;
 	@Mod.Instance(MODID)
 	public static XuphoriumCraft instance;
@@ -448,6 +450,24 @@ public class XuphoriumCraft
 			stack.setTagCompound(compound);
 			return true;
 		}
+	}
+	
+	public static ItemStack findItemInPlayerInventory(EntityPlayer player,Item item)
+	{
+		if(item!=null)
+		{
+			ItemStack itemStack;
+			itemStack=player.getHeldItem(EnumHand.OFF_HAND);
+			if(itemStack.getItem()==item) return itemStack;
+			itemStack=player.getHeldItem(EnumHand.MAIN_HAND);
+			if(itemStack.getItem()==item) return itemStack;
+			for(int i=player.inventory.getSizeInventory()-1;i>=0;i--)
+			{
+				itemStack=player.inventory.getStackInSlot(i);
+				if(itemStack.getItem()==item) return itemStack;
+			}
+		}
+		return ItemStack.EMPTY;
 	}
 	
 	public static class BehaviorXDustDispenseItem extends BehaviorDefaultDispenseItem

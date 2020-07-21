@@ -3,7 +3,7 @@
 	"pattern":
 	[
 		"xxx",
-		"xFx",
+		"xXx",
 		"xxx"
 	],
 	"key":
@@ -12,9 +12,10 @@
 		{
 			"item": "xuphorium_craft:x_dust"
 		},
-		"F":
+		"X":
 		{
-			"item": "xuphorium_craft:x_fuel"
+			"item": "xuphorium_craft:x_item",
+			"data": 0
 		}
 	},
 	"result":

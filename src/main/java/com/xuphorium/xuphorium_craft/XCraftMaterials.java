@@ -1,7 +1,7 @@
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
-import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -11,10 +11,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 
-import net.minecraftforge.client.event.ModelRegistryEvent;
-
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.World;
 
 import net.minecraft.util.NonNullList;
@@ -22,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.ActionResult;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item;
@@ -37,15 +32,9 @@ import net.minecraft.block.state.IBlockState;
 
 import net.minecraft.creativetab.CreativeTabs;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.Enchantments;
-
 import net.minecraft.potion.PotionEffect;
 
 import net.minecraft.init.MobEffects;
-
-import java.util.Random;
 
 /*import com.xuphorium.xuphorium_craft.*;
 import com.xuphorium.xuphorium_craft.common.*;
@@ -102,9 +91,6 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_star")
 	public static final Item X_STAR=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_fuel")
-	public static final Item X_FUEL=null;
-	
 	@GameRegistry.ObjectHolder("xuphorium_craft:x_metal")
 	public static final Item X_METAL=null;
 	
@@ -160,7 +146,6 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 		elements.items.add(()->new XPearl());
 		elements.items.add(()->new XEye());
 		elements.items.add(()->new XStar());
-		elements.items.add(()->new XFuel());
 		//III
 		elements.items.add(()->new XMetal());
 		elements.items.add(()->new XIonPiece());
@@ -196,7 +181,6 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 		ModelLoader.setCustomModelResourceLocation(X_PEARL,0,new ModelResourceLocation("xuphorium_craft:x_pearl","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_EYE,0,new ModelResourceLocation("xuphorium_craft:x_eye","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_STAR,0,new ModelResourceLocation("xuphorium_craft:x_star","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_FUEL,0,new ModelResourceLocation("xuphorium_craft:x_fuel","inventory"));
 		//III
 		ModelLoader.setCustomModelResourceLocation(X_METAL,0,new ModelResourceLocation("xuphorium_craft:x_metal","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_ION_PIECE,0,new ModelResourceLocation("xuphorium_craft:x_ion_piece","inventory"));
@@ -231,7 +215,7 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	@Override
 	public int addFuel(ItemStack fuel)
 	{
-		if(fuel.getItem()==new ItemStack(X_FUEL,1).getItem()) return 16384;
+		//if(fuel.getItem()==new ItemStack(X_FUEL,1).getItem()) return 16384;
 		return 0;
 	}
 
@@ -539,37 +523,6 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 			}
 		}
 	}
-
-	//========X-Fuel========//
-	public static class XFuel extends XCraftMaterialCommon
-	{
-		public XFuel()
-		{
-			super("x_fuel",0,16);
-			setContainerItem(this);
-		}
-		/*
-		public void getSubItems(CreativeTabs tab,NonNullList<ItemStack> items)
-		{
-			if(this.isInCreativeTab(tab))
-			{
-				items.add(getCreativeStack());
-			}
-		}
-	
-		public ItemStack getCreativeStack()
-		{
-			ItemStack creativeStack=new ItemStack(this,1,0);
-			creativeStack.addEnchantment(Enchantments.FIRE_ASPECT,10);
-			return creativeStack;
-		}*/
-
-		@Override
-		public float getDestroySpeed(ItemStack par1ItemStack,IBlockState par2Block)
-		{
-			return super.getDestroySpeed(par1ItemStack,par2Block)*(float)1.5;
-		}
-	}
 	
 	//========X-Metal========//
 	public static class XMetal extends XCraftMaterialCommon
@@ -639,47 +592,75 @@ public class XCraftMaterials extends XuphoriumCraftElements.ModElement
 	}
 	
 	//========X-Metals(Alpha,Gamma,Delta,Omega)========//
-	public static class XMetalCommon extends XCraftMaterialCommon
+	public static class XMetalsCommon extends XCraftBlocks.XCraftItemBlockCommon
 	{
-		public XMetalCommon(String name)
+		public XMetalsCommon(String name,Block block)
 		{
-			super(name,0,8);
+			this(name,block,0,8);
+		}
+		
+		public XMetalsCommon(String name,Block block,int maxDamage,int maxStackSize)
+		{
+			super(block,false,true);
+			this.setMaxDamage(maxDamage);
+			this.maxStackSize=maxStackSize;
+			this.setUnlocalizedName(name);
+			this.setRegistryName(name);
+			this.setCreativeTab(XuphoriumCraft.CREATIVE_TAB);
+		}
+		
+		@Override
+		public int getItemEnchantability()
+		{
+			return 64;
+		}
+		
+		@Override
+		public float getDestroySpeed(ItemStack par1ItemStack,IBlockState par2Block)
+		{
+			return 1.25F;
+		}
+		
+		@Override
+		public int getMaxItemUseDuration(ItemStack par1ItemStack)
+		{
+			return 0;
 		}
 	}
 	
 	//Alpha
-	public static class XAlphaMetal extends XMetalCommon
+	public static class XAlphaMetal extends XMetalsCommon
 	{
 		public XAlphaMetal()
 		{
-			super("x_alpha_metal");
+			super("x_alpha_metal",XCraftBlocks.BLOCK_X_ALPHA_METAL);
 		}
 	}
 	
 	//Gamma
-	public static class XGammaMetal extends XMetalCommon
+	public static class XGammaMetal extends XMetalsCommon
 	{
 		public XGammaMetal()
 		{
-			super("x_gamma_metal");
+			super("x_gamma_metal",XCraftBlocks.BLOCK_X_GAMMA_METAL);
 		}
 	}
 	
 	//Delta
-	public static class XDeltaMetal extends XMetalCommon
+	public static class XDeltaMetal extends XMetalsCommon
 	{
 		public XDeltaMetal()
 		{
-			super("x_delta_metal");
+			super("x_delta_metal",XCraftBlocks.BLOCK_X_DELTA_METAL);
 		}
 	}
 	
 	//Omega
-	public static class XOmegaMetal extends XMetalCommon
+	public static class XOmegaMetal extends XMetalsCommon
 	{
 		public XOmegaMetal()
 		{
-			super("x_omega_metal");
+			super("x_omega_metal",XCraftBlocks.BLOCK_X_OMEGA_METAL);
 		}
 	}
 }

@@ -3,7 +3,8 @@
 	"ingredients":
 	[
 		{
-			"item": "xuphorium_craft:x_fuel"
+			"item": "xuphorium_craft:x_item",
+			"data": 0
 		},
 		{
 			"item": "xuphorium_craft:x_ingot"

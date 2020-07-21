@@ -165,14 +165,14 @@ public class XCraftCTab extends XuphoriumCraftElements.ModElement
 				"#F#",
 				"###",
 				'#',new ItemStack(XCraftMaterials.X_DIAMOND),
-				'F',new ItemStack(XCraftMaterials.X_FUEL)
+				'F',new ItemStack(XCraftTools.X_ITEM)
 			});
 		GameRegistry.addShapelessRecipe(
 			new ResourceLocation("xuphorium_craft:x_diamond_from_block"),
 			new ResourceLocation("x_diamond"),
 			new ItemStack(XCraftMaterials.X_DIAMOND,8),
 			Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_DIAMOND_BLOCK)),
-			Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
+			Ingredient.fromStacks(new ItemStack(XCraftTools.X_ITEM))
 		);
 		//Emerald
 		GameRegistry.addShapedRecipe(
@@ -185,14 +185,14 @@ public class XCraftCTab extends XuphoriumCraftElements.ModElement
 				"#F#",
 				"###",
 				'#',new ItemStack(XCraftMaterials.X_EMERALD),
-				'F',new ItemStack(XCraftMaterials.X_FUEL)
+				'F',new ItemStack(XCraftTools.X_ITEM)
 			});
 		GameRegistry.addShapelessRecipe(
 			new ResourceLocation("xuphorium_craft:x_emerald_from_block"),
 			new ResourceLocation("x_emerald"),
 			new ItemStack(XCraftMaterials.X_EMERALD,8),
 			Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_EMERALD_BLOCK)),
-			Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
+			Ingredient.fromStacks(new ItemStack(XCraftTools.X_ITEM))
 		);
 		//Ruby
 		GameRegistry.addShapedRecipe(
@@ -205,14 +205,14 @@ public class XCraftCTab extends XuphoriumCraftElements.ModElement
 				"#F#",
 				"###",
 				'#',new ItemStack(XCraftMaterials.X_RUBY),
-				'F',new ItemStack(XCraftMaterials.X_FUEL)
+				'F',new ItemStack(XCraftTools.X_ITEM)
 			});
 		GameRegistry.addShapelessRecipe(
 			new ResourceLocation("xuphorium_craft:x_ruby_from_block"),
 			new ResourceLocation("x_ruby"),
 			new ItemStack(XCraftMaterials.X_RUBY,8),
 			Ingredient.fromStacks(new ItemStack(XCraftBlocks.X_RUBY_BLOCK)),
-			Ingredient.fromStacks(new ItemStack(XCraftMaterials.X_FUEL))
+			Ingredient.fromStacks(new ItemStack(XCraftTools.X_ITEM))
 		);
 		//Advanced
 		GameRegistry.addShapedRecipe(
@@ -225,7 +225,7 @@ public class XCraftCTab extends XuphoriumCraftElements.ModElement
 				"#F#",
 				"###",
 				'#',new ItemStack(XCraftMaterials.X_METAL),
-				'F',new ItemStack(XCraftMaterials.X_FUEL)
+				'F',new ItemStack(XCraftTools.X_ITEM)
 			});
 		GameRegistry.addShapedRecipe(
 			new ResourceLocation("xuphorium_craft:x_covalent_solid"),
@@ -237,7 +237,7 @@ public class XCraftCTab extends XuphoriumCraftElements.ModElement
 				"#F#",
 				"###",
 				'#',new ItemStack(XCraftMaterials.X_COVALENT_SHARD),
-				'F',new ItemStack(XCraftMaterials.X_FUEL)
+				'F',new ItemStack(XCraftTools.X_ITEM)
 			});
 		GameRegistry.addShapedRecipe(
 			new ResourceLocation("xuphorium_craft:x_phase_fiber_block"),
