@@ -23,8 +23,8 @@
 						{
 							"function": "set_count",
 							"count": {
-								"min": 1,
-								"max": 8
+								"min": 4,
+								"max": 16
 							}
 						},
 						{
@@ -50,8 +50,8 @@
 						{
 							"function": "set_count",
 							"count": {
-								"min": 0,
-								"max": 8
+								"min": 4,
+								"max": 16
 							}
 						},
 						{
@@ -77,15 +77,15 @@
 						{
 							"function": "set_count",
 							"count": {
-								"min": 0,
-								"max": 1
+								"min": 1,
+								"max": 8
 							}
 						},
 						{
 							"function": "looting_enchant",
 							"count": {
 								"min": 0,
-								"max": 4
+								"max": 8
 							}
 						}
 					]
@@ -93,7 +93,7 @@
 			]
 		},
 		{
-			"name": "pearl",
+			"name": "pearl&eye",
 			"rolls": 1,
 			"entries": [
 				{
@@ -105,7 +105,7 @@
 							"function": "set_count",
 							"count": {
 								"min": 1,
-								"max": 1
+								"max": 4
 							}
 						},
 						{
@@ -113,6 +113,20 @@
 							"count": {
 								"min": 0,
 								"max": 4
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "xuphorium_craft:x_eye",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 0,
+								"max": 1
 							}
 						}
 					]
@@ -131,8 +145,8 @@
 						{
 							"function": "set_count",
 							"count": {
-								"min": 0,
-								"max": 3
+								"min": 1,
+								"max": 8
 							}
 						}
 					]
@@ -151,8 +165,8 @@
 						{
 							"function": "set_count",
 							"count": {
-								"min": 0,
-								"max": 3
+								"min": 1,
+								"max": 8
 							}
 						}
 					]
@@ -171,8 +185,8 @@
 						{
 							"function": "set_count",
 							"count": {
-								"min": 0,
-								"max": 3
+								"min": 1,
+								"max": 8
 							}
 						}
 					]
@@ -191,8 +205,59 @@
 						{
 							"function": "set_count",
 							"count": {
+								"min": 1,
+								"max": 8
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "advanced_materials",
+			"rolls": {
+				"min": 1,
+				"max": 4
+			},
+			"entries": [
+				{
+					"type": "item",
+					"name": "xuphorium_craft:x_metal",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
 								"min": 0,
-								"max": 3
+								"max": 4
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "xuphorium_craft:x_covalent_shard",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 0,
+								"max": 4
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "xuphorium_craft:x_phase_fiber",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 0,
+								"max": 1
 							}
 						}
 					]

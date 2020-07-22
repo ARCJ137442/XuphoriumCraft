@@ -76,6 +76,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.init.Enchantments;
 
+import java.util.ArrayList;
 import java.util.List;
 /* 
 import com.xuphorium.xuphorium_craft.*;
@@ -134,7 +135,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			{
 				public ItemStack getStackToRender(EntityXBossBullet entity)
 				{
-					return new ItemStack(XCraftMaterials.X_CRYSTAL,1);
+					return new ItemStack(XCraftMaterials.X_PEARL,1);
 				}
 			});
 	}
@@ -222,6 +223,8 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		try
 		{
 			List<Entity> entities=world.loadedEntityList;
+            List<Entity> toAttackEntities=new ArrayList<>();
+            //Get
 			for(Entity entity: entities)
 			{
 				if(entity instanceof EntityLivingBase)
@@ -229,36 +232,48 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 					try
 					{
 						//Ignore Special Entities
-						if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer)
-							continue;
-						//Select
-						double dx=sourceX-entity.posX;
-						double dy=sourceY-entity.posY;
-						double dz=sourceZ-entity.posZ;
-						double distanceSquare=dx*dx+dy*dy+dz*dz;
-						if((radiusFlag==0&&Math.random()<Math.random())||
-								radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
-						{
-							//damage -> damageFlag
-							damage=(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage;
-							//Damage the Target
-							if(attacker!=null)
-								redRayHurtEntity(attacker,sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
-							else redRayHurtEntity(sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
-						}
+						if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer) continue;
+                        toAttackEntities.add(entity);
 					}
 					catch(Exception exception)
 					{
-						XuphoriumCraft.LOGGER.warn(exception.toString());
-						exception.printStackTrace();
+						//XuphoriumCraft.LOGGER.warn(exception.toString());
+						//exception.printStackTrace();
 					}
 				}
 			}
+			//Attack
+            for(Entity entity: toAttackEntities)
+            {
+                try
+                {
+                    //Select
+                    double dx=sourceX-entity.posX;
+                    double dy=sourceY-entity.posY;
+                    double dz=sourceZ-entity.posZ;
+                    double distanceSquare=dx*dx+dy*dy+dz*dz;
+                    if((radiusFlag==0&&Math.random()<Math.random())||
+                            radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
+                    {
+                        //damage -> damageFlag
+                        damage=(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage;
+                        //Damage the Target
+                        if(attacker!=null)
+                            redRayHurtEntity(attacker,sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
+                        else redRayHurtEntity(sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
+                    }
+                }
+                catch(Exception exception)
+                {
+                    XuphoriumCraft.LOGGER.warn(exception.toString());
+                    exception.printStackTrace();
+                }
+            }
 		}
 		catch(Exception exception)
 		{
-			XuphoriumCraft.LOGGER.error(exception.toString());
-			exception.printStackTrace();
+			//XuphoriumCraft.LOGGER.error(exception.toString());
+			//exception.printStackTrace();
 		}
 	}
 	
@@ -734,7 +749,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			super.onUpdate();
 			this.noClip = false;*/
 			//Tick set
-			this.setNoGravity(true);
+			//this.setNoGravity(true);
 			//Boss Bar
 			this.bossInfo.setPercent(this.getHealth()/this.getMaxHealth());
 			if(--randomHurtTick<0)
@@ -773,7 +788,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		
 		protected void initSize()
 		{
-			this.setSize(0.5F,0.5F);
+			this.setSize(0.4F,0.4F);
 		}
 		
 		public EntityXBossBullet(World a)
