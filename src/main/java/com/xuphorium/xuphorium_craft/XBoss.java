@@ -1,5 +1,12 @@
 package com.xuphorium.xuphorium_craft;
 
+import net.minecraft.entity.*;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.loot.LootTableList;
@@ -18,48 +25,14 @@ import net.minecraft.world.BossInfo;
 import net.minecraft.util.math.RayTraceResult;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Item;
 import net.minecraft.inventory.EntityEquipmentSlot;
 
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.projectile.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.passive.EntityZombieHorse;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntitySkeletonHorse;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityParrot;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityMule;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityDonkey;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntityZombieVillager;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityVindicator;
-import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntityIllusionIllager;
-import net.minecraft.entity.monster.EntityEvoker;
-import net.minecraft.entity.monster.EntityEndermite;
-import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.IRangedAttackMob;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.EnumCreatureAttribute;
 
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.renderer.entity.RenderBiped;
@@ -72,6 +45,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.init.Enchantments;
 
+import java.util.ArrayList;
 import java.util.List;
 /* 
 import com.xuphorium.xuphorium_craft.*;
@@ -173,17 +147,17 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	
 	//====X-Boss's Red Ray====//
 	/**
-	 * @see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
+	*@see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
 	 */
 	public static void redRayHurtNearbyEntities(World world,double x,double y,double z,
 	                                            double radiusFlag,double attackDamageFlag,
 	                                            boolean ignorePlayer,boolean ignoreXBoss)
 	{
-		redRayHurtNearbyEntities(world,null, x, y, z, radiusFlag, attackDamageFlag, ignorePlayer, ignoreXBoss);
+		redRayHurtNearbyEntities(world,null,x,y,z,radiusFlag,attackDamageFlag,ignorePlayer,ignoreXBoss);
 	}
 	
 	/**
-	 * @see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
+	*@see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
 	 */
 	public static void redRayHurtNearbyEntities(World world,double x,double y,double z,double radiusFlag,double attackDamageFlag)
 	{
@@ -191,79 +165,68 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	}
 	
 	/**
-	 * @see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
+	*@see #redRayHurtNearbyEntities(World,EntityLivingBase,double,double,double,double,double,boolean,boolean)
 	 */
 	public static void redRayHurtNearbyEntities(World world,EntityLivingBase attacker,
 	                                            double radiusFlag,double attackDamageFlag,
 	                                            boolean ignorePlayer,boolean ignoreXBoss)
 	{
-		redRayHurtNearbyEntities(world, attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(), attacker.posZ,radiusFlag, attackDamageFlag, ignorePlayer, ignoreXBoss);
+		redRayHurtNearbyEntities(world,attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(),attacker.posZ,radiusFlag,attackDamageFlag,ignorePlayer,ignoreXBoss);
 	}
 	
 	/**
-	 * @param attackDamageFlag
-	 *  positive number : const damage as the flag.
-	 *  -1 : uses distance as damage.
-	 *  <-1 : uses as attacker's attack (need attacker!=null,else than uses -1).
-	 * @param radiusFlag
-	 *  positive number : uses distance to select target.
-	 *  0 : random select target all the list.
-	 *  negative number : random select target in distance.
+	*@param attackDamageFlag
+	* positive number : const damage as the flag.
+	* -1 : uses distance as damage.
+	* <-1 : uses as attacker's attack (need attacker!=null,else than uses -1).
+	*@param radiusFlag
+	* positive number : uses distance to select target.
+	* 0 : random select target all the list.
+	* negative number : random select target in distance.
 	 */
 	public static void redRayHurtNearbyEntities(World world,EntityLivingBase attacker,double sourceX,double sourceY,double sourceZ,
 	                                            double radiusFlag,double attackDamageFlag,
 	                                            boolean ignorePlayer,boolean ignoreXBoss)
 	{
-		/*
-		  damage : The same as attackDamageFlag
-		 */
+		//damage : The same as attackDamageFlag
 		double damage=attackDamageFlag;
 		if(attacker!=null&&attackDamageFlag<-1) damage=-2;//means uses as attacker's attack
 		else if(attackDamageFlag<-1) damage=-1;
 		try
 		{
-			List<Entity> entities=world.loadedEntityList.subList(0,world.loadedEntityList.size());
+			List<Entity> entities=world.loadedEntityList;
+			List<EntityLivingBase> toAttackEntities=new ArrayList<>();
 			//Get
 			for(Entity entity: entities)
 			{
 				if(entity instanceof EntityLivingBase)
 				{
-					try
+					//Ignore Special Entities
+					if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer) continue;
+					toAttackEntities.add((EntityLivingBase)entity);
+				}
+			}
+			try
+			{
+				for(EntityLivingBase entity: toAttackEntities)
+				{
+					//Attack
+					double distanceSquare=entity.getDistanceSq(sourceX,sourceY,sourceZ);
+					if((radiusFlag==0&&Math.random()<Math.random())||
+							radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
 					{
-						//Ignore Special Entities
-						if(entity==attacker||ignoreXBoss&&entity instanceof EntityXBoss||ignorePlayer&&entity instanceof EntityPlayer)
-							continue;
-						//Attack
-						try
-						{
-							//Select
-							double dx=sourceX-entity.posX;
-							double dy=sourceY-entity.posY;
-							double dz=sourceZ-entity.posZ;
-							double distanceSquare=dx*dx+dy*dy+dz*dz;
-							if((radiusFlag==0&&Math.random()<Math.random())||
-									radiusFlag!=0&&distanceSquare<=radiusFlag*radiusFlag&&(radiusFlag>0||Math.random()<Math.random()))
-							{
-								//damage -> damageFlag
-								damage=(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage;
-								//Damage the Target
-								if(attacker!=null)
-									redRayHurtEntity(attacker,sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
-								else redRayHurtEntity(sourceX,sourceY,sourceZ,(EntityLivingBase)entity,damage);
-							}
-						}
-						catch(Exception exception)
-						{
-							XuphoriumCraft.LOGGER.warn(exception.toString());
-							exception.printStackTrace();
-						}
-					}
-					catch(Exception exception)
-					{
-						//XuphoriumCraft.LOGGER.warn(exception.toString());
-						//exception.printStackTrace();
+						//damage -> damageFlag
+						damage=(attackDamageFlag==-1||damage==-1)?Math.sqrt(distanceSquare):damage;
+						//Damage the Target
+						if(attacker!=null) redRayHurtEntity(attacker,sourceX,sourceY,sourceZ,entity,damage);
+						else redRayHurtEntity(sourceX,sourceY,sourceZ,entity,damage);
 					}
 				}
+			}
+			catch(Exception exception)
+			{
+				XuphoriumCraft.LOGGER.error(exception.toString());
+				exception.printStackTrace();
 			}
 		}
 		catch(Exception exception)
@@ -279,15 +242,15 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	}
 	
 	/**
-	 * @see #redRayHurtEntity(EntityLivingBase,double,double,double,EntityLivingBase,double)
+	*@see #redRayHurtEntity(EntityLivingBase,double,double,double,EntityLivingBase,double)
 	 */
 	public static void redRayHurtEntity(EntityLivingBase attacker,EntityLivingBase target,double distanceFlag)
 	{
-		redRayHurtEntity(attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(), attacker.posZ, target, distanceFlag);
+		redRayHurtEntity(attacker,attacker.posX,attacker.posY+attacker.getEyeHeight(),attacker.posZ,target,distanceFlag);
 	}
 	
 	/**
-	 * @param distanceFlag '=0'"' : attack as attacker. '>0' : static damage. '<0' : damage by distance
+	*@param distanceFlag '=0'"' : attack as attacker. '>0' : static damage. '<0' : damage by distance
 	 */
 	public static void redRayHurtEntity(EntityLivingBase attacker,
 	                                    double sourceX,double sourceY,double sourceZ,
@@ -299,7 +262,11 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		//Attack Entity as Direct Attack
 		if(distanceFlag<0)
 		{
-			if(attacker instanceof EntityPlayer) ((EntityPlayer)attacker).attackTargetEntityWithCurrentItem(target);
+			if(attacker instanceof EntityPlayer)
+			{
+				((EntityPlayer)attacker).attackTargetEntityWithCurrentItem(target);
+				((EntityPlayer)attacker).resetCooldown();
+			}
 			else attacker.attackEntityAsMob(target);
 		}
 		//Attack Entity as Magic
@@ -313,6 +280,22 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		generateRedWay(target.world,x,y,z,target.posX,target.posY,target.posZ);
 		//Attack Entity as Magic
 		target.attackEntityFrom(DamageSource.causeMobDamage(null),(float)damage);
+	}
+	
+	public static void rangedAttackXBossBullet(EntityLivingBase attacker,EntityLivingBase target,float distanceFactor)
+	{
+		double dx=target.posX-attacker.posX;
+		double dy=target.posY-(attacker.posY+attacker.getEyeHeight());
+		double dz=target.posZ-attacker.posZ;
+		double distance=MathHelper.sqrt(dx*dx+dy*dy+dz*dz);
+		dx/=distance;
+		dy/=distance;
+		dz/=distance;
+		EntityXBossBullet bullet=new EntityXBossBullet(attacker.world,attacker,
+				attacker.posX+dx,attacker.posY+attacker.getEyeHeight()+dy,attacker.posZ+dz,
+				dx*0.001,dy*0.001,dz*0.001);
+		bullet.setVelocity(dx,dy,dz);
+		attacker.world.spawnEntity(bullet);
 	}
 	
 	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2)
@@ -444,96 +427,108 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			return result;
 		}
 		
+		public static final Class[] nearestAttackableTargets=new Class[]
+		{
+				EntityWither.class,EntitySkeletonHorse.class,EntityZombieHorse.class,
+				EntityWitch.class,EntityVillager.class,EntityEvoker.class,EntityIllusionIllager.class,EntityVindicator.class,EntityZombieVillager.class,
+				EntityGolem.class,EntityEnderman.class,EntityEndermite.class,
+				EntityAnimal.class,EntityPlayer.class
+		};
+		
 		@Override
 		protected void initEntityAI()
 		{
 			this.tasks.addTask(1,new EntityAISwimming(this));
 			this.tasks.addTask(2,new EntityXBossAIAttackMelee(this,1,true));
-			this.tasks.addTask(2,new EntityXBossAIAttackRanged(this));
+			this.tasks.addTask(2,new EntityXBossAIAttackRangedOverridden(this,10,30,64));
 			this.tasks.addTask(3,new EntityAIMoveTowardsTarget(this,1.5D,32.0F));
 			this.tasks.addTask(4,new EntityAIMoveTowardsRestriction(this,1.0D));
+			this.tasks.addTask(5,new EntityAIWatchClosest(this,XCreeper.EntityXCreeper.class,(float)16));
+			this.tasks.addTask(5,new EntityAILeapAtTarget(this,(float)0.8));
 			this.targetTasks.addTask(6,new EntityAIHurtByTarget(this,true));
-			this.targetTasks.addTask(7,new EntityAINearestAttackableTarget(this,EntityWither.class,false,true));
-			this.targetTasks.addTask(8,new EntityAINearestAttackableTarget(this,EntityWitch.class,false,true));
-			this.targetTasks.addTask(9,new EntityAINearestAttackableTarget(this,EntityVillager.class,false,true));
-			this.targetTasks.addTask(10,new EntityAINearestAttackableTarget(this,EntityEvoker.class,false,true));
-			this.targetTasks.addTask(11,new EntityAINearestAttackableTarget(this,EntityIllusionIllager.class,false,true));
-			this.targetTasks.addTask(12,new EntityAINearestAttackableTarget(this,EntityVindicator.class,false,true));
-			this.targetTasks.addTask(13,new EntityAINearestAttackableTarget(this,EntityZombieVillager.class,false,true));
-			this.targetTasks.addTask(14,new EntityAINearestAttackableTarget(this,EntityIronGolem.class,false,true));
-			this.targetTasks.addTask(15,new EntityAINearestAttackableTarget(this,EntitySnowman.class,false,true));
-			this.targetTasks.addTask(16,new EntityAINearestAttackableTarget(this,EntityEnderman.class,false,true));
-			this.targetTasks.addTask(17,new EntityAINearestAttackableTarget(this,EntityEndermite.class,false,true));
-			this.targetTasks.addTask(18,new EntityAINearestAttackableTarget(this,EntityChicken.class,false,true));
-			this.targetTasks.addTask(19,new EntityAINearestAttackableTarget(this,EntityCow.class,false,true));
-			this.targetTasks.addTask(20,new EntityAINearestAttackableTarget(this,EntityDonkey.class,false,true));
-			this.targetTasks.addTask(21,new EntityAINearestAttackableTarget(this,EntityHorse.class,false,true));
-			this.targetTasks.addTask(22,new EntityAINearestAttackableTarget(this,EntityLlama.class,false,true));
-			this.targetTasks.addTask(23,new EntityAINearestAttackableTarget(this,EntityMooshroom.class,false,true));
-			this.targetTasks.addTask(24,new EntityAINearestAttackableTarget(this,EntityMule.class,false,true));
-			this.targetTasks.addTask(25,new EntityAINearestAttackableTarget(this,EntityOcelot.class,false,true));
-			this.targetTasks.addTask(26,new EntityAINearestAttackableTarget(this,EntityParrot.class,false,true));
-			this.targetTasks.addTask(27,new EntityAINearestAttackableTarget(this,EntityPig.class,false,true));
-			this.targetTasks.addTask(28,new EntityAINearestAttackableTarget(this,EntityRabbit.class,false,true));
-			this.targetTasks.addTask(29,new EntityAINearestAttackableTarget(this,EntitySheep.class,false,true));
-			this.targetTasks.addTask(30,new EntityAINearestAttackableTarget(this,EntitySkeletonHorse.class,false,true));
-			this.targetTasks.addTask(31,new EntityAINearestAttackableTarget(this,EntityWolf.class,false,true));
-			this.targetTasks.addTask(32,new EntityAINearestAttackableTarget(this,EntityZombieHorse.class,false,true));
-			this.targetTasks.addTask(33,new EntityAINearestAttackableTarget(this,EntityPlayer.class,false,true));
-			this.targetTasks.addTask(34,new EntityAINearestAttackableTarget(this,EntityPlayerMP.class,false,true));
-			this.tasks.addTask(35,new EntityAIWatchClosest(this,XCreeper.EntityXCreeper.class,(float)16));
-			this.tasks.addTask(36,new EntityAILeapAtTarget(this,(float)0.8));
+			int i=7;
+			for(Class entityClass : nearestAttackableTargets) this.targetTasks.addTask(i++,new EntityAINearestAttackableTarget(this,entityClass,false,false));
 		}
 		
-		//@Override
 		public EnumCreatureAttribute getCreatureAttribute()
 		{
 			return EnumCreatureAttribute.UNDEFINED;
 		}
 		
-		//@Override
 		protected boolean canDespawn()
 		{
 			return false;
 		}
 		
-		//@Override
-		protected Item getDropItem()
-		{
-			return null;
-		}
-		
-		//@Override
 		public net.minecraft.util.SoundEvent getAmbientSound()
 		{
-			return SoundEvent.REGISTRY.getObject(new ResourceLocation(""));
-		}
-		
-		//@Override
-		public net.minecraft.util.SoundEvent getHurtSound(DamageSource ds)
-		{
-			return SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.player.hurt"));
-		}
-		
-		//@Override
-		public net.minecraft.util.SoundEvent getDeathSound()
-		{
-			return SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.player.death"));
-		}
-		
-		//@Override
-		protected SoundEvent getStepSound()
-		{
 			return null;
 		}
 		
-		//@Override
+		public net.minecraft.util.SoundEvent getHurtSound(DamageSource ds)
+		{
+			return SoundEvents.ENTITY_PLAYER_HURT;
+		}
+		
+		public net.minecraft.util.SoundEvent getDeathSound()
+		{
+			return SoundEvents.ENTITY_PLAYER_DEATH;
+		}
+		
 		protected float getSoundVolume()
 		{
 			return 1.0F;
 		}
 		
-		//@Override
+		@Override
+		protected void applyEntityAttributes()
+		{
+			super.applyEntityAttributes();
+			this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
+			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+			this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(64D);
+			this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4D);
+			this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
+		}
+		
+		//====Boss Bar====//
+		public boolean isNonBoss()
+		{
+			return false;
+		}
+		
+		protected final BossInfoServer bossInfo=new BossInfoServer(this.getDisplayName(),BossInfo.Color.BLUE,BossInfo.Overlay.PROGRESS);
+		
+		public void addTrackingPlayer(EntityPlayerMP player)
+		{
+			super.addTrackingPlayer(player);
+			this.bossInfo.addPlayer(player);
+		}
+		
+		public void removeTrackingPlayer(EntityPlayerMP player)
+		{
+			super.removeTrackingPlayer(player);
+			this.bossInfo.removePlayer(player);
+		}
+		
+		public void setSwingingArms(boolean swingingArms)
+		{
+		
+		}
+		
+		//========Events========//
+		public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty,IEntityLivingData livingdata)
+		{
+			super.onInitialSpawn(difficulty,livingdata);
+			//Add Effect
+			this.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,1000000,2,false,true));
+			this.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION,1000000,2,false,true));
+			this.addPotionEffect(new PotionEffect(MobEffects.INVISIBILITY,200,1,true,true));
+			this.addPotionEffect(new PotionEffect(MobEffects.GLOWING,200,1,true,true));
+			this.addPotionEffect(new PotionEffect(MobEffects.LEVITATION,20,16,true,true));
+			return livingdata;
+		}
+		
 		public boolean attackEntityFrom(DamageSource source,float amount)
 		{
 			//====Block Damage====//
@@ -546,35 +541,24 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			//Immune Thorns Damage
 			if(source instanceof EntityDamageSource&&((EntityDamageSource)source).getIsThornsDamage()) return false;
 			//Defence
-			if(this.rangedMode)
+			if(source.getImmediateSource() instanceof EntityArrow||source==DamageSource.FALL||!this.rangedMode&&Math.random()<Math.random())
 			{
-				if(source.getImmediateSource() instanceof EntityArrow||source==DamageSource.FALL||Math.random()<Math.random())
-				{
-					this.playSound(SoundEvents.BLOCK_ANVIL_LAND,0.75F,1.0F);
-					XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,4,2,0.5);
-					return false;
-				}
+				this.playSound(SoundEvents.BLOCK_ANVIL_LAND,0.75F,1.0F);
+				XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,4,2,0.5);
+				return false;
 			}
 			//====Suffer From Damage====//
-			//Particle
-			if(world instanceof WorldServer)
-			{
-				((WorldServer)world).spawnParticle(EnumParticleTypes.REDSTONE,
-						this.posX,this.posY,this.posZ,12,
-						this.width*0.5,this.height*0.5,this.width*0.5,0
-				);
-			}
-			//Potion Effects
+			/*//Potion Effects
 			this.clearActivePotions();
 			this.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,1000000,2,true,false));
 			this.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,40,2,true,false));
-			this.addPotionEffect(new PotionEffect(MobEffects.INVISIBILITY,40,1,true,false));
+			this.addPotionEffect(new PotionEffect(MobEffects.INVISIBILITY,40,1,true,false));*/
 			//Spawn Bullet
 			if(this.rangedMode)
 			{
 				if(!world.isRemote)
 				{
-					double dx, dz;
+					double dx,dz;
 					EntityXBossBullet bullet;
 					for(dx=-1D;dx<2;dx+=2)
 					{
@@ -591,7 +575,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			return super.attackEntityFrom(source,amount);
 		}
 		
-		//@Override
 		public boolean attackEntityAsMob(Entity entityIn)
 		{
 			boolean flag=super.attackEntityAsMob(entityIn);
@@ -602,10 +585,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 					if(entityIn instanceof EntityLivingBase)
 					{
 						EntityLivingBase entityL=(EntityLivingBase)entityIn;
-						/*if(!(entityL instanceof XBoss.EntityXBoss)&&!(entityL instanceof EntityPlayer))
-						{
-							if(this.getRidingEntity()!=entityL) this.startRiding(entityL);
-						}*/
 						entityL.motionY+=0.875;
 						world.addWeatherEffect(new EntityLightningBolt(world,entityL.posX-0.5,entityL.posY,entityL.posZ-0.5,true));
 					}
@@ -619,142 +598,177 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			return flag;
 		}
 		
-		public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty,IEntityLivingData livingdata)
-		{
-			super.onInitialSpawn(difficulty,livingdata);
-			//Add Effect
-			this.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,1000000,2,false,true));
-			this.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION,1000000,2,false,true));
-			this.addPotionEffect(new PotionEffect(MobEffects.INVISIBILITY,200,1,true,true));
-			this.addPotionEffect(new PotionEffect(MobEffects.GLOWING,200,1,true,true));
-			this.addPotionEffect(new PotionEffect(MobEffects.LEVITATION,20,16,true,true));
-			return livingdata;
-		}
-		
-		@Override
-		protected void applyEntityAttributes()
-		{
-			super.applyEntityAttributes();
-			if(this.getEntityAttribute(SharedMonsterAttributes.ARMOR)!=null) this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)!=null) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH)!=null) this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(64D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
-		}
-		
-		//@Override
-		public void setSwingingArms(boolean swingingArms)
-		{
-			
-		}
-		
-		//@Override
-		public boolean isNonBoss()
-		{
-			return false;
-		}
-		
-		private final BossInfoServer bossInfo=new BossInfoServer(this.getDisplayName(),BossInfo.Color.BLUE,BossInfo.Overlay.PROGRESS);
-		
-		//@Override
-		public void addTrackingPlayer(EntityPlayerMP player)
-		{
-			super.addTrackingPlayer(player);
-			this.bossInfo.addPlayer(player);
-		}
-		
-		//@Override
-		public void removeTrackingPlayer(EntityPlayerMP player)
-		{
-			super.removeTrackingPlayer(player);
-			this.bossInfo.removePlayer(player);
-		}
-		
-		//@Override
 		public void onUpdate()
 		{
 			super.onUpdate();
 			//No Clip
-			/*this.noClip = true;
+			/*this.noClip=true;
 			super.onUpdate();
-			this.noClip = false;*/
-			//Tick set
-			//this.setNoGravity(true);
+			this.noClip=false;*/
 			//Boss Bar
 			this.bossInfo.setPercent(this.getHealth()/this.getMaxHealth());
 			//Mode Switch
-			if(--modeTick<0)
+			if(!this.world.isRemote)
 			{
-				this.modeTick=(int)(Math.random()*50+175);
-				this.rangedMode=!this.rangedMode;
-				if(this.rangedMode)
+				if(--modeTick<0)
 				{
-					this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,getXItemBullet());
-					this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getShield());
-				}
-				else
-				{
-					this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,getWeapon());
-					this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getXMagnet());
+					//Reset
+					this.modeTick=200;
+					//Switch
+					this.inventRangedMode();
 				}
 			}
-			EntityLivingBase target=this.getAttackTarget();//getAttackingEntity
+			//getAttackingEntity
+			EntityLivingBase target=this.getAttackTarget();
 			//Check self attack
 			if(target==this) this.setAttackTarget(null);
+			//Variable
+			double targetDistance=target==null?0:this.getDistance(target);
+			double dx=target==null?0:(target.posX-this.posX);
+			double dy=target==null?0:(target.posY-this.posY);
+			double dz=target==null?0:(target.posZ-this.posZ);
 			//Drag to Target
+			if(target!=null)
+			{
+				if(targetDistance>=(this.rangedMode?24:6))
+				{
+					//Motion
+					this.motionX+=dx/targetDistance*0.2;
+					this.motionY+=dy/targetDistance*0.2;
+					this.motionZ+=dz/targetDistance*0.2;
+					//Particle
+					world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
+				}
+			}
 			if(!this.rangedMode)
 			{
-				if(target!=null)
-				{
-					double targetDistance=this.getDistance(target);
-					double dx=target.posX-this.posX;
-					double dy=target.posY-this.posY;
-					double dz=target.posZ-this.posZ;
-					if(targetDistance>=6)
-					{
-						//Motion
-						this.motionX+=dx/targetDistance*0.2;
-						this.motionY+=dy/targetDistance*0.2;
-						this.motionZ+=dz/targetDistance*0.2;
-						//Particle
-						if(world instanceof WorldServer) world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
-					}
-				}
 				//Magnet Negative
-				XCraftTools.XMagnet.xMagnetCreateGravity(this.world,this,1);
+				if(!this.world.isRemote) XCraftTools.XMagnet.xMagnetCreateGravity(this.world,this,1);
 				//Random Hurt
 				if(--randomHurtTick<0)
 				{
 					randomHurtTick=40;
 					redRayHurtNearbyEntities(this.world,this,-16,-1,true,true);
-					if(target!=null) redRayHurtEntity(this,target,-1);
+					if(target!=null)
+					{
+						//Particle
+						XuphoriumCraft.generateParticleRay(target.world,
+								this.posX,this.posY+this.getEyeHeight(),this.posZ,
+								target.posX,target.posY+target.getEyeHeight(),target.posZ,
+								((int)targetDistance)*4,1,EnumParticleTypes.SPELL_INSTANT,0,0d);
+						//Direct Attack Entity
+						if(this.attackEntityAsMob(target)) this.randomHurtTick=20;
+					}
 				}
-			}
-			else
-			{
-			
 			}
 		}
 		
 		/**
-		 * Attack the specified entity using a ranged attack.
+		*Attack the specified entity using a ranged attack.
 		 */
-		public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor)
+		public void attackEntityWithRangedAttack(EntityLivingBase target,float distanceFactor)
 		{
-			double dx=target.posX-this.posX;
-			double dy=target.posY-(this.posY+this.getEyeHeight());
-			double dz=target.posZ-this.posZ;
-			double distance=MathHelper.sqrt(dx*dx+dy*dy+dz*dz);
-			dx/=distance;
-			dy/=distance;
-			dz/=distance;
-			EntityXBossBullet bullet=new EntityXBossBullet(world,this,
-					this.posX+dx,this.posY+this.getEyeHeight()+dy,this.posZ+dz,
-					dx*0.001,dy*0.001,dz*0.001);
-			bullet.setVelocity(dx,dy,dz);
-			world.spawnEntity(bullet);
-			this.playSound(SoundEvents.ENTITY_ENDERPEARL_THROW,0.5F, 1F);
-			this.setSwingingArms(true);
+			//Area Splash
+			List<Entity> entities=world.loadedEntityList;
+			List<EntityLivingBase> toAttackEntities=new ArrayList<>();
+			//Get
+			try
+			{
+				for(Entity entity: entities)
+				{
+					if(entity instanceof EntityLivingBase)
+					{
+						//Ignore Special Entities
+						if(entity.getDistanceSq(target.posX,target.posY,target.posZ)<24) toAttackEntities.add((EntityLivingBase)entity);
+					}
+				}
+				for(EntityLivingBase entity: toAttackEntities)
+				{
+					//Attack
+					this.rangedAttack(entity,distanceFactor);
+				}
+			}
+			catch(Exception exception)
+			{
+				XuphoriumCraft.LOGGER.error(exception.toString());
+				exception.printStackTrace();
+			}
+			this.playSound(SoundEvents.ENTITY_ENDERPEARL_THROW,0.5F,1F);
+		}
+		
+		public void rangedAttack(EntityLivingBase target,float distanceFactor)
+		{
+			XBoss.rangedAttackXBossBullet(this,target,distanceFactor);
+		}
+		
+		//====State of RangedMode====//
+		protected static final DataParameter<Byte> RANGED_MODE=EntityDataManager.createKey(EntityXBoss.class,DataSerializers.BYTE);
+		
+		protected void entityInit()
+		{
+			super.entityInit();
+			this.dataManager.register(RANGED_MODE,(byte)16);
+		}
+		
+		/**
+		*(abstract) Protected helper method to write subclass entity data to NBT.
+		 */
+		public void writeEntityToNBT(NBTTagCompound compound)
+		{
+			super.writeEntityToNBT(compound);
+			compound.setBoolean("RangedMode",this.isRangedMode());
+		}
+		
+		/**
+		*(abstract) Protected helper method to read subclass entity data from NBT.
+		 */
+		public void readEntityFromNBT(NBTTagCompound compound)
+		{
+			super.readEntityFromNBT(compound);
+			
+			if (compound.hasKey("RangedMode"))
+			{
+				this.setRangedMode(compound.getBoolean("RangedMode"));
+			}
+		}
+		
+		public boolean isRangedMode()
+		{
+			return (this.dataManager.get(RANGED_MODE)&16)!=0;
+		}
+		
+		public void setRangedMode(boolean value)
+		{
+			byte b0=this.dataManager.get(RANGED_MODE);
+			this.dataManager.set(RANGED_MODE,(byte)(value?(b0|16):(b0&-17)));
+			this.rangedMode=value;
+		}
+		
+		public void inventRangedMode()
+		{
+			this.rangedMode=!this.rangedMode;
+			//this.setRangedMode(!this.isRangedMode());
+			//Particle
+			if(world instanceof WorldServer)
+			{
+				((WorldServer)world).spawnParticle(EnumParticleTypes.SPELL_INSTANT,
+						this.posX,this.posY+this.height*0.5,this.posZ,24,
+						this.width*0.5,this.height*0.5,this.width*0.5,0
+				);
+			}
+			//No Gravity
+			this.setNoGravity(this.rangedMode);
+			//Equip
+			if(this.rangedMode)
+			{
+				this.setHeldItem(EnumHand.MAIN_HAND,getXItemBullet());
+				this.setHeldItem(EnumHand.OFF_HAND,getShield());
+			}
+			else
+			{
+				this.setHeldItem(EnumHand.MAIN_HAND,getWeapon());
+				this.setHeldItem(EnumHand.OFF_HAND,getXMagnet());
+			}
 		}
 	}
 	
@@ -852,7 +866,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 
 	public static class EntityXBossAIAttackMelee extends EntityAIAttackMelee
 	{
-		private EntityXBoss host;
+		protected EntityXBoss host;
 		public EntityXBossAIAttackMelee(EntityCreature creature,double speedIn,boolean useLongMemory)
 		{
 			super(creature,speedIn,useLongMemory);
@@ -885,20 +899,85 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		}
 	}
 	
-	public static class EntityXBossAIAttackRanged extends EntityAIAttackRanged
+	/**
+	*A Overridden Class as EntityAIAttackRanged
+	 */
+	public static class EntityXBossAIAttackRangedOverridden extends EntityAIBase
 	{
-		private EntityXBoss host;
+		/** The entity the AI instance has been applied to */
+		protected final EntityXBoss host;
+		protected EntityLivingBase attackTarget;
+		/**
+		*A decrementing tick that spawns a ranged attack once this value reaches 0. It is then set back to the
+		*maxRangedAttackTime.
+		 */
+		protected int rangedAttackTime;
+		protected final int attackIntervalMin;
+		/** The maximum time the AI has to wait before peforming another ranged attack. */
+		protected final int maxRangedAttackTime;
+		protected final float attackRadius;
 		
-		public EntityXBossAIAttackRanged(IRangedAttackMob host)
+		public EntityXBossAIAttackRangedOverridden(EntityXBoss attacker,int attackIntervalMin,int maxAttackTime,float maxAttackDistanceIn)
 		{
-			super(host,0.3D,20,64F);
-			if(host instanceof EntityXBoss) this.host=(EntityXBoss)host;
+			this.rangedAttackTime=-1;
+			this.host=attacker;
+			this.attackIntervalMin=attackIntervalMin;
+			this.maxRangedAttackTime=maxAttackTime;
+			this.attackRadius=maxAttackDistanceIn;
+			this.setMutexBits(3);
 		}
 		
-		@Override
+		/**
+		*Returns whether the EntityAIBase should begin execution.
+		 */
 		public boolean shouldExecute()
 		{
-			return super.shouldExecute()&&host!=null&&host.rangedMode;
+			if(!this.host.rangedMode) return false;
+			EntityLivingBase entitylivingbase=this.host.getAttackTarget();
+			if(entitylivingbase==null) return false;
+			else this.attackTarget=entitylivingbase;
+			return true;
+		}
+		
+		/**
+		*Returns whether an in-progress EntityAIBase should continue executing
+		 */
+		public boolean shouldContinueExecuting()
+		{
+			return this.shouldExecute();
+		}
+		
+		/**
+		*Reset the task's internal state. Called when this task is interrupted by another one
+		 */
+		public void resetTask()
+		{
+			this.attackTarget=null;
+			this.rangedAttackTime=-1;
+		}
+		
+		/**
+		*Keep ticking a continuous task that has already been started
+		 */
+		public void updateTask()
+		{
+			double d0=this.host.getDistanceSq(this.attackTarget.posX,this.attackTarget.getEntityBoundingBox().minY,this.attackTarget.posZ);
+			//boolean flag=this.host.getEntitySenses().canSee(this.attackTarget);
+			
+			this.host.getLookHelper().setLookPositionWithEntity(this.attackTarget,30.0F,30.0F);
+			
+			if (--this.rangedAttackTime==0)
+			{
+				float f=MathHelper.sqrt(d0)/this.attackRadius;
+				float distanceClamp=MathHelper.clamp(f,0.1F,1.0F);
+				this.host.attackEntityWithRangedAttack(this.attackTarget,distanceClamp);
+				this.rangedAttackTime=MathHelper.floor(f*(float)(this.maxRangedAttackTime-this.attackIntervalMin)+(float)this.attackIntervalMin);
+			}
+			else if (this.rangedAttackTime < 0)
+			{
+				float f2=MathHelper.sqrt(d0)/this.attackRadius;
+				this.rangedAttackTime=MathHelper.floor(f2*(float)(this.maxRangedAttackTime-this.attackIntervalMin)+(float)this.attackIntervalMin);
+			}
 		}
 	}
 }

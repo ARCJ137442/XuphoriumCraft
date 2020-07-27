@@ -1,8 +1,12 @@
 package com.xuphorium.xuphorium_craft;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.init.Enchantments;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -35,13 +39,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.init.MobEffects;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.IProjectile;
 
 import net.minecraft.potion.PotionEffect;
 
@@ -195,12 +195,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			//Detect Player
 			EntityPlayer player=null;
 			if(entityLiving instanceof EntityPlayer) player=(EntityPlayer)entityLiving;
-			//X Boss's Special Logic
-			if(entityLiving instanceof XBoss.EntityXBoss)
-			{
-				//TODO
-				return true;
-			}
 			//Detect Shield
 			ItemStack shieldStack=null;
 			if(entityLiving.getHeldItemMainhand().getItem()==X_SHIELD) shieldStack=entityLiving.getHeldItemMainhand();
@@ -222,7 +216,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					{
 						//Play Sound & Damage Item
 						int damage=(int)(event.getAmount());
-						entityLiving.world.playSound(null, entityLiving.posX, entityLiving.posY, entityLiving.posZ, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.NEUTRAL, 0.75F, 1F / (XShield.getItemRand().nextFloat() * 0.4F + 0.8F));
+						entityLiving.world.playSound(null,entityLiving.posX,entityLiving.posY,entityLiving.posZ,SoundEvents.BLOCK_ANVIL_LAND,SoundCategory.NEUTRAL,0.75F,1F / (XShield.getItemRand().nextFloat() * 0.4F + 0.8F));
 						for(int i=0;i<damage&&XShield.isUsable(shieldStack);i++) shieldStack.damageItem(1,entityLiving);
 						//Entity's Effect
 						if(!entityLiving.world.isRemote)
@@ -309,6 +303,17 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				setItemMode(stack,i);
 				items.add(stack);
 			}
+		}
+		
+		public Multimap<String,AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
+		{
+			Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
+			if (equipmentSlot == EntityEquipmentSlot.MAINHAND)
+			{
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier",4, 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier",-0.5, 0));
+			}
+			return multimap;
 		}
 		
 		@Override
@@ -460,7 +465,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				case MODE_ID_TELEPORTATION:
 					if(pos==null) break;
 					XCraftTools.teleportBlock(world,pos,8);
-					world.playSound(null, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.NEUTRAL, 0.75F, 0.4F / (itemRand.nextFloat()*0.4F+0.8F));
+					world.playSound(null,x,y,z,SoundEvents.ENTITY_ENDERMEN_TELEPORT,SoundCategory.NEUTRAL,0.75F,1F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 				case MODE_ID_DRAG:
 					if(player==null||pos==null) break;
@@ -472,6 +477,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					player.motionX+=1.25*(x*Math.abs(x))/distanceValue;
 					player.motionY+=1.25*(y*Math.abs(y))/distanceValue;
 					player.motionZ+=1.25*(z*Math.abs(z))/distanceValue;
+					world.playSound(null,player.posX,player.posY,player.posZ,SoundEvents.ENTITY_SNOWBALL_THROW,SoundCategory.NEUTRAL,0.75F,1F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 				case MODE_ID_RAY:
 					if(player==null) XBoss.redRayHurtNearbyEntities(world,x,y,z,8,3,false,false);
@@ -485,7 +491,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 						lookVec.x*0.02,(lookVec.y-1.125)*0.0005,lookVec.z*0.02);
 					bullet.setVelocity(lookVec.x,lookVec.y,lookVec.z);
 					world.spawnEntity(bullet);
-					world.playSound(null, bullet.posX, bullet.posY, bullet.posZ, SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat()*0.4F+0.8F));
+					world.playSound(null,bullet.posX,bullet.posY,bullet.posZ,SoundEvents.ENTITY_ENDERPEARL_THROW,SoundCategory.NEUTRAL,0.5F,0.4F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 			}
 			return -1;
@@ -533,7 +539,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		//Click without Block
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
-			if(world.isRemote) return super.onItemRightClick(world, player, hand);
+			if(world.isRemote) return super.onItemRightClick(world,player,hand);
 			//Get Stack
 			ItemStack itemstack=player.getHeldItem(hand);
 			if(hand!=EnumHand.MAIN_HAND||!player.isSneaking())
@@ -545,7 +551,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS,itemstack);
 				}
 			}
-			//Turn Mode ( metadata <=> mode , Need Materials) , only MAIN HAND
+			//Turn Mode ( metadata <=> mode ,Need Materials) ,only MAIN HAND
 			else if(player.isSneaking()&&!player.getCooldownTracker().hasCooldown(X_ITEM))
 			{
 				int oldMode=getItemMode(itemstack),newMode=(oldMode+1)%NUM_MODES;
@@ -607,10 +613,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.SPEED,10,4,true,true));
 					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.HASTE,10,2,true,true));
 					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST,10,2,true,true));
-					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,10,2,true,true));
-					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION,300,1,true,true));
-					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE,10,1,true,true));
-					entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING,10,1,true,true));
 				}
 			}
 		}
@@ -711,7 +713,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
 			ItemStack itemstack=player.getHeldItem(hand);
-			//Turn Mode with Cooldown , only MAIN HAND
+			//Turn Mode with Cooldown ,only MAIN HAND
 			if(!world.isRemote&&player.isSneaking()&&hand==EnumHand.MAIN_HAND&&!player.getCooldownTracker().hasCooldown(X_MAGNET))
 			{
 				int oldMode=getItemMode(itemstack),newMode=(oldMode+1)%NUM_MODES;
@@ -738,7 +740,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				//Turn Mode Failed
 				player.sendMessage(new TextComponentString(TextFormatting.RED+"No material to turn mode"));
 			}
-			return new ActionResult<ItemStack>(EnumActionResult.FAIL,itemstack);
+			return new ActionResult<>(EnumActionResult.FAIL,itemstack);
 		}
 		
 		public static void directTurnPlayerItemMode(EntityPlayer player,ItemStack itemStack,int oldMode,int newMode,ItemStack newModeMaterial,boolean checkMaterial)
@@ -848,7 +850,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		}
 		
 		/**
-		 * If swordStack==null , than don't use cooldown
+		 * If swordStack==null ,than don't use cooldown
 		 */
 		public static int swordEnrageTarget(World world,EntityLivingBase attacker,EntityLiving target,ItemStack swordStack,int mode,boolean generateParticle)
 		{
@@ -1006,7 +1008,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand)
 		{
 			ItemStack itemstack=player.getHeldItem(hand);
-			//Turn Mode with Cooldown , only MAIN HAND
+			//Turn Mode with Cooldown ,only MAIN HAND
 			if(!world.isRemote&&hand==EnumHand.MAIN_HAND&&player.isSneaking()&&!player.getCooldownTracker().hasCooldown(X_SWORD))
 			{
 				int oldMode=getSwordMode(itemstack),newMode=(oldMode+1)%NUM_MODES;
@@ -1016,11 +1018,11 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					//TODO: TRANSLATED CLIENT MESSAGE
 					player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Now turn to mode #"+newMode));
 					player.getCooldownTracker().setCooldown(X_SWORD,20);
-					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS,itemstack);
 				}
 			}
 			//else XCraftTools.addToolBoostEffects(player);
-			return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+			return new ActionResult<ItemStack>(EnumActionResult.FAIL,itemstack);
 		}
 
 		@Override
@@ -1046,7 +1048,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				swordEnrageTarget(target.world,player,(EntityLiving)target,getSwordMode(itemstack),true);
 				return true;
 			}
-			return super.itemInteractionForEntity(itemstack, player, target, hand);
+			return super.itemInteractionForEntity(itemstack,player,target,hand);
 		}
 	}
 	
@@ -1087,7 +1089,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		{
 			if(this.toolClass==null) return super.getToolClasses(stack);
 			HashMap<String,Integer> result=new HashMap<String,Integer>();
-			//if(this.toolClass==null)return result.keySet();
 			result.put(this.toolClass,4);
 			return result.keySet();
 		}

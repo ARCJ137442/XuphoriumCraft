@@ -1,6 +1,7 @@
 package com.xuphorium.xuphorium_craft;
 
 import jdk.nashorn.internal.ir.Block;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -154,29 +155,22 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 		{
 			return EnumCreatureAttribute.UNDEFINED;
 		}
-/*
-		@Override
-		protected Item getDropItem()
-		{
-			return new ItemStack(XCraftMaterials.X_DUST,1).getItem();
-		}*/
-
-		@Override
-		public net.minecraft.util.SoundEvent getAmbientSound()
-		{
-			return net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation(""));
-		}
-
+		
 		@Override
 		public net.minecraft.util.SoundEvent getHurtSound(DamageSource ds)
 		{
-			return net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.creeper.hurt"));
+			return SoundEvents.ENTITY_CREEPER_HURT;
 		}
 
 		@Override
 		public net.minecraft.util.SoundEvent getDeathSound()
 		{
-			return net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.creeper.death"));
+			return SoundEvents.ENTITY_CREEPER_DEATH;
+		}
+		
+		protected boolean canDespawn()
+		{
+			return false;
 		}
 
 		@Override
@@ -189,11 +183,11 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 		protected void applyEntityAttributes()
 		{
 			super.applyEntityAttributes();
-			if(this.getEntityAttribute(SharedMonsterAttributes.ARMOR)!=null) this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)!=null) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH)!=null) this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5D);
-			if(this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE)!=null) this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32D);
+			this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
+			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+			this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20D);
+			this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5D);
+			this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32D);
 		}
 		
 		
