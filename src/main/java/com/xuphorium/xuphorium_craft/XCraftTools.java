@@ -477,7 +477,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					player.motionX+=1.25*(x*Math.abs(x))/distanceValue;
 					player.motionY+=1.25*(y*Math.abs(y))/distanceValue;
 					player.motionZ+=1.25*(z*Math.abs(z))/distanceValue;
-					world.playSound(null,player.posX,player.posY,player.posZ,SoundEvents.ENTITY_SNOWBALL_THROW,SoundCategory.NEUTRAL,0.75F,1F / (itemRand.nextFloat()*0.4F+0.8F));
+					world.playSound(null,player.posX,player.posY,player.posZ,SoundEvents.ENTITY_ENDERPEARL_THROW,SoundCategory.NEUTRAL,0.75F,1F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 				case MODE_ID_RAY:
 					if(player==null) XBoss.redRayHurtNearbyEntities(world,x,y,z,8,3,false,false);
@@ -488,7 +488,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					Vec3d lookVec=player.getLookVec();
 					XBoss.EntityXBossBullet bullet=new XBoss.EntityXBossBullet(world,player,
 						player.posX+lookVec.x,player.posY+player.getEyeHeight()+lookVec.y,player.posZ+lookVec.z,
-						lookVec.x*0.02,(lookVec.y-1.125)*0.0005,lookVec.z*0.02);
+							player.motionX+lookVec.x*0.02,player.motionY+(lookVec.y-1.125)*0.0005,player.motionZ+lookVec.z*0.02);
 					bullet.setVelocity(lookVec.x,lookVec.y,lookVec.z);
 					world.spawnEntity(bullet);
 					world.playSound(null,bullet.posX,bullet.posY,bullet.posZ,SoundEvents.ENTITY_ENDERPEARL_THROW,SoundCategory.NEUTRAL,0.5F,0.4F / (itemRand.nextFloat()*0.4F+0.8F));
