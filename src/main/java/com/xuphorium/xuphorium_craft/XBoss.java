@@ -1,9 +1,7 @@
 package com.xuphorium.xuphorium_craft;
 
-import net.minecraft.init.Items;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -74,7 +72,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.init.Enchantments;
 
-import java.util.ArrayList;
 import java.util.List;
 /* 
 import com.xuphorium.xuphorium_craft.*;
@@ -337,7 +334,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		
 		protected int randomHurtTick=20;
 		protected int modeTick=200;
-		public boolean rangedMode=true;
+		public boolean rangedMode=false;
 		//protected EntityLivingBase lastMemEntity;
 		
 		public EntityXBoss(World world)
@@ -350,7 +347,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			this.setAlwaysRenderNameTag(true);
 			this.enablePersistence();
 			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,getWeapon());
-			this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getShield());
+			this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getXMagnet());
 			this.setItemStackToSlot(EntityEquipmentSlot.HEAD,getHelmet());
 			this.setItemStackToSlot(EntityEquipmentSlot.CHEST,getChestplate());
 			this.setItemStackToSlot(EntityEquipmentSlot.LEGS,getLeggings());
@@ -430,7 +427,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			return result;
 		}
 		
-		public static ItemStack getXItem()
+		public static ItemStack getXItemBullet()
 		{
 			ItemStack result=new ItemStack(XCraftTools.X_ITEM);
 			XCraftTools.XItem.setItemMode(result,XCraftTools.XItem.MODE_ID_BULLET);
@@ -549,7 +546,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			//Immune Thorns Damage
 			if(source instanceof EntityDamageSource&&((EntityDamageSource)source).getIsThornsDamage()) return false;
 			//Defence
-			if(!this.rangedMode)
+			if(this.rangedMode)
 			{
 				if(source.getImmediateSource() instanceof EntityArrow||source==DamageSource.FALL||Math.random()<Math.random())
 				{
@@ -564,8 +561,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			{
 				((WorldServer)world).spawnParticle(EnumParticleTypes.REDSTONE,
 						this.posX,this.posY,this.posZ,12,
-						this.width*0.5,this.height*0.5,this.width*0.5,
-						0
+						this.width*0.5,this.height*0.5,this.width*0.5,0
 				);
 			}
 			//Potion Effects
@@ -574,21 +570,24 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			this.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,40,2,true,false));
 			this.addPotionEffect(new PotionEffect(MobEffects.INVISIBILITY,40,1,true,false));
 			//Spawn Bullet
-			if(!world.isRemote)
+			if(this.rangedMode)
 			{
-				double dx,dz;
-				EntityXBossBullet bullet;
-				for(dx=-1D;dx<2;dx+=2)
+				if(!world.isRemote)
 				{
-					for(dz=-1D;dz<2;dz+=2)
+					double dx, dz;
+					EntityXBossBullet bullet;
+					for(dx=-1D;dx<2;dx+=2)
 					{
-						bullet=new EntityXBossBullet(world,this,this.posX+dx,0,this.posZ+dz,dx*0.01,-0.0375,dz*0.01);
-						bullet.setVelocity(dx,0,dz);
-						world.spawnEntity(bullet);
+						for(dz=-1D;dz<2;dz+=2)
+						{
+							bullet=new EntityXBossBullet(world,this,this.posX+dx,0,this.posZ+dz,dx*0.01,-0.0375,dz*0.01);
+							bullet.setVelocity(dx,0,dz);
+							world.spawnEntity(bullet);
+						}
 					}
 				}
-				redRayHurtNearbyEntities(world,this,8,-2,false,true);
 			}
+			else redRayHurtNearbyEntities(world,this,8,-2,false,true);
 			return super.attackEntityFrom(source,amount);
 		}
 		
@@ -683,12 +682,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			//this.setNoGravity(true);
 			//Boss Bar
 			this.bossInfo.setPercent(this.getHealth()/this.getMaxHealth());
-			//random Hurt
-			if(--randomHurtTick<0)
-			{
-				randomHurtTick=(int)(Math.random()*30+10);
-				redRayHurtNearbyEntities(this.world,this,-16,-1,true,true);
-			}
 			//Mode Switch
 			if(--modeTick<0)
 			{
@@ -696,30 +689,28 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				this.rangedMode=!this.rangedMode;
 				if(this.rangedMode)
 				{
-					this.setHeldItem(EnumHand.MAIN_HAND,getXItem());
-					this.setHeldItem(EnumHand.OFF_HAND,getXMagnet());
+					this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,getXItemBullet());
+					this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getShield());
 				}
 				else
 				{
-					this.setHeldItem(EnumHand.MAIN_HAND,getWeapon());
-					this.setHeldItem(EnumHand.OFF_HAND,getShield());
+					this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,getWeapon());
+					this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND,getXMagnet());
 				}
 			}
-			Entity target=this.getAttackTarget();//getAttackingEntity
+			EntityLivingBase target=this.getAttackTarget();//getAttackingEntity
+			//Check self attack
+			if(target==this) this.setAttackTarget(null);
 			//Drag to Target
 			if(!this.rangedMode)
 			{
-				if(target==this)
-				{
-					this.setAttackTarget(null);
-				}
-				else if(target!=null)
+				if(target!=null)
 				{
 					double targetDistance=this.getDistance(target);
 					double dx=target.posX-this.posX;
 					double dy=target.posY-this.posY;
 					double dz=target.posZ-this.posZ;
-					if(targetDistance>=4)
+					if(targetDistance>=6)
 					{
 						//Motion
 						this.motionX+=dx/targetDistance*0.2;
@@ -729,11 +720,19 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 						if(world instanceof WorldServer) world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
 					}
 				}
+				//Magnet Negative
+				XCraftTools.XMagnet.xMagnetCreateGravity(this.world,this,1);
+				//Random Hurt
+				if(--randomHurtTick<0)
+				{
+					randomHurtTick=40;
+					redRayHurtNearbyEntities(this.world,this,-16,-1,true,true);
+					if(target!=null) redRayHurtEntity(this,target,-1);
+				}
 			}
 			else
 			{
-				//Magnet Negative
-				XCraftTools.XMagnet.xMagnetCreateGravity(this.world,this,1);
+			
 			}
 		}
 		
@@ -892,7 +891,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		
 		public EntityXBossAIAttackRanged(IRangedAttackMob host)
 		{
-			super(host,0.3D,40,64F);
+			super(host,0.3D,20,64F);
 			if(host instanceof EntityXBoss) this.host=(EntityXBoss)host;
 		}
 		
