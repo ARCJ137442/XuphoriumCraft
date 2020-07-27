@@ -1,6 +1,6 @@
 [
   {
-    "modid": "xuphorium_craft",
+    "modid": XuphoriumCraft.MODID,
     "name": "Xuphorium Craft",
     "description": "A Simple Mod About a Unknown Element called Xuphorium.",
     "version": "1.0.0",

@@ -70,7 +70,7 @@ public class XCreeper extends XuphoriumCraftElements.ModElement
 				EntityEntryBuilder.create().entity(
 					EntityXCreeper.class
 				).id(
-					new ResourceLocation("xuphorium_craft","x_creeper"),ENTITYID
+					new ResourceLocation(XuphoriumCraft.MODID,"x_creeper"),ENTITYID
 				).name(
 					"x_creeper"
 				).tracker(

@@ -2,6 +2,7 @@ package com.xuphorium.xuphorium_craft;
 
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.projectile.EntityFireball;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -73,21 +74,18 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			BlockPos blockpos=pos.add(worldIn.rand.nextInt(range)-worldIn.rand.nextInt(range),worldIn.rand.nextInt(range)-worldIn.rand.nextInt(range),worldIn.rand.nextInt(range)-worldIn.rand.nextInt(range));
 			if(worldIn.isAirBlock(blockpos))
 			{
-				if(worldIn.isRemote)
+				for(int j=0;j<128;++j)
 				{
-					for(int j=0;j<128;++j)
-					{
-						double d0=worldIn.rand.nextDouble();
-						float f=(worldIn.rand.nextFloat()-0.5F)*0.2F;
-						float f1=(worldIn.rand.nextFloat()-0.5F)*0.2F;
-						float f2=(worldIn.rand.nextFloat()-0.5F)*0.2F;
-						double d1=(double)blockpos.getX()+(double)(pos.getX()-blockpos.getX())*d0+(worldIn.rand.nextDouble()-0.5D)+0.5D;
-						double d2=(double)blockpos.getY()+(double)(pos.getY()-blockpos.getY())*d0+worldIn.rand.nextDouble()-0.5D;
-						double d3=(double)blockpos.getZ()+(double)(pos.getZ()-blockpos.getZ())*d0+(worldIn.rand.nextDouble()-0.5D)+0.5D;
-						worldIn.spawnParticle(EnumParticleTypes.PORTAL,d1,d2,d3,(double)f,(double)f1,(double)f2);
-					}
+					double d0=worldIn.rand.nextDouble();
+					float f=(worldIn.rand.nextFloat()-0.5F)*0.2F;
+					float f1=(worldIn.rand.nextFloat()-0.5F)*0.2F;
+					float f2=(worldIn.rand.nextFloat()-0.5F)*0.2F;
+					double d1=(double)blockpos.getX()+(double)(pos.getX()-blockpos.getX())*d0+(worldIn.rand.nextDouble()-0.5D)+0.5D;
+					double d2=(double)blockpos.getY()+(double)(pos.getY()-blockpos.getY())*d0+worldIn.rand.nextDouble()-0.5D;
+					double d3=(double)blockpos.getZ()+(double)(pos.getZ()-blockpos.getZ())*d0+(worldIn.rand.nextDouble()-0.5D)+0.5D;
+					worldIn.spawnParticle(EnumParticleTypes.PORTAL,d1,d2,d3,f,f1,f2);
 				}
-				else
+				if(!worldIn.isRemote)
 				{
 					worldIn.setBlockState(blockpos,iblockstate,2);
 					worldIn.setBlockToAir(pos);
@@ -224,8 +222,14 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					{
 						//Play Sound & Damage Item
 						int damage=(int)(event.getAmount());
-						entityLiving.playSound(SoundEvents.BLOCK_ANVIL_LAND,0.75F,1.0F);
+						entityLiving.world.playSound(null, entityLiving.posX, entityLiving.posY, entityLiving.posZ, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.NEUTRAL, 0.75F, 1F / (XShield.getItemRand().nextFloat() * 0.4F + 0.8F));
 						for(int i=0;i<damage&&XShield.isUsable(shieldStack);i++) shieldStack.damageItem(1,entityLiving);
+						//Entity's Effect
+						if(!entityLiving.world.isRemote)
+						{
+							entityLiving.addPotionEffect(new PotionEffect(MobEffects.GLOWING,20,1,true,false));
+							XBoss.punchEntities(entityLiving.world,entityLiving,2,0.1);
+						}
 						//Player's Shield Cooldown
 						if(player!=null&&!entityLiving.world.isRemote) player.getCooldownTracker().setCooldown(X_SHIELD,specialChopping?30:5);
 						//Defence
@@ -456,6 +460,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				case MODE_ID_TELEPORTATION:
 					if(pos==null) break;
 					XCraftTools.teleportBlock(world,pos,8);
+					world.playSound(null, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.NEUTRAL, 0.75F, 0.4F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 				case MODE_ID_DRAG:
 					if(player==null||pos==null) break;
@@ -475,9 +480,12 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				case MODE_ID_BULLET:
 					if(player==null||world.isRemote) break;
 					Vec3d lookVec=player.getLookVec();
-					XBoss.EntityXBossBullet bullet=new XBoss.EntityXBossBullet(world,player,player.posX+lookVec.x,player.posY+player.getEyeHeight()+lookVec.y,player.posZ+lookVec.z,lookVec.x*0.02,-0.001,lookVec.z*0.02);
+					XBoss.EntityXBossBullet bullet=new XBoss.EntityXBossBullet(world,player,
+						player.posX+lookVec.x,player.posY+player.getEyeHeight()+lookVec.y,player.posZ+lookVec.z,
+						lookVec.x*0.02,(lookVec.y-1.125)*0.0005,lookVec.z*0.02);
 					bullet.setVelocity(lookVec.x,lookVec.y,lookVec.z);
 					world.spawnEntity(bullet);
+					world.playSound(null, bullet.posX, bullet.posY, bullet.posZ, SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 			}
 			return -1;
@@ -766,26 +774,31 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				if(((EntityLivingBase)entity).getHeldItemMainhand().equals(itemstack)||
 				   ((EntityLivingBase)entity).getHeldItemOffhand().equals(itemstack))
 				{
-					List<Entity> entities=world.loadedEntityList;
-					double[] gravityForce;
-					for(Entity entity1 : entities)
-					{
-						if(entity1 instanceof EntityItem||entity1 instanceof EntityXPOrb||
-							modeCanAffectProjectiles(mode)&&(
+					xMagnetCreateGravity(world,entity,mode);
+				}
+			}
+		}
+		
+		public static void xMagnetCreateGravity(World world,Entity entity,int mode)
+		{
+			List<Entity> entities=world.loadedEntityList;
+			double[] gravityForce;
+			for(Entity entity1 : entities)
+			{
+				if(entity1 instanceof EntityItem||entity1 instanceof EntityXPOrb||
+						modeCanAffectProjectiles(mode)&&(
 								entity1 instanceof IProjectile||entity1 instanceof EntityFireball
-							))
-						{
-							gravityForce=calculateGravityVector(entity1.posX-entity.posX,
-									entity1.posY-entity.posY,
-									entity1.posZ-entity.posZ,
-									getForceValueByMode(mode),
-									1
-							);//1 means the scale of force
-							entity1.motionX+=gravityForce[0];
-							entity1.motionY+=gravityForce[1];
-							entity1.motionZ+=gravityForce[2];
-						}
-					}
+						))
+				{
+					gravityForce=calculateGravityVector(entity1.posX-entity.posX,
+							entity1.posY-entity.posY,
+							entity1.posZ-entity.posZ,
+							getForceValueByMode(mode),
+							1
+					);//1 means the scale of force
+					entity1.motionX+=gravityForce[0];
+					entity1.motionY+=gravityForce[1];
+					entity1.motionZ+=gravityForce[2];
 				}
 			}
 		}
@@ -900,7 +913,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					entities=world.loadedEntityList;
 					for(Entity entity4 : entities)
 					{
-						if(entity4 instanceof EntityLiving)
+						if(entity4!=target&&entity4 instanceof EntityLiving)
 						{
 							dx=target.posX-entity4.posX;
 							dy=target.posY-entity4.posY;
@@ -1234,19 +1247,31 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			});
 		}
 		
+		public static java.util.Random getItemRand()
+		{
+			return itemRand;
+		}
+
+		public ItemStack getDefaultInstance()
+		{
+			return getDefaultStack();
+		}
+		
+		public static ItemStack getDefaultStack(int amount)
+		{
+			ItemStack result=new ItemStack(X_SHIELD,1);
+			result.addEnchantment(Enchantments.MENDING,1);
+			return result;
+		}
+		
+		public static ItemStack getDefaultStack()
+		{
+			return getDefaultStack(1);
+		}
+		
 		public static boolean isUsable(ItemStack stack)
 		{
 			return stack.getItemDamage()<stack.getMaxDamage()-1;
-		}
-		
-		protected XShield(String name,int maxDamage)
-		{
-			super(name,512,1);
-		}
-		
-		public Item getRepairItem()
-		{
-			return XCraftMaterials.X_INGOT;
 		}
 		
 		/**
@@ -1255,7 +1280,6 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		 * @param toRepair the {@code ItemStack} being repaired
 		 * @param repair the {@code ItemStack} being used to perform the repair
 		 */
-		@Override
 		public boolean getIsRepairable(ItemStack toRepair,ItemStack repair)
 		{
 			Item item=repair.getItem();
@@ -1263,7 +1287,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					item==XCraftMaterials.X_CRYSTAL||
 					item==XCraftMaterials.X_CRYSTAL_LEFT||
 					item==XCraftMaterials.X_CRYSTAL_RIGHT
-			)?true:super.getIsRepairable(toRepair,repair);
+			)||super.getIsRepairable(toRepair,repair);
 		}
 
 		@Override

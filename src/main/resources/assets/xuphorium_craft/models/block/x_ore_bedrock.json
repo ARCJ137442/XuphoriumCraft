@@ -1,0 +1,7 @@
+{
+  "parent": "xuphorium_craft:block/x_ore_common",
+  "textures": {
+    "base": "minecraft:blocks/bedrock",
+    "overlay": "xuphorium_craft:blocks/x_ore_overlay_0"
+  }
+}

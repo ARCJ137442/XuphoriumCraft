@@ -75,6 +75,7 @@ tile.x_ore.name=X-Ore
 tile.x_ore_emerald.name=X-Emerald-Ore
 tile.x_ore_end.name=X-Ore-End
 tile.x_ore_nether.name=X-Ore-Nether
+tile.x_ore_bedrock.name=X-Ore-Bedrock
 tile.x_path.name=X-Path
 tile.x_phase_fiber_block.name=X-Phase-Fiber-Block
 tile.x_phase_web_block.name=X-Phase-Web-Block

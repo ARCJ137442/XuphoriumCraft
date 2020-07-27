@@ -1,5 +1,6 @@
 package com.xuphorium.xuphorium_craft.proxy;
 
+import com.xuphorium.xuphorium_craft.XuphoriumCraft;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -17,7 +18,7 @@ public class XuphoriumCraftClientProxy implements XuphoriumCraftIProxy
 	@Override
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		OBJLoader.INSTANCE.addDomain("xuphorium_craft");
+		OBJLoader.INSTANCE.addDomain(XuphoriumCraft.MODID);
 	}
 	
 	@Override

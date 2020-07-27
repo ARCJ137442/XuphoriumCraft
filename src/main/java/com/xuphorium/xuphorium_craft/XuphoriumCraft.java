@@ -16,10 +16,12 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -69,7 +71,7 @@ public class XuphoriumCraft
 	//============Xuphorium-Craft Register============//
 	public static final String MODID="xuphorium_craft";
 	public static final String VERSION="1.0.0";
-	public static final SimpleNetworkWrapper PACKET_HANDLER=NetworkRegistry.INSTANCE.newSimpleChannel("xuphorium_craft");
+	public static final SimpleNetworkWrapper PACKET_HANDLER=NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 	@SidedProxy(clientSide="com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftClientProxy",serverSide="com.xuphorium.xuphorium_craft.proxy.XuphoriumCraftServerProxy")
 	public static XuphoriumCraftIProxy proxy;
 	@Mod.Instance(MODID)
@@ -182,7 +184,7 @@ public class XuphoriumCraft
 			Blocks.WOODEN_BUTTON,Blocks.WOODEN_PRESSURE_PLATE
 	);
 	
-	public static CreativeTabs CREATIVE_TAB=new CreativeTabs("xuphorium_craft")
+	public static CreativeTabs CREATIVE_TAB=new CreativeTabs(XuphoriumCraft.MODID)
 	{
 		@SideOnly(Side.CLIENT)
 		@Override
@@ -227,9 +229,13 @@ public class XuphoriumCraft
 	public static boolean blockReaction(BlockPos pos,World world,boolean spawnParticle)
 	{
 		boolean returnBool=blockReaction(pos,world);
-		if(spawnParticle&&returnBool)
+		if(returnBool)
 		{
-			reactionCloud(world,0.5+(double)pos.getX(),0.5+(double)pos.getY(),0.5+(double)pos.getZ());
+			world.playSound(null, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 1);
+			if(spawnParticle)
+			{
+				reactionCloud(world,0.5+(double)pos.getX(),0.5+(double)pos.getY(),0.5+(double)pos.getZ());
+			}
 		}
 		return returnBool;
 	}

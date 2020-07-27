@@ -1,10 +1,12 @@
 package com.xuphorium.xuphorium_craft;
 
 import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.*;
 import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.WorldServer;
-import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
 
@@ -82,45 +84,19 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	public static class WorldGenOreBall extends WorldGenerator
 	{
 		public boolean mustFull;
-		public IBlockState stone;
-		public IBlockState ore;
-		public IBlockState center;
 		
-		public WorldGenOreBall(IBlockState stone,IBlockState ore,boolean mustFull)
-		{
-			this(stone,ore,ore,mustFull);
-		}
-		
-		public WorldGenOreBall(IBlockState stone,IBlockState ore,IBlockState center,boolean mustFull)
+		public WorldGenOreBall(boolean mustFull)
 		{
 			super();
-			this.stone=stone;
-			this.ore=ore;
-			this.center=center;
 			this.mustFull=mustFull;
 		}
 		
-		public WorldGenOreBall(IBlockState stone,IBlockState ore)
-		{
-			this(stone,ore,true);
-		}
-		
-		public WorldGenOreBall(IBlockState stone,IBlockState ore,IBlockState center)
-		{
-			this(stone,ore,center,true);
-		}
-		
-		public WorldGenOreBall randomize(Random rand,IBlockState randOre,IBlockState randCenter)
-		{
-			if(rand.nextInt(10)*rand.nextInt(10)<rand.nextInt(10)+rand.nextInt(10))
-			{
-				this.ore=randOre;
-				this.center=randCenter;
-			}
-			return this;
-		}
-
 		public boolean generate(World worldIn,Random rand,BlockPos position)
+		{
+			return this.generate(worldIn,Blocks.STONE.getDefaultState(),X_ORE.getDefaultState(),X_EMERALD_BLOCK.getDefaultState(), rand, position);
+		}
+		
+		public boolean generate(World worldIn,IBlockState stone,IBlockState ore,IBlockState center,Random rand,BlockPos position)
 		{
 			int x=position.getX();
 			int y=position.getY();
@@ -139,7 +115,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 					{
 						if(Math.abs(ix)+Math.abs(iy)+Math.abs(iz)>2) continue;
 						currentPos=new BlockPos(x+ix,y+iy,z+iz);
-						if(worldIn.getBlockState(currentPos).getBlock()==this.stone.getBlock())
+						if(worldIn.getBlockState(currentPos).getBlock()==stone.getBlock())
 						{
 							canReplaceCount++;
 							succeedPos[i]=currentPos;
@@ -153,8 +129,8 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			//XCraftBlocks.LOGGER.info("Generated X Ores At "+position.toString()+",As "+this.center.getBlock().getUnlocalizedName());
 			for(BlockPos pos : succeedPos)
 			{
-				if(pos.equals(position)) worldIn.setBlockState(position,this.center,2);
-				else worldIn.setBlockState(pos,this.ore,2);
+				if(pos.equals(position)) worldIn.setBlockState(position,center,2);
+				else worldIn.setBlockState(pos,ore,2);
 			}
 			return true;
 		}
@@ -189,7 +165,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	
 	public static boolean isXOre(Block block)
 	{
-		return (block==X_ORE||block==X_ORE_EMERALD||block==X_ORE_NETHER||block==X_ORE_END);
+		return (block==X_ORE||block==X_ORE_EMERALD||block==X_ORE_NETHER||block==X_ORE_END||block==X_ORE_BEDROCK);
 	}
 	
 	public static boolean getIsReplaceable(World world,BlockPos pos,IBlockState state)
@@ -202,89 +178,92 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		return world.getBlockState(pos).getBlock().isReplaceable(world,pos);
 	}
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_ore")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_ore")
 	public static final Block X_ORE=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_ore_emerald")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_ore_emerald")
 	public static final Block X_ORE_EMERALD=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_ore_nether")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_ore_nether")
 	public static final Block X_ORE_NETHER=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_ore_end")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_ore_end")
 	public static final Block X_ORE_END=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_ore_bedrock")
+	public static final Block X_ORE_BEDROCK=null;
+	
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_block")
 	public static final Block X_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_block_advanced")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_block_advanced")
 	public static final Block X_BLOCK_ADVANCED=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_crystal_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_crystal_block")
 	public static final Block X_CRYSTAL_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_dust_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_dust_block")
 	public static final Block X_DUST_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_path")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_path")
 	public static final Block X_PATH=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_reactive_core")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_reactive_core")
 	public static final Block X_REACTIVE_CORE=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_explosive")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_explosive")
 	public static final Block X_EXPLOSIVE=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_curer")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_curer")
 	public static final Block X_CURER=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_dust_generater")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_dust_generater")
 	public static final Block X_DUST_GENERATER=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_liquid")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_liquid")
 	public static final Block X_LIQUID=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_glass")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_glass")
 	public static final Block X_GLASS=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_diamond_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_diamond_block")
 	public static final Block X_DIAMOND_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_emerald_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_emerald_block")
 	public static final Block X_EMERALD_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_ruby_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_ruby_block")
 	public static final Block X_RUBY_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_transporter")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_transporter")
 	public static final Block X_TRANSPORTER=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_metal_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_metal_block")
 	public static final Block X_METAL_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_covalent_solid")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_covalent_solid")
 	public static final Block X_COVALENT_SOLID=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_phase_fiber_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_phase_fiber_block")
 	public static final Block X_PHASE_FIBER_BLOCK=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_phase_web_block")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_phase_web_block")
 	public static final Block X_PHASE_WEB_BLOCK=null;
 	
 	//Fluid
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_fluid")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_fluid")
 	public static final Block X_FLUID=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_fluid")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_fluid")
 	public static final Item X_FLUID_ITEM=null;
 	
 	private Fluid X_FLUID_Fluid;
 	
 	//Oxygen
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_oxygen")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_oxygen")
 	public static final Block X_OXYGEN=null;
 	
-	@GameRegistry.ObjectHolder("xuphorium_craft:x_oxygen")
+	@GameRegistry.ObjectHolder(XuphoriumCraft.MODID+":x_oxygen")
 	public static final Item X_OXYGEN_ITEM=null;
 	
 	private Fluid X_OXYGEN_Fluid;
@@ -293,12 +272,12 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	{
 		super(instance,3);
 		X_FLUID_Fluid=new Fluid("x_fluid",
-						new ResourceLocation("xuphorium_craft:blocks/x_fluid_still"),
-						new ResourceLocation("xuphorium_craft:blocks/x_fluid")
+						new ResourceLocation(XuphoriumCraft.MODID+":blocks/x_fluid_still"),
+						new ResourceLocation(XuphoriumCraft.MODID+":blocks/x_fluid")
 						).setDensity(1280).setViscosity(768).setGaseous(false).setTemperature(300).setRarity(EnumRarity.UNCOMMON);
 		X_OXYGEN_Fluid=new Fluid("x_oxygen",
-						new ResourceLocation("xuphorium_craft:blocks/x_oxygen"),
-						new ResourceLocation("xuphorium_craft:blocks/x_oxygen")
+						new ResourceLocation(XuphoriumCraft.MODID+":blocks/x_oxygen"),
+						new ResourceLocation(XuphoriumCraft.MODID+":blocks/x_oxygen")
 						).setDensity(-512).setViscosity(256).setGaseous(true).setTemperature(324).setRarity(EnumRarity.RARE);
 						
 	}
@@ -318,15 +297,15 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		//Ore_End
 		elements.blocks.add(XOreEnd::new);
 		elements.items.add(()->new ItemBlock(X_ORE_END).setRegistryName(X_ORE_END.getRegistryName()));
+		//Ore
+		elements.blocks.add(XOreBedrock::new);
+		elements.items.add(()->new ItemBlock(X_ORE_BEDROCK).setRegistryName(X_ORE_BEDROCK.getRegistryName()));
 		//Block
 		elements.blocks.add(XBlock::new);
 		elements.items.add(ItemXBlock::new);
 		//Block_Advanced
 		elements.blocks.add(XBlockAdvanced::new);
 		elements.items.add(ItemXBlockAdvanced::new);
-		//Crystal_Block
-		elements.blocks.add(XCrystalBlock::new);
-		elements.items.add(ItemXCrystalBlock::new);
 		//Dust_Block
 		elements.blocks.add(XDustBlock::new);
 		elements.items.add(()->new ItemBlock(X_DUST_BLOCK).setRegistryName(X_DUST_BLOCK.getRegistryName()));
@@ -360,6 +339,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		//Ruby_Block
 		elements.blocks.add(XRubyBlock::new);
 		elements.items.add(()->new ItemBlock(X_RUBY_BLOCK).setRegistryName(X_RUBY_BLOCK.getRegistryName()));
+		//Crystal_Block
+		elements.blocks.add(XCrystalBlock::new);
+		elements.items.add(()->new ItemBlock(X_CRYSTAL_BLOCK).setRegistryName(X_CRYSTAL_BLOCK.getRegistryName()));
 		//Transporter
 		elements.blocks.add(XTransporter::new);
 		elements.items.add(()->new ItemBlock(X_TRANSPORTER).setRegistryName(X_TRANSPORTER.getRegistryName()));
@@ -392,51 +374,52 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		//====Inventory Models====//
 		int i;
 		//Ore,OreNether,OreEnd
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE),0,new ModelResourceLocation("xuphorium_craft:x_ore","inventory"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_EMERALD),0,new ModelResourceLocation("xuphorium_craft:x_ore_emerald","inventory"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_NETHER),0,new ModelResourceLocation("xuphorium_craft:x_ore_nether","inventory"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_END),0,new ModelResourceLocation("xuphorium_craft:x_ore_end","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_ore","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_EMERALD),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_ore_emerald","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_NETHER),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_ore_nether","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_END),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_ore_end","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_ORE_BEDROCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_ore_bedrock","inventory"));
 		//Block,BlockAdvanced
 		for(i=0;i<16;i++)
 		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_BLOCK),i,new ModelResourceLocation("xuphorium_craft:x_block_"+i,"inventory"));
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_BLOCK_ADVANCED),i,new ModelResourceLocation("xuphorium_craft:x_block_advanced_"+i,"inventory"));
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_LIQUID),i,new ModelResourceLocation("xuphorium_craft:x_liquid_"+i,"inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_BLOCK),i,new ModelResourceLocation(XuphoriumCraft.MODID+":x_block_"+i,"inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_BLOCK_ADVANCED),i,new ModelResourceLocation(XuphoriumCraft.MODID+":x_block_advanced_"+i,"inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_LIQUID),i,new ModelResourceLocation(XuphoriumCraft.MODID+":x_liquid_"+i,"inventory"));
 		}
 		//CrystalBlock
-		for(i=0;i<8;i++) ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_CRYSTAL_BLOCK),i,new ModelResourceLocation("xuphorium_craft:x_crystal_block_"+i,"inventory"));//Path
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_CRYSTAL_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_crystal_block","inventory"));
 		//DustBlock
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_DUST_BLOCK),0,new ModelResourceLocation("xuphorium_craft:x_dust_block","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_DUST_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_dust_block","inventory"));
 		//Path
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_PATH),0,new ModelResourceLocation("xuphorium_craft:x_path","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_PATH),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_path","inventory"));
 		//ReactiveCore
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_REACTIVE_CORE),0,new ModelResourceLocation("xuphorium_craft:x_reactive_core","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_REACTIVE_CORE),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_reactive_core","inventory"));
 		//Explosive
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_EXPLOSIVE),0,new ModelResourceLocation("xuphorium_craft:x_explosive","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_EXPLOSIVE),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_explosive","inventory"));
 		//Curer
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_CURER),0,new ModelResourceLocation("xuphorium_craft:x_curer","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_CURER),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_curer","inventory"));
 		//Dust_Generater
-		for(i=0;i<4;i++) ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_DUST_GENERATER),i,new ModelResourceLocation("xuphorium_craft:x_dust_generater_"+i,"inventory"));
+		for(i=0;i<4;i++) ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_DUST_GENERATER),i,new ModelResourceLocation(XuphoriumCraft.MODID+":x_dust_generater_"+i,"inventory"));
 		//Glass
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_GLASS),0,new ModelResourceLocation("xuphorium_craft:x_glass","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_GLASS),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_glass","inventory"));
 		//Diamond_Block
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_DIAMOND_BLOCK),0,new ModelResourceLocation("xuphorium_craft:x_diamond_block","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_DIAMOND_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_diamond_block","inventory"));
 		//Emerald_Block
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_EMERALD_BLOCK),0,new ModelResourceLocation("xuphorium_craft:x_emerald_block","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_EMERALD_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_emerald_block","inventory"));
 		//Ruby_Block
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_RUBY_BLOCK),0,new ModelResourceLocation("xuphorium_craft:x_ruby_block","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_RUBY_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_ruby_block","inventory"));
 		//Metal_Block
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_METAL_BLOCK),0,new ModelResourceLocation("xuphorium_craft:x_metal_block","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_METAL_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_metal_block","inventory"));
 		//Covalent_Solid
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_COVALENT_SOLID),0,new ModelResourceLocation("xuphorium_craft:x_covalent_solid","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_COVALENT_SOLID),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_covalent_solid","inventory"));
 		//Phase_Fiber_Block
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_PHASE_FIBER_BLOCK),0,new ModelResourceLocation("xuphorium_craft:x_phase_fiber_block","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_PHASE_FIBER_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_phase_fiber_block","inventory"));
 		//Phase_Web_Block
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_PHASE_WEB_BLOCK),0,new ModelResourceLocation("xuphorium_craft:x_phase_web_block","inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_PHASE_WEB_BLOCK),0,new ModelResourceLocation(XuphoriumCraft.MODID+":x_phase_web_block","inventory"));
 		//Transporter
 		for(i=0;i<7;i++)
 		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_TRANSPORTER),i,new ModelResourceLocation("xuphorium_craft:x_transporter","inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(X_TRANSPORTER),i,new ModelResourceLocation(XuphoriumCraft.MODID+":x_transporter","inventory"));
 		}
 		//Fluid
 		ModelBakery.registerItemVariants(X_FLUID_ITEM);
@@ -445,7 +428,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack)
 			{
-				return new ModelResourceLocation("xuphorium_craft:x_fluid","x_fluid");
+				return new ModelResourceLocation(XuphoriumCraft.MODID+":x_fluid","x_fluid");
 			}
 		});
 		ModelLoader.setCustomStateMapper(X_FLUID,new StateMapperBase()
@@ -453,7 +436,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			@Override
 			protected ModelResourceLocation getModelResourceLocation(IBlockState state)
 			{
-				return new ModelResourceLocation("xuphorium_craft:x_fluid","x_fluid");
+				return new ModelResourceLocation(XuphoriumCraft.MODID+":x_fluid","x_fluid");
 			}
 		});
 		//Oxygen
@@ -463,7 +446,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack)
 			{
-				return new ModelResourceLocation("xuphorium_craft:x_oxygen","x_oxygen");
+				return new ModelResourceLocation(XuphoriumCraft.MODID+":x_oxygen","x_oxygen");
 			}
 		});
 		ModelLoader.setCustomStateMapper(X_OXYGEN,new StateMapperBase()
@@ -471,7 +454,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			@Override
 			protected ModelResourceLocation getModelResourceLocation(IBlockState state)
 			{
-				return new ModelResourceLocation("xuphorium_craft:x_oxygen","x_oxygen");
+				return new ModelResourceLocation(XuphoriumCraft.MODID+":x_oxygen","x_oxygen");
 			}
 		});
 	}
@@ -498,53 +481,50 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 	public void serverLoad(FMLServerStartingEvent event)
 	{
 	}
+	
+	public WorldGenOreBall worldGeneratorBall=new WorldGenOreBall(true);
 
 	//fill ~-20 ~-10 ~-20 ~20 ~10 ~10 air 0 replace stone
 	@Override
 	public void generateWorld(Random random,int chunkX,int chunkZ,World world,int dimID,IChunkGenerator chunkGenerator,IChunkProvider chunkProvider)
 	{
 		if(world.isRemote) return;
-		int x,y,z,i;
-		WorldGenerator worldGenerator;
+		int i;
+		BlockPos pos;
+		IBlockState centerState;
+		//dim ore
 		switch(dimID)
 		{
 			case 0:
-			worldGenerator=new WorldGenOreBall(
-				Blocks.STONE.getDefaultState(),
-				X_ORE.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE).getDefaultState()
-			);
-			for(i=0;i<1;i++)
-			{
-				x=chunkX+random.nextInt(13)+1;
-				y=random.nextInt(6)+9;
-				z=chunkZ+random.nextInt(13)+1;
-				worldGenerator.generate(world,random,new BlockPos(x,y,z));
-			}
+				centerState=getRandomizedXOreBlock(random,dimID,X_ORE).getDefaultState();
+				for(i=0;i<1;i++)
+				{
+					pos=new BlockPos(chunkX+random.nextInt(13)+1,random.nextInt(4)+9,chunkZ+random.nextInt(13)+1);
+					worldGeneratorBall.generate(world,Blocks.STONE.getDefaultState(),X_ORE.getDefaultState(),centerState,random,pos);
+				}
 			break;
 			case -1:
-			for(i=0;i<5;i++)
-			{
-				x=chunkX+random.nextInt(13)+1;
-				y=random.nextInt(253)+1;
-				z=chunkZ+random.nextInt(13)+1;
-				new WorldGenOreBall(
-						Blocks.NETHERRACK.getDefaultState(),
-						X_ORE_NETHER.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE_NETHER).getDefaultState()
-				).generate(world,random,new BlockPos(x,y,z));
-			}
+				centerState=getRandomizedXOreBlock(random,dimID,X_ORE_NETHER).getDefaultState();
+				for(i=0;i<5;i++)
+				{
+					pos=new BlockPos(chunkX+random.nextInt(13)+1,random.nextInt(253)+1,chunkZ+random.nextInt(13)+1);
+					worldGeneratorBall.generate(world,Blocks.NETHERRACK.getDefaultState(),X_ORE_NETHER.getDefaultState(),centerState,random,pos);
+				}
 			break;
 			case 1:
-			for(i=0;i<9;i++)
-			{
-				x=chunkX+random.nextInt(13)+1;
-				y=random.nextInt(253)+1;
-				z=chunkZ+random.nextInt(13)+1;
-				new WorldGenOreBall(
-					Blocks.END_STONE.getDefaultState(),X_ORE_END.getDefaultState(),getRandomizedXOreBlock(random,dimID,X_ORE_END).getDefaultState()
-				).generate(world,random,new BlockPos(x,y,z));
-				//X_CRYSTAL_BLOCK.getDefaultState().withProperty(XCrystalBlock.LEVEL,Integer.valueOf(random.nextInt(8)))
-			}
+				centerState=getRandomizedXOreBlock(random,dimID,X_ORE_END).getDefaultState();
+				for(i=0;i<9;i++)
+				{
+					pos=new BlockPos(chunkX+random.nextInt(13)+1,random.nextInt(253)+1,chunkZ+random.nextInt(13)+1);
+					worldGeneratorBall.generate(world,Blocks.END_STONE.getDefaultState(),X_ORE_END.getDefaultState(),centerState,random,pos);
+				}
 			break;
+		}
+		//bedrock
+		for(i=0;i<16;i++)
+		{
+			pos=new BlockPos(chunkX+random.nextInt(13)+1,random.nextInt(4)+1,chunkZ+random.nextInt(13)+1);
+			if(world.getBlockState(pos).getBlock()==Blocks.BEDROCK) world.setBlockState(pos,X_ORE_BEDROCK.getDefaultState(),2);
 		}
 	}
 	
@@ -871,166 +851,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			return XEnergyUnitUse(world,pos,state,player.getHeldItem(hand),facing,hitX,hitY,hitZ);
 		}
 	}
-	
-	//========X-Crystal-Block========//
-	public static class ItemXCrystalBlock extends XCraftItemBlockCommon
-	{
-		public ItemXCrystalBlock()
-		{
-			super(X_CRYSTAL_BLOCK,true);
-		}
-		
-		public int getMetadata(int damage)
-		{
-			return damage;
-		}
-	}
 
-	public static class XCrystalBlock extends XCraftBlockCommon
-	{
-		public static final PropertyInteger LEVEL=PropertyInteger.create("level",0,7);
-		
-		public XCrystalBlock()
-		{
-			super(Material.IRON,"x_crystal_block",SoundType.GLASS);
-			this.setHarvestLevel("pickaxe",4);
-			this.setHardness(8.192F);
-			this.setResistance(512F);
-			this.setLightLevel(0.25F);
-			this.setLightOpacity(0);
-			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
-			this.setTickRandomly(true);
-		}
-		
-		public int getMetaFromState(IBlockState state)
-		{
-			return ((Integer)state.getValue(LEVEL)).intValue();
-		}
-		
-		public IBlockState getStateFromMeta(int meta)
-		{
-			return this.getDefaultState().withProperty(LEVEL,meta);
-		}
-
-		public ItemStack getItem(World worldIn,BlockPos pos,IBlockState state)
-		{
-			return new ItemStack(this,1,state.getBlock().getMetaFromState(state));
-		}
-		
-		public int damageDropped(IBlockState state)
-		{
-			return (int)state.getValue(LEVEL);
-		}
-		
-		public void getSubBlocks(CreativeTabs itemIn,NonNullList<ItemStack> items)
-		{
-			for (int i=0;i<8;i++) items.add(new ItemStack(this,1,i));
-		}
-
-		protected BlockStateContainer createBlockState()
-		{
-			return new BlockStateContainer(this,new IProperty[]{LEVEL});
-		}
-
-		@SideOnly(Side.CLIENT)
-		@Override
-		public BlockRenderLayer getBlockLayer()
-		{
-			return BlockRenderLayer.CUTOUT;
-		}
-
-		@Override
-		public boolean isBeaconBase(IBlockAccess worldObj,BlockPos pos,BlockPos beacon)
-		{
-			return true;
-		}
-
-		public void updateTick(World worldIn,BlockPos pos,IBlockState state,Random rand)
-		{
-			if(!worldIn.isRemote)
-			{
-				super.updateTick(worldIn,pos,state,rand);
-
-				if(!worldIn.isAreaLoaded(pos,1)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light
-				int level=state.getValue(LEVEL)+1;
-				if(rand.nextInt(9-level)==0)
-				{
-					if(level*2>getNearbyCrystalBlockLevelSum(worldIn,pos))
-					{
-						this.moveToNearbyVoid(worldIn,pos,state);
-					}
-				}
-			}
-		}
-		
-		protected int getNearbyCrystalBlockLevelSum(World world,BlockPos pos)
-		{
-			int result=0;
-			IBlockState mb;
-			for(int dx=-1;dx<2;dx++)
-			{
-				for(int dy=-1;dy<2;dy++)
-				{
-					for(int dz=-1;dz<2;dz++)
-					{
-						if(Math.abs(dx)+Math.abs(dy)+Math.abs(dz)==1)
-						{
-							mb=world.getBlockState(new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz));
-							if(mb.getBlock()==X_CRYSTAL_BLOCK)
-							{
-								result+=(int)mb.getValue(LEVEL)+1;
-							}
-						}
-					}
-				}
-			}
-			return result;
-		}
-		
-		protected void moveToNearbyVoid(World world,BlockPos pos,IBlockState state)
-		{
-			ArrayList<BlockPos> currentPos=new ArrayList<BlockPos>();
-			BlockPos mp;
-			IBlockState mb;
-			int dx,dy,dz;
-			for(dx=-1;dx<2;dx++)
-			{
-				for(dy=-1;dy<2;dy++)
-				{
-					for(dz=-1;dz<2;dz++)
-					{
-						if(Math.abs(dx)+Math.abs(dy)+Math.abs(dz)==1)
-						{
-							mp=new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz);
-							mb=world.getBlockState(mp);
-							if(mb.getBlock().isReplaceable(world,mp))
-							{
-								currentPos.add(mp);
-							}
-						}
-					}
-				}
-			}
-			if(currentPos.size()>0)
-			{
-				mp=currentPos.get((int)Math.floor(Math.random()*currentPos.size()));
-				mb=world.getBlockState(mp);
-				for(dx=-1;dx<2;dx++)
-				{
-					for(dy=-1;dy<2;dy++)
-					{
-						for(dz=-1;dz<2;dz++)
-						{
-							world.spawnParticle(EnumParticleTypes.END_ROD,pos.getX()+0.5+dx*0.25,pos.getY()+0.5+dy*0.25,pos.getZ()+0.5+dz*0.25,0,0,0);
-						}
-					}
-				}
-				world.setBlockState(mp,state,2);
-				world.setBlockToAir(pos);
-			}
-		}
-	}
-	
 	//========X-Dust-Block========//
 	public static class XDustBlock extends XCraftBlockCommon
 	{
@@ -1076,8 +897,6 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			if ((worldIn.isAirBlock(pos.down()) || canFallThrough(worldIn.getBlockState(pos.down()))) && pos.getY() >= 0)
 			{
-				int i=32;
-
 				if (!fallInstantly && worldIn.isAreaLoaded(pos.add(-32,-32,-32),pos.add(32,32,32)))
 				{
 					if (!worldIn.isRemote)
@@ -1093,7 +912,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 					worldIn.setBlockToAir(pos);
 					BlockPos blockpos;
 
-					for (blockpos=pos.down(); (worldIn.isAirBlock(blockpos) || canFallThrough(worldIn.getBlockState(blockpos))) && blockpos.getY() > 0; blockpos=blockpos.down())
+					for (blockpos=pos.down();
+					     (worldIn.isAirBlock(blockpos) || canFallThrough(worldIn.getBlockState(blockpos))) && blockpos.getY() > 0;
+					     blockpos=blockpos.down())
 					{
 						
 					}
@@ -1151,29 +972,6 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		{
 			return BlockRenderLayer.CUTOUT;
 		}
-		
-		/*@Override
-		public boolean removedByPlayer(IBlockState state,World world,BlockPos pos,EntityPlayer entity,boolean willHarvest)
-		{
-			boolean retval=super.removedByPlayer(state,world,pos,entity,willHarvest);
-			int x=pos.getX();
-			int y=pos.getY();
-			int z=pos.getZ();
-			EntityItem entityToSpawn;
-			if((state.getBlock()==X_ORE||state.getBlock()==X_ORE_END)&&entity.getHeldItemMainhand().getItem()==XCraftTools.X_ITEM)
-			{
-				if(!world.isRemote)
-				{
-					for(int i=0;i<4;i++)
-					{
-						entityToSpawn=new EntityItem(world,x+0.5,y+0.5,z+0.5,new ItemStack(XCraftMaterials.X_DUST,1));
-						entityToSpawn.setPickupDelay(10);
-						world.spawnEntity(entityToSpawn);
-					}
-				}
-			}
-			return retval;
-		}*/
 	}
 	
 	//========X-Ore========//
@@ -1186,7 +984,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		
 		public int getExpDrop(IBlockState state,IBlockAccess world,BlockPos pos,int fortune)
 		{
-			return fortune>0?fortune:0;
+			return Math.max(fortune,0);
 		}
 	}
 	
@@ -1208,6 +1006,12 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			else if(randInt==2) itemMain=XCraftMaterials.X_CRYSTAL_CORE;
 			drops.add(new ItemStack(itemMain,1));
 			drops.add(new ItemStack(Blocks.COBBLESTONE,1));
+		}
+		
+		public int getExpDrop(IBlockState state,IBlockAccess world,BlockPos pos,int fortune)
+		{
+			Random rand=world instanceof World?((World)world).rand:new Random();
+			return MathHelper.getInt(rand, 0, fortune+2);
 		}
 	}
 	
@@ -1253,6 +1057,54 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			int z=pos.getZ();
 			return retval;
 		}*/
+	}
+	
+	//========X-Ore-Bedrock========//
+	public static class XOreBedrock extends XOreCommon
+	{
+		public XOreBedrock()
+		{
+			super("x_ore_bedrock",XuphoriumCraft.HARVEST_LEVEL_IRON_PICKAXE,3);
+			setResistance(1);
+		}
+		
+		@SideOnly(Side.CLIENT)
+		
+		@Override
+		public void getDrops(NonNullList<ItemStack> drops,IBlockAccess world,BlockPos pos,IBlockState state,int fortune)
+		{
+			drops.add(new ItemStack(XCraftMaterials.X_DUST,1));
+		}
+		
+		/**
+		 * Called when this Block is destroyed by an Explosion
+		 */
+		public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn)
+		{
+			if (!worldIn.isRemote)
+			{
+				this.explode(worldIn,pos,null);
+				this.returnToBedRock(worldIn,pos);
+			}
+		}
+		
+		/**
+		 * Called after a player destroys this Block - the posiiton pos may no longer hold the state indicated.
+		 */
+		public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state)
+		{
+			this.returnToBedRock(worldIn, pos);
+		}
+		
+		public void explode(World worldIn, BlockPos pos, EntityLivingBase igniter)
+		{
+			if(!worldIn.isRemote) worldIn.newExplosion(igniter,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,2,true,false);
+		}
+		
+		public void returnToBedRock(World worldIn, BlockPos pos)
+		{
+			if(!worldIn.isRemote) worldIn.setBlockState(pos,Blocks.BEDROCK.getDefaultState());
+		}
 	}
 	
 	//========X-Path========//
@@ -1592,7 +1444,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		
 		protected void cure(World world,BlockPos pos,int power)
 		{
-			List<Entity> entities=world.loadedEntityList;
+			List<Entity> entities=world.loadedEntityList.subList(0,world.loadedEntityList.size());
 			for(Entity entity : entities)
 			{
 				if(entity instanceof EntityItem)
@@ -1610,9 +1462,10 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 						{
 							ItemBlock itemBlock=(ItemBlock)item;
 							Block block=itemBlock.getBlock();
-							if(block!=null&&XCraftBlocks.getIsReplaceable(world,blockPos))
+							if(XCraftBlocks.getIsReplaceable(world,blockPos))
 							{
-								world.setBlockState(blockPos,block.getStateFromMeta(metaData),2);//block.getStateForPlacement(world,blockPos,EnumFacing.DOWN,(float)itemE.posX,(float)itemE.posY,(float)itemE.posZ,metaData,null,EnumHand.MAIN_HAND)
+								world.setBlockState(blockPos,block.getStateFromMeta(metaData),2);
+								//Error NPE:block.getStateForPlacement(world,blockPos,EnumFacing.DOWN,(float)itemE.posX,(float)itemE.posY,(float)itemE.posZ,metaData,null,EnumHand.MAIN_HAND)
 								itemE.getItem().shrink(1);
 								itemE.setItem(itemE.getItem());//Update
 							}
@@ -1644,12 +1497,12 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		public XDustGenerater()
 		{
 			super(Material.IRON,"x_dust_generater",SoundType.METAL);
-			this.setHarvestLevel("pickaxe",5);
+			this.setHarvestLevel("pickaxe",1);
 			this.setHardness(1.28F);
 			this.setResistance(64F);
-			this.setLightLevel(0.25F);
+			this.setLightLevel(0F);
 			this.setLightOpacity(0);
-			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,Integer.valueOf(0)));
+			this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL,0));
 			this.setTickRandomly(true);
 		}
 
@@ -1677,7 +1530,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		
 		public int getMetaFromState(IBlockState state)
 		{
-			return ((Integer)state.getValue(LEVEL)).intValue();
+			return state.getValue(LEVEL).intValue();
 		}
 		
 		public IBlockState getStateFromMeta(int meta)
@@ -2312,6 +2165,97 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		public void getDrops(NonNullList<ItemStack> drops,IBlockAccess world,BlockPos pos,IBlockState state,int fortune)
 		{
 			for(int i=0;i<4;i++) drops.add(new ItemStack(XCraftMaterials.X_PHASE_WEB,1));
+		}
+	}
+	
+	//========X-Crystal-Block========//
+	public static class XCrystalBlock extends XResourceBlockCommon
+	{
+		public XCrystalBlock()
+		{
+			super("x_crystal_block");
+			this.setHarvestLevel("pickaxe",4);
+			this.setHardness(8.192F);
+			this.setResistance(512F);
+			this.setLightLevel(0.25F);
+			this.setLightOpacity(0);
+			this.setTickRandomly(true);
+		}
+		
+		@Override
+		public void getDrops(NonNullList<ItemStack> drops,IBlockAccess world,BlockPos pos,IBlockState state,int fortune)
+		{
+			for(int i=0;i<8;i++) drops.add(new ItemStack(XCraftMaterials.X_CRYSTAL,1));
+		}
+		
+		public void updateTick(World worldIn,BlockPos pos,IBlockState state,Random rand)
+		{
+			super.updateTick(worldIn,pos,state,rand);
+			
+			if(!worldIn.isAreaLoaded(pos,1)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light
+			//Teleport
+			int lSum=getNearbyCrystalBlockLevelSum(worldIn,pos);
+			if(lSum<2||lSum>3) this.moveToNearbyVoid(worldIn,pos,state);
+		}
+		
+		protected int getNearbyCrystalBlockLevelSum(World world,BlockPos pos)
+		{
+			int result=0;
+			IBlockState mb;
+			for(int dx=-1;dx<2;dx++)
+			{
+				for(int dy=-1;dy<2;dy++)
+				{
+					for(int dz=-1;dz<2;dz++)
+					{
+						if(Math.abs(dx)+Math.abs(dy)+Math.abs(dz)==1)
+						{
+							mb=world.getBlockState(new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz));
+							if(mb.getBlock()==X_CRYSTAL_BLOCK)
+							{
+								result++;
+							}
+						}
+					}
+				}
+			}
+			return result;
+		}
+		
+		protected void moveToNearbyVoid(World world,BlockPos pos,IBlockState state)
+		{
+			ArrayList<BlockPos> currentPos=new ArrayList<BlockPos>();
+			BlockPos mp;
+			IBlockState mb;
+			int dx,dy,dz;
+			for(dx=-1;dx<2;dx++)
+			{
+				for(dy=-1;dy<2;dy++)
+				{
+					for(dz=-1;dz<2;dz++)
+					{
+						if(Math.abs(dx)+Math.abs(dy)+Math.abs(dz)==1)
+						{
+							mp=new BlockPos(pos.getX()+dx,pos.getY()+dy,pos.getZ()+dz);
+							mb=world.getBlockState(mp);
+							if(mb.getBlock().isReplaceable(world,mp))
+							{
+								currentPos.add(mp);
+							}
+						}
+					}
+				}
+			}
+			if(currentPos.size()>0)
+			{
+				mp=currentPos.get((int)Math.floor(Math.random()*currentPos.size()));
+				if(!world.isRemote)
+				{
+					world.setBlockState(mp,state,2);
+					world.setBlockToAir(pos);
+				}
+				world.playSound(null,pos.getX()+0.5,pos.getX()+0.5,pos.getX()+0.5, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 0.75F, 1F);
+			}
 		}
 	}
 }
