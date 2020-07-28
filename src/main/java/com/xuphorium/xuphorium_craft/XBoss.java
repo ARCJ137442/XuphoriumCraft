@@ -114,12 +114,12 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	{
 		punchEntities(world,host,host.posX,host.posY,host.posZ,range,distanceSquareOffset);
 	}
-	
-	public static void punchEntities(World world,Entity host,double x,double y,double z,double range)
+
+	public static void punchEntities(World world,Entity host,double range,double value,double distanceSquareOffset)
 	{
-		punchEntities(world,host,x,y,z,range,1);
+		punchEntities(world,host,host.posX,host.posY,host.posZ,range,value,distanceSquareOffset);
 	}
-	
+
 	public static void punchEntities(World world,Entity host,double x,double y,double z,double range,double value)
 	{
 		punchEntities(world,host,x,y,z,range,value,0);
@@ -281,19 +281,19 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		//Attack Entity as Magic
 		target.attackEntityFrom(DamageSource.causeMobDamage(null),(float)damage);
 	}
-	
-	public static void rangedAttackXBossBullet(EntityLivingBase attacker,EntityLivingBase target,float distanceFactor)
+
+	public static void rangedAttackXBossBullet(EntityLivingBase attacker,EntityLivingBase target,double shootPower,boolean isBossBullet)
 	{
 		double dx=target.posX-attacker.posX;
 		double dy=target.posY-(attacker.posY+attacker.getEyeHeight());
 		double dz=target.posZ-attacker.posZ;
 		double distance=MathHelper.sqrt(dx*dx+dy*dy+dz*dz);
-		dx/=distance;
-		dy/=distance;
-		dz/=distance;
+		dx*=shootPower/distance;
+		dy*=shootPower/distance;
+		dz*=shootPower/distance;
 		EntityXBossBullet bullet=new EntityXBossBullet(attacker.world,attacker,
 				attacker.posX+dx,attacker.posY+attacker.getEyeHeight()+dy,attacker.posZ+dz,
-				dx*0.001,dy*0.001,dz*0.001);
+				dx*0.001,dy*0.001,dz*0.001,isBossBullet);
 		bullet.setVelocity(dx,dy,dz);
 		attacker.world.spawnEntity(bullet);
 	}
@@ -317,7 +317,8 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		
 		protected int randomHurtTick=20;
 		protected int modeTick=200;
-		
+		public int defenceCooldown=0;
+
 		public EntityXBoss(World world)
 		{
 			super(world);
@@ -437,12 +438,12 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		protected void initEntityAI()
 		{
 			this.tasks.addTask(1,new EntityAISwimming(this));
-			this.tasks.addTask(2,new EntityXBossAIAttackMelee(this,1,true));
 			this.tasks.addTask(2,new EntityXBossAIAttackRangedOverridden(this,10,30,64));
-			this.tasks.addTask(3,new EntityAIMoveTowardsTarget(this,1.5D,64F));
-			this.tasks.addTask(4,new EntityAIMoveTowardsRestriction(this,1.0D));
-			this.tasks.addTask(5,new EntityAIWatchClosest(this,XCreeper.EntityXCreeper.class,(float)16));
-			this.tasks.addTask(5,new EntityAILeapAtTarget(this,(float)0.8));
+			this.tasks.addTask(3,new EntityXBossAIAttackMelee(this,1,true));
+			this.tasks.addTask(4,new EntityAIMoveTowardsTarget(this,1.5D,64F));
+			this.tasks.addTask(5,new EntityAIMoveTowardsRestriction(this,1.0D));
+			this.tasks.addTask(6,new EntityAIWatchClosest(this,XCreeper.EntityXCreeper.class,(float)16));
+			this.tasks.addTask(7,new EntityAILeapAtTarget(this,(float)0.8));
 			this.targetTasks.addTask(6,new EntityAIHurtByTarget(this,true));
 			int i=7;
 			for(Class entityClass : nearestAttackableTargets) this.targetTasks.addTask(i++,new EntityAINearestAttackableTarget(this,entityClass,false,false));
@@ -484,7 +485,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			super.applyEntityAttributes();
 			this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
 			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-			this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(64D);
+			this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40D);
 			this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4D);
 			this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
 		}
@@ -539,8 +540,9 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			//Immune Thorns Damage
 			if(source instanceof EntityDamageSource&&((EntityDamageSource)source).getIsThornsDamage()) return false;
 			//Defence
-			if(source.getImmediateSource() instanceof EntityArrow||source==DamageSource.FALL||!this.isRangedMode()&&Math.random()<Math.random())
+			if(source.getImmediateSource() instanceof EntityArrow||source==DamageSource.FALL||!this.isRangedMode()&&this.defenceCooldown<=0)
 			{
+				if(!this.isRangedMode()) this.defenceCooldown+=(int)amount*4;
 				this.playSound(SoundEvents.BLOCK_ANVIL_LAND,0.75F,1.0F);
 				XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,4,2,0.5);
 				return false;
@@ -599,24 +601,46 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		public void onUpdate()
 		{
 			super.onUpdate();
-			//No Clip
-			/*this.noClip=true;
-			super.onUpdate();
-			this.noClip=false;*/
+			//Particle
+			if(this.world.isRemote) this.world.spawnParticle(
+					EnumParticleTypes.ENCHANTMENT_TABLE, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 			//Boss Bar
 			this.bossInfo.setPercent(this.getHealth()/this.getMaxHealth());
 			//Mode Switch
-			if(--this.modeTick<-200) this.modeTick=200;
-			else if(this.modeTick==0) this.updateRangedMode();
+			if(--this.modeTick<-200)
+			{
+				this.modeTick=200;
+				this.updateRangedMode(false);
+			}
+			else if(this.modeTick==0) this.updateRangedMode(false);
+			//Defence Cooldown
+			if(this.defenceCooldown>=0)
+			{
+				if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(EnumParticleTypes.PORTAL,
+						this.posX,this.posY+this.height*0.5,this.posZ,8,
+						this.width*0.5,this.height*0.5,this.width*0.5,2
+				);
+				if(this.defenceCooldown==0)
+				{
+					//Particle
+					if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(EnumParticleTypes.SPELL_WITCH,
+							this.posX,this.posY+this.height*0.5,this.posZ,24,
+							this.width*0.5,this.height*0.5,this.width*0.5,0
+					);
+					//Heal
+					this.heal(1);
+				}
+				this.defenceCooldown--;
+			}
 			//getAttackingEntity
 			EntityLivingBase target=this.getAttackTarget();
 			//Check self attack
 			if(target==this) this.setAttackTarget(null);
 			//Variable
-			double targetDistance=target==null?0:this.getDistance(target);
 			double dx=target==null?0:(target.posX-this.posX);
 			double dy=target==null?0:(target.posY-this.posY);
 			double dz=target==null?0:(target.posZ-this.posZ);
+			double targetDistance=MathHelper.sqrt(dx*dx+dy*dy+dz*dz);
 			//Drag to Target
 			if(target!=null)
 			{
@@ -626,8 +650,11 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 					this.motionX+=dx/targetDistance*0.2;
 					this.motionY+=dy/targetDistance*0.2;
 					this.motionZ+=dz/targetDistance*0.2;
-					//Particle
-					world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
+					//Particle world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,target.posX,target.posY,target.posZ,dx,dy,dz);
+					if(this.world.isRemote) this.world.spawnParticle(
+							EnumParticleTypes.ENCHANTMENT_TABLE,
+							target.posX, target.posY+target.getEyeHeight(),target.posZ,
+							-dx,-dy,-dz);
 				}
 			}
 			if(!this.isRangedMode())
@@ -638,14 +665,15 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				if(--randomHurtTick<0)
 				{
 					randomHurtTick=40;
-					redRayHurtNearbyEntities(this.world,this,-16,-1,true,true);
+					this.updateRangedMode(true);
+					redRayHurtNearbyEntities(this.world,this,16,-1,true,true);
 					if(target!=null)
 					{
 						//Particle
 						XuphoriumCraft.generateParticleRay(target.world,
-								this.posX,this.posY+this.getEyeHeight(),this.posZ,
-								target.posX,target.posY+target.getEyeHeight(),target.posZ,
-								((int)targetDistance)*4,1,EnumParticleTypes.SPELL_INSTANT,0,0d);
+							this.posX,this.posY+this.getEyeHeight(),this.posZ,
+							target.posX,target.posY+target.getEyeHeight(),target.posZ,
+							((int)targetDistance)*4,1,EnumParticleTypes.SPELL_INSTANT,0,0d);
 						//Direct Attack Entity
 						if(this.attackEntityAsMob(target)) this.randomHurtTick=20;
 					}
@@ -658,7 +686,10 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		 */
 		public void attackEntityWithRangedAttack(EntityLivingBase target,float distanceFactor)
 		{
-			this.rangedAttack(target,distanceFactor);
+			//Direct Attack
+			this.rangedAttack(target);
+			//Update
+			this.updateRangedMode(true);
 			//Area Splash
 			List<Entity> entities=world.loadedEntityList;
 			List<EntityLivingBase> toAttackEntities=new ArrayList<>();
@@ -671,13 +702,13 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 					if(entity instanceof EntityLivingBase)
 					{
 						distanceSq=entity.getDistanceSq(target.posX,target.posY,target.posZ);
-						if(distanceSq>8&&distanceSq<32) toAttackEntities.add((EntityLivingBase)entity);
+						if(distanceSq>8&&distanceSq<48) toAttackEntities.add((EntityLivingBase)entity);
 					}
 				}
 				for(EntityLivingBase entity: toAttackEntities)
 				{
 					//Attack
-					this.rangedAttack(entity,distanceFactor);
+					this.rangedAttack(entity);
 				}
 			}
 			catch(Exception exception)
@@ -688,9 +719,9 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			this.playSound(SoundEvents.ENTITY_ENDERPEARL_THROW,0.5F,1F);
 		}
 		
-		public void rangedAttack(EntityLivingBase target,float distanceFactor)
+		public void rangedAttack(EntityLivingBase target)
 		{
-			XBoss.rangedAttackXBossBullet(this,target,distanceFactor);
+			XBoss.rangedAttackXBossBullet(this,target,0.75,true);
 		}
 		
 		public boolean isRangedMode()
@@ -698,26 +729,19 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			return this.modeTick<=0;
 		}
 		
-		public void setRangedMode(boolean value)
+		public void updateRangedMode(boolean onlyItem)
 		{
-			this.modeTick=value?0:200;
-		}
-		
-		public void inventRangedMode()
-		{
-			this.setRangedMode(!this.isRangedMode());
-			this.updateRangedMode();
-		}
-		
-		public void updateRangedMode()
-		{
-			//Particle
-			if(world instanceof WorldServer)
+			if(!onlyItem)
 			{
-				((WorldServer)world).spawnParticle(EnumParticleTypes.SPELL_INSTANT,
-						this.posX,this.posY+this.height*0.5,this.posZ,24,
-						this.width*0.5,this.height*0.5,this.width*0.5,0
-				);
+				//Particle
+				if (this.world != null && this.world instanceof WorldServer) {
+					((WorldServer) world).spawnParticle(EnumParticleTypes.SPELL_INSTANT,
+							this.posX, this.posY + this.height * 0.5, this.posZ, 24,
+							this.width * 0.5, this.height * 0.5, this.width * 0.5, 0
+					);
+				}
+				//Sound
+				this.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 0.5F, 1);
 			}
 			//No Gravity this.setNoGravity(this.isRangedMode());
 			//Equip
@@ -736,19 +760,24 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 	
 	public static class EntityXBossBullet extends EntityFireball
 	{
-		//public Entity target;
-		
+		protected boolean isBossBullet=false;
+
 		protected void initSize()
 		{
-			this.setSize(0.4F,0.4F);
+			this.setSize(0.5F,0.5F);
 		}
 		
-		public EntityXBossBullet(World a)
+		protected void initSize(float size)
 		{
-			super(a);
+			this.setSize(size,size);
+		}
+
+		public EntityXBossBullet(World worldIn)
+		{
+			super(worldIn);
 			this.initSize();
 		}
-		
+
 		public EntityXBossBullet(World worldIn,double x,double y,double z,double ax,double ay,double az)
 		{
 			super(worldIn,x,y,z,ax,ay,az);
@@ -760,11 +789,15 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			this(worldIn,x,y,z,ax,ay,az);
 			this.shootingEntity=shooter;
 		}
-		
-		public EntityXBossBullet(World worldIn,EntityLivingBase shooter,double ax,double ay,double az)
+
+		public EntityXBossBullet(World worldIn,EntityLivingBase shooter,double x,double y,double z,double ax,double ay,double az,boolean isBossBullet)
 		{
-			super(worldIn,shooter,ax,ay,az);
-			this.initSize();
+			super(worldIn,x,y,z,ax,ay,az);
+			this.initSize(0.625F);
+			this.shootingEntity=shooter;
+			this.isBossBullet=isBossBullet;
+			this.setNoGravity(isBossBullet);
+			this.noClip=isBossBullet;
 		}
 		
 		//========Functional Methods========//
@@ -793,7 +826,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			if(!this.world.isRemote)
 			{
 				//XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,2,4,0.1);
-				XBoss.redRayHurtNearbyEntities(world,this.shootingEntity,this.posX,this.posY,this.posZ,6,4,this.shootingEntity instanceof EntityPlayer,this.shootingEntity instanceof EntityXBoss);
+				XBoss.redRayHurtNearbyEntities(world,this.shootingEntity,this.posX,this.posY,this.posZ,this.isBossBullet?12:6,this.isBossBullet?8:4,this.shootingEntity instanceof EntityPlayer,this.shootingEntity instanceof EntityXBoss);
 			}
 			//Particle
 			if(world instanceof WorldServer) world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE,this.posX,this.posY,this.posZ,0,0,0);
@@ -812,12 +845,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		protected EnumParticleTypes getParticleType()
 		{
 			return EnumParticleTypes.SPELL_INSTANT;
-		}
-		
-		public boolean attackEntityFrom(DamageSource source,float amount)
-		{
-			this.explode();
-			return false;
 		}
 		
 		public void onUpdate()
@@ -927,17 +954,12 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			
 			this.host.getLookHelper().setLookPositionWithEntity(this.attackTarget,30.0F,30.0F);
 			
-			if (--this.rangedAttackTime==0)
+			if (--this.rangedAttackTime<=0)
 			{
 				float f=MathHelper.sqrt(d0)/this.attackRadius;
 				float distanceClamp=MathHelper.clamp(f,0.1F,1.0F);
-				this.host.attackEntityWithRangedAttack(this.attackTarget,distanceClamp);
+				if(this.rangedAttackTime==0) this.host.attackEntityWithRangedAttack(this.attackTarget,distanceClamp);
 				this.rangedAttackTime=MathHelper.floor(f*(float)(this.maxRangedAttackTime-this.attackIntervalMin)+(float)this.attackIntervalMin);
-			}
-			else if (this.rangedAttackTime < 0)
-			{
-				float f2=MathHelper.sqrt(d0)/this.attackRadius;
-				this.rangedAttackTime=MathHelper.floor(f2*(float)(this.maxRangedAttackTime-this.attackIntervalMin)+(float)this.attackIntervalMin);
 			}
 		}
 	}

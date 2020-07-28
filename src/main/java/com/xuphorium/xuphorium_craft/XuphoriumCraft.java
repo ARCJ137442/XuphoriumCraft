@@ -399,7 +399,7 @@ public class XuphoriumCraft
 			dx=i*x1+(1-i)*x2;
 			dy=i*y1+(1-i)*y2;
 			dz=i*z1+(1-i)*z2;
-			if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(particleType,dx,dy,dz,numEachPosition,offsetEachPosition,offsetEachPosition,offsetEachPosition,particleSpeed,new int[0]);
+			if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(particleType,dx,dy,dz,numEachPosition,offsetEachPosition,offsetEachPosition,offsetEachPosition,particleSpeed);
 		}
 	}
 	

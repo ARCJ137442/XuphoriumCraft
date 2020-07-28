@@ -8,7 +8,6 @@ import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.*;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
@@ -188,51 +187,63 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	@SubscribeEvent
 	public boolean onEntityAttacked(LivingAttackEvent event)
 	{
-		if(event!=null&&event.getEntityLiving()!=null)
+		//Check Event Canceled
+		if(event!=null&&event.getEntityLiving()!=null&&event.isCancelable()&&!event.isCanceled())
 		{
+			//Source
 			DamageSource source=event.getSource();
 			EntityLivingBase entityLiving=event.getEntityLiving();
-			//Detect Player
-			EntityPlayer player=null;
-			if(entityLiving instanceof EntityPlayer) player=(EntityPlayer)entityLiving;
-			//Detect Shield
+			if(entityLiving.getIsInvulnerable()||entityLiving.isEntityInvulnerable(source)) return true;
+			//Get Shield
 			ItemStack shieldStack=null;
 			if(entityLiving.getHeldItemMainhand().getItem()==X_SHIELD) shieldStack=entityLiving.getHeldItemMainhand();
 			else if(entityLiving.getHeldItemOffhand().getItem()==X_SHIELD) shieldStack=entityLiving.getHeldItemOffhand();
+			//Get Player
+			EntityPlayer player=null;if(entityLiving instanceof EntityPlayer) player=(EntityPlayer)entityLiving;
 			//Check Usable & Blocking
-			if(!source.canHarmInCreative()&&shieldStack!=null&&XShield.isUsable(shieldStack))
+			if(!source.canHarmInCreative()&&shieldStack!=null&&XShield.isUsable(shieldStack)&&judgeShieldUsable(entityLiving))
 			{
 				//Get Attacker Weapon
-				EntityLivingBase entityAttacker=null;
-				if(source.getTrueSource() instanceof EntityLivingBase) entityAttacker=(EntityLivingBase)source.getTrueSource();
-				ItemStack attackerWeapon=null;
-				if(entityAttacker!=null) attackerWeapon=entityAttacker.getHeldItemMainhand();
+				EntityLivingBase entityAttacker=(EntityLivingBase)source.getTrueSource();
+				ItemStack attackerWeapon=null;if(entityAttacker!=null) attackerWeapon=entityAttacker.getHeldItemMainhand();
 				//Judge Special Chopping
-				boolean specialChopping=(attackerWeapon!=null&&attackerWeapon.getItem()==X_SWORD)&&(Math.random()<Math.random());
+				boolean specialChopping=attackerWeapon!=null&&attackerWeapon.getItem()==X_SWORD;
 				//Defence
-				if(player==null||!player.getCooldownTracker().hasCooldown(X_SHIELD))
-				{
-					if(event.isCancelable()&&!event.isCanceled())
-					{
-						//Play Sound & Damage Item
-						int damage=(int)(event.getAmount());
-						entityLiving.world.playSound(null,entityLiving.posX,entityLiving.posY,entityLiving.posZ,SoundEvents.BLOCK_ANVIL_LAND,SoundCategory.NEUTRAL,0.75F,1F / (XShield.getItemRand().nextFloat() * 0.4F + 0.8F));
-						for(int i=0;i<damage&&XShield.isUsable(shieldStack);i++) shieldStack.damageItem(1,entityLiving);
-						//Entity's Effect
-						if(!entityLiving.world.isRemote)
-						{
-							entityLiving.addPotionEffect(new PotionEffect(MobEffects.GLOWING,20,1,true,false));
-							XBoss.punchEntities(entityLiving.world,entityLiving,2,0.1);
-						}
-						//Player's Shield Cooldown
-						if(player!=null&&!entityLiving.world.isRemote) player.getCooldownTracker().setCooldown(X_SHIELD,specialChopping?30:5);
-						//Defence
-						event.setCanceled(true);
-					}
-					return false;
-				}
+				int damage=(int)(event.getAmount());
+				directlyShieldBlocking(event,entityLiving,shieldStack,damage);
+				//Damage -> CD
+				damage=(specialChopping?20:0)+Math.max(damage/2,5);
+				//Player's Shield Cooldown
+				if(player!=null&&!entityLiving.world.isRemote) player.getCooldownTracker().setCooldown(X_SHIELD,damage);
+				//X-BOSS's Shield Cooldown
+				if(entityLiving instanceof XBoss.EntityXBoss) ((XBoss.EntityXBoss)entityLiving).defenceCooldown+=damage*2;
+				return false;
 			}
 		}
+		return true;
+	}
+
+	protected static void directlyShieldBlocking(LivingAttackEvent event, EntityLivingBase entityLiving, ItemStack shieldStack, int damage)
+	{
+		//Play Sound & Damage Item
+		entityLiving.world.playSound(null,entityLiving.posX,entityLiving.posY,entityLiving.posZ,SoundEvents.BLOCK_ANVIL_LAND,SoundCategory.NEUTRAL,0.375F,1F / (XShield.getItemRand().nextFloat() * 0.4F + 0.8F));
+		for(int i=0;i<damage&&XShield.isUsable(shieldStack);i+=2) shieldStack.damageItem(1,entityLiving);
+		//Entity's Effect
+		if(!entityLiving.world.isRemote)
+		{
+			entityLiving.addPotionEffect(new PotionEffect(MobEffects.GLOWING,20,1,true,false));
+			XBoss.punchEntities(entityLiving.world,entityLiving,2,3,0.1);
+		}
+		//Event Cancel
+		event.setCanceled(true);
+	}
+
+	protected static boolean judgeShieldUsable(EntityLivingBase entity)
+	{
+		//X-BOSS's Shield
+		if(entity instanceof XBoss.EntityXBoss) return ((XBoss.EntityXBoss)entity).defenceCooldown<=0;
+		//Player's Shield
+		if(entity instanceof EntityPlayer) return !((EntityPlayer)entity).getCooldownTracker().hasCooldown(X_SHIELD);
 		return true;
 	}
 	
@@ -465,7 +476,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				case MODE_ID_TELEPORTATION:
 					if(pos==null) break;
 					XCraftTools.teleportBlock(world,pos,8);
-					world.playSound(null,x,y,z,SoundEvents.ENTITY_ENDERMEN_TELEPORT,SoundCategory.NEUTRAL,0.75F,1F / (itemRand.nextFloat()*0.4F+0.8F));
+					world.playSound(null,x,y,z,SoundEvents.ENTITY_ENDERMEN_TELEPORT,SoundCategory.NEUTRAL,0.5F,1F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 				case MODE_ID_DRAG:
 					if(player==null||pos==null) break;
@@ -477,7 +488,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					player.motionX+=1.25*(x*Math.abs(x))/distanceValue;
 					player.motionY+=1.25*(y*Math.abs(y))/distanceValue;
 					player.motionZ+=1.25*(z*Math.abs(z))/distanceValue;
-					world.playSound(null,player.posX,player.posY,player.posZ,SoundEvents.ENTITY_ENDERPEARL_THROW,SoundCategory.NEUTRAL,0.75F,1F / (itemRand.nextFloat()*0.4F+0.8F));
+					world.playSound(null,player.posX,player.posY,player.posZ,SoundEvents.ENTITY_ENDERPEARL_THROW,SoundCategory.NEUTRAL,0.375F,1F / (itemRand.nextFloat()*0.4F+0.8F));
 					return mode;
 				case MODE_ID_RAY:
 					if(player==null) XBoss.redRayHurtNearbyEntities(world,x,y,z,8,3,false,false);
@@ -488,7 +499,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					Vec3d lookVec=player.getLookVec();
 					XBoss.EntityXBossBullet bullet=new XBoss.EntityXBossBullet(world,player,
 						player.posX+lookVec.x,player.posY+player.getEyeHeight()+lookVec.y,player.posZ+lookVec.z,
-							player.motionX+lookVec.x*0.02,player.motionY+(lookVec.y-1.125)*0.0005,player.motionZ+lookVec.z*0.02);
+						player.motionX+lookVec.x*0.02,player.motionY+(lookVec.y-1.125)*0.0005,player.motionZ+lookVec.z*0.02);
 					bullet.setVelocity(lookVec.x,lookVec.y,lookVec.z);
 					world.spawnEntity(bullet);
 					world.playSound(null,bullet.posX,bullet.posY,bullet.posZ,SoundEvents.ENTITY_ENDERPEARL_THROW,SoundCategory.NEUTRAL,0.5F,0.4F / (itemRand.nextFloat()*0.4F+0.8F));
@@ -1237,7 +1248,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	{
 		public XShield()
 		{
-			super("x_shield",1024,1);
+			super("x_shield",512,1);
 			this.addPropertyOverride(new ResourceLocation("deactivated"),new IItemPropertyGetter()
 			{
 				@SideOnly(Side.CLIENT)

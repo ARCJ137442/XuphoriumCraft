@@ -2195,7 +2195,10 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			if(!worldIn.isAreaLoaded(pos,1)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light
 			//Teleport
 			int lSum=getNearbyCrystalBlockLevelSum(worldIn,pos);
-			if(lSum<2||lSum>3) this.moveToNearbyVoid(worldIn,pos,state);
+			if(lSum<2||lSum>3)
+			{
+				if(this.moveToNearbyVoid(worldIn,pos,state)) worldIn.playSound(null,pos.getX()+0.5,pos.getX()+0.5,pos.getX()+0.5, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 0.75F, 1F);
+			}
 		}
 		
 		protected int getNearbyCrystalBlockLevelSum(World world,BlockPos pos)
@@ -2222,7 +2225,7 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 			return result;
 		}
 		
-		protected void moveToNearbyVoid(World world,BlockPos pos,IBlockState state)
+		protected boolean moveToNearbyVoid(World world,BlockPos pos,IBlockState state)
 		{
 			ArrayList<BlockPos> currentPos=new ArrayList<BlockPos>();
 			BlockPos mp;
@@ -2254,8 +2257,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 					world.setBlockState(mp,state,2);
 					world.setBlockToAir(pos);
 				}
-				world.playSound(null,pos.getX()+0.5,pos.getX()+0.5,pos.getX()+0.5, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 0.75F, 1F);
+				return true;
 			}
+			return false;
 		}
 	}
 }
