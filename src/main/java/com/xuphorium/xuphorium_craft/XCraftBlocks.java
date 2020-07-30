@@ -143,9 +143,9 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 		BlockPos currentPos2=new BlockPos(x,y+1,z);
 		BlockPos currentPos3=new BlockPos(x,y+2,z);
 		
-		if(world.getBlockState(currentPos).getBlock()==X_BLOCK.getDefaultState().getBlock()&&
-		   world.getBlockState(currentPos2).getBlock()==X_BLOCK_ADVANCED.getDefaultState().getBlock()&&
-		   world.getBlockState(currentPos3).getBlock()==Blocks.OBSERVER.getDefaultState().getBlock())
+		if(world.getBlockState(currentPos).getBlock()==X_BLOCK&&
+		   world.getBlockState(currentPos2).getBlock()==X_BLOCK_ADVANCED&&
+		   world.getBlockState(currentPos3).getBlock()==Blocks.OBSERVER)
 		{
 			if(!world.isRemote)
 			{
@@ -154,11 +154,11 @@ public class XCraftBlocks extends XuphoriumCraftElements.ModElement
 				world.setBlockToAir(currentPos2);
 				world.setBlockToAir(currentPos3);
 				world.addWeatherEffect(new EntityLightningBolt(world,x,y,z,false));
-				world.createExplosion(null,x,y,z,5,true);
 				//Summon Entity
 				Entity entityToSpawn=new XBoss.EntityXBoss(world);
 				entityToSpawn.setLocationAndAngles(x+0.5,y,z+0.5,world.rand.nextFloat()*360F,0.0F);
 				world.spawnEntity(entityToSpawn);
+				world.createExplosion(entityToSpawn,x,y,z,5,true);
 			}
 		}
 	}

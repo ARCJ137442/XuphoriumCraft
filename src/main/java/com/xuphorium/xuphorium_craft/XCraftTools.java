@@ -499,7 +499,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					Vec3d lookVec=player.getLookVec();
 					XBoss.EntityXBossBullet bullet=new XBoss.EntityXBossBullet(world,player,
 						player.posX+lookVec.x,player.posY+player.getEyeHeight()+lookVec.y,player.posZ+lookVec.z,
-						player.motionX+lookVec.x*0.02,player.motionY+(lookVec.y-1.125)*0.0005,player.motionZ+lookVec.z*0.02);
+						lookVec.x*0.02,(lookVec.y-1.125)*0.0005,lookVec.z*0.02);
 					bullet.setVelocity(lookVec.x,lookVec.y,lookVec.z);
 					world.spawnEntity(bullet);
 					world.playSound(null,bullet.posX,bullet.posY,bullet.posZ,SoundEvents.ENTITY_ENDERPEARL_THROW,SoundCategory.NEUTRAL,0.5F,0.4F / (itemRand.nextFloat()*0.4F+0.8F));

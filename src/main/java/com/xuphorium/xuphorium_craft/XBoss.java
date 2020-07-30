@@ -281,11 +281,21 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		//Attack Entity as Magic
 		target.attackEntityFrom(DamageSource.causeMobDamage(null),(float)damage);
 	}
+	
+	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2)
+	{
+		generateRedWay(world,x1,y1,z1,x2,y2,z2,32);
+	}
+	
+	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2,int numParticle)
+	{
+		XuphoriumCraft.generateParticleRay(world,x1,y1,z1,x2,y2,z2,numParticle,EnumParticleTypes.REDSTONE);
+	}
 
-	public static void rangedAttackXBossBullet(EntityLivingBase attacker,EntityLivingBase target,double shootPower,boolean isBossBullet)
+	public static void rangedAttackXBossBullet(EntityLivingBase attacker,Entity target,double shootPower,boolean isBossBullet)
 	{
 		double dx=target.posX-attacker.posX;
-		double dy=target.posY-(attacker.posY+attacker.getEyeHeight());
+		double dy=(target.posY+target.getEyeHeight())-(attacker.posY+attacker.getEyeHeight());
 		double dz=target.posZ-attacker.posZ;
 		double distance=MathHelper.sqrt(dx*dx+dy*dy+dz*dz);
 		dx*=shootPower/distance;
@@ -298,14 +308,25 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		attacker.world.spawnEntity(bullet);
 	}
 	
-	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2)
+	public static void xBossRangedNearbyBulletAttack(EntityLivingBase attacker,Entity target,double minDistanceSqr,double maxDistanceSqr,double shootPower,boolean isBossBullet)
 	{
-		generateRedWay(world,x1,y1,z1,x2,y2,z2,32);
-	}
-	
-	public static void generateRedWay(World world,double x1,double y1,double z1,double x2,double y2,double z2,int numParticle)
-	{
-		XuphoriumCraft.generateParticleRay(world,x1,y1,z1,x2,y2,z2,numParticle,EnumParticleTypes.REDSTONE);
+		//Area Splash
+		List<Entity> entities=attacker.world.loadedEntityList;
+		List<EntityLivingBase> toAttackEntities=new ArrayList<>();
+		double distanceSq;
+		for(Entity entity: entities)
+		{
+			if(entity instanceof EntityLivingBase&&entity.getUniqueID()!=attacker.getUniqueID())
+			{
+				distanceSq=entity.getDistanceSq(target.posX,target.posY,target.posZ);
+				if(distanceSq>minDistanceSqr&&distanceSq<maxDistanceSqr) toAttackEntities.add((EntityLivingBase)entity);
+			}
+		}
+		for(EntityLivingBase entity: toAttackEntities)
+		{
+			//Attack
+			rangedAttackXBossBullet(attacker,entity,shootPower,isBossBullet);
+		}
 	}
 	
 	//====Tool Functions====//
@@ -485,9 +506,9 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			super.applyEntityAttributes();
 			this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(0D);
 			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-			this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40D);
+			this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30D);
 			this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4D);
-			this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
+			this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64D);
 		}
 		
 		//====Boss Bar====//
@@ -609,7 +630,8 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			//Mode Switch
 			if(--this.modeTick<-200)
 			{
-				this.modeTick=200;
+				//The lower the HP percentage, the longer you stay in melee mode.
+				this.modeTick=100*(3-(int)(this.getHealth()/this.getMaxHealth()));
 				this.updateRangedMode(false);
 			}
 			else if(this.modeTick==0) this.updateRangedMode(false);
@@ -687,29 +709,13 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		public void attackEntityWithRangedAttack(EntityLivingBase target,float distanceFactor)
 		{
 			//Direct Attack
-			this.rangedAttack(target);
+			XBoss.rangedAttackXBossBullet(this,target,1,true);
 			//Update
 			this.updateRangedMode(true);
-			//Area Splash
-			List<Entity> entities=world.loadedEntityList;
-			List<EntityLivingBase> toAttackEntities=new ArrayList<>();
-			double distanceSq;
 			//Get
 			try
 			{
-				for(Entity entity: entities)
-				{
-					if(entity instanceof EntityLivingBase)
-					{
-						distanceSq=entity.getDistanceSq(target.posX,target.posY,target.posZ);
-						if(distanceSq>8&&distanceSq<48) toAttackEntities.add((EntityLivingBase)entity);
-					}
-				}
-				for(EntityLivingBase entity: toAttackEntities)
-				{
-					//Attack
-					this.rangedAttack(entity);
-				}
+				XBoss.xBossRangedNearbyBulletAttack(this,target,8,48,0.75,true);
 			}
 			catch(Exception exception)
 			{
@@ -717,11 +723,6 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 				exception.printStackTrace();
 			}
 			this.playSound(SoundEvents.ENTITY_ENDERPEARL_THROW,0.5F,1F);
-		}
-		
-		public void rangedAttack(EntityLivingBase target)
-		{
-			XBoss.rangedAttackXBossBullet(this,target,0.75,true);
 		}
 		
 		public boolean isRangedMode()
@@ -807,7 +808,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			{
 				if(result.entityHit!=null)
 				{
-					if(result.entityHit.attackEntityFrom(DamageSource.causeMobDamage(this.shootingEntity),8.0F))
+					if(result.entityHit.attackEntityFrom(DamageSource.causeMobDamage(this.shootingEntity),4.0F))
 					{
 						this.applyEnchantments(this.shootingEntity,result.entityHit);
 						//result.entityHit.setFire(20);
@@ -823,10 +824,15 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			//Sound
 			this.playSound(SoundEvents.BLOCK_ANVIL_LAND,0.5F,1.0F);
 			//Effects
-			if(!this.world.isRemote)
+			if(this.world.isRemote)
 			{
-				//XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,2,4,0.1);
-				XBoss.redRayHurtNearbyEntities(world,this.shootingEntity,this.posX,this.posY,this.posZ,this.isBossBullet?12:6,this.isBossBullet?8:4,this.shootingEntity instanceof EntityPlayer,this.shootingEntity instanceof EntityXBoss);
+				XBoss.xBossRangedNearbyBulletAttack(this.shootingEntity,this,0,128,1,false);
+			}
+			else
+			{
+				if(this.isBossBullet)
+				XBoss.punchEntities(world,this,this.posX,this.posY,this.posZ,2,2,0.1);
+				XBoss.redRayHurtNearbyEntities(world,this.shootingEntity,this.posX,this.posY,this.posZ,6,4,this.shootingEntity instanceof EntityPlayer,this.shootingEntity instanceof EntityXBoss);
 			}
 			//Particle
 			if(world instanceof WorldServer) world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE,this.posX,this.posY,this.posZ,0,0,0);
