@@ -1,6 +1,0 @@
-{
-	"parent": "minecraft:item/generated",
-	"textures": {
-		"layer0": "xuphorium_craft:items/x_pearl_base"
-	}
-}

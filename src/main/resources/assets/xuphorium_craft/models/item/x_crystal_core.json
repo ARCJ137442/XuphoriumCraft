@@ -1,7 +1,0 @@
-{
-	"parent": "item/generated",
-	"textures":
-	{
-		"layer0": "xuphorium_craft:items/x_crystal_core"
-	}
-}

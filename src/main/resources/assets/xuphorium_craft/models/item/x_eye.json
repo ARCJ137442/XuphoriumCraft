@@ -1,6 +1,0 @@
-{
-	"parent": "xuphorium_craft:item/x_pearl_common",
-	"textures": {
-		"layer1": "xuphorium_craft:items/x_pearl_overlay_eye"
-	}
-}

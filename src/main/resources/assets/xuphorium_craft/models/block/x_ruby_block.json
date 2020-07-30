@@ -1,7 +1,0 @@
-{
-	"parent": "block/cube_all",
-	"textures":
-	{
-		"all": "xuphorium_craft:blocks/x_ruby_block"
-	}
-}

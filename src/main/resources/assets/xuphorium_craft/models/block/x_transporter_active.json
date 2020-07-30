@@ -1,9 +1,0 @@
-{
-	"parent": "block/cube_bottom_top",
-	"textures":
-	{
-		"top": "xuphorium_craft:blocks/x_transporter_top_actived",
-		"side": "xuphorium_craft:blocks/standard_x_block_base",
-		"bottom": "xuphorium_craft:blocks/standard_x_block_base"
-	}
-}
