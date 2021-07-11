@@ -1,0 +1,7 @@
+{
+	"parent": "item/generated",
+	"textures":
+	{
+		"layer0": "xuphorium_craft:items/x_magnet_powered_negative"
+	}
+}
