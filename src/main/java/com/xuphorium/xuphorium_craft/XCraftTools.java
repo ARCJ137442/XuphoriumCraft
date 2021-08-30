@@ -150,10 +150,12 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		ModelLoader.setCustomModelResourceLocation(X_ITEM,0,new ModelResourceLocation("xuphorium_craft:x_item","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_SWORD,0,new ModelResourceLocation("xuphorium_craft:x_sword","inventory"));
 		//X-Magnet
-		ModelLoader.setCustomModelResourceLocation(X_MAGNET,0,new ModelResourceLocation("xuphorium_craft:x_magnet","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_MAGNET,1,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_negative","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_MAGNET,2,new ModelResourceLocation("xuphorium_craft:x_magnet_powered","inventory"));
-		ModelLoader.setCustomModelResourceLocation(X_MAGNET,3,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_extra","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_DEFAULT,new ModelResourceLocation("xuphorium_craft:x_magnet","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_NEGATIVE,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_negative","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_POWERED,new ModelResourceLocation("xuphorium_craft:x_magnet_powered","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_POWERED_EXTRA,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_extra","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_LORENTZ,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_lorentz","inventory"));
+		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_REDUCER,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_reducer","inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(X_AXE,0,new ModelResourceLocation("xuphorium_craft:x_axe","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_PICKAXE,0,new ModelResourceLocation("xuphorium_craft:x_pickaxe","inventory"));
@@ -633,12 +635,14 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	public static class XMagnet extends XCraftToolCommon
 	{
 		//========Static Variable & Function========//
-		public static final int NUM_MODES=4;
+		public static final int NUM_MODES=6;
 		
 		public static final int MODE_ID_DEFAULT=0;
 		public static final int MODE_ID_NEGATIVE=1;
 		public static final int MODE_ID_POWERED=2;
 		public static final int MODE_ID_POWERED_EXTRA=3;
+		public static final int MODE_ID_LORENTZ=4;
+		public static final int MODE_ID_REDUCER=5;
 		
 		public static int getItemMode(ItemStack stack)
 		{
@@ -668,6 +672,8 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				case MODE_ID_NEGATIVE: return XCraftMaterials.X_EYE;
 				case MODE_ID_POWERED: return XCraftMaterials.X_INGOT;
 				case MODE_ID_POWERED_EXTRA: return XCraftMaterials.X_DIAMOND;
+				case MODE_ID_LORENTZ: return XCraftMaterials.X_CATALYST;
+				case MODE_ID_REDUCER: return XCraftMaterials.X_PEARL;
 				default:return null;
 			}
 		}
@@ -687,6 +693,25 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 					-value*(dx/distanceSquare),
 					-value*(dy/distanceSquare),
 					-value*(dz/distanceSquare)
+			};
+		}
+
+		public static double[] calculateVectorProduct(double vx,double vy,double vz,
+													  double Bx,double By,double Bz)
+		{
+			//F=q(v×B)
+			//From the calculation of the Lorentz force.
+			//The vectors in it obey the right-handed helix rule
+			/*
+			|i	vx	Bx|
+			|j	vy	By|
+			|k	vz	Bz|
+			*/
+			//Calculate & return
+			return new double[]{
+					vy*Bz-vz*By,
+					vz*Bx-vx*Bz,
+					vx*By-vy*Bx
 			};
 		}
 		
@@ -787,31 +812,53 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				if(((EntityLivingBase)entity).getHeldItemMainhand().equals(itemstack)||
 				   ((EntityLivingBase)entity).getHeldItemOffhand().equals(itemstack))
 				{
-					xMagnetCreateGravity(world,entity,mode);
+					xMagnetCreateForce(world,entity,mode);
 				}
 			}
 		}
 		
-		public static void xMagnetCreateGravity(World world,Entity entity,int mode)
+		public static void xMagnetCreateForce(World world, Entity entity, int mode)
 		{
 			List<Entity> entities=world.loadedEntityList;
-			double[] gravityForce;
+			double[] magnetForce;
+			double dx,dy,dz,distanceSquare;
 			for(Entity entity1 : entities)
 			{
-				if(entity1 instanceof EntityItem||entity1 instanceof EntityXPOrb||
+				//calculate distance
+				dx=entity1.posX-entity.posX;
+				dy=entity1.posY-entity.posY;
+				dz=entity1.posZ-entity.posZ;
+				distanceSquare = dx * dx + dy * dy + dz * dz;
+				//Short Distance Force
+				if(0<distanceSquare&&distanceSquare<=256) {
+					//entity1 instanceof IProjectile || entity1 instanceof EntityFireball
+					//Lorentz Mode
+					if (mode == MODE_ID_LORENTZ) {
+						magnetForce = calculateVectorProduct(entity1.motionX, entity1.motionY, entity1.motionZ,
+								0, 4 / (distanceSquare + 1), 0
+						);//Generates a magnetic field that is always pointing up along the Y-axis
+						entity1.motionX += magnetForce[0];
+						entity1.motionY += magnetForce[1];
+						entity1.motionZ += magnetForce[2];
+					}
+					//Reducer Mode
+					else if (mode == MODE_ID_REDUCER) {
+						distanceSquare = 1 - 32 / (distanceSquare + 32);//override to simplify calculate
+						entity1.motionX *= distanceSquare;
+						entity1.motionY *= distanceSquare;
+						entity1.motionZ *= distanceSquare;
+					}
+				}
+				//Other Mode
+				if(mode>MODE_ID_DEFAULT&&mode<MODE_ID_LORENTZ&&(entity1 instanceof EntityItem||entity1 instanceof EntityXPOrb||
 						modeCanAffectProjectiles(mode)&&(
 								entity1 instanceof IProjectile||entity1 instanceof EntityFireball
-						))
+						)))
 				{
-					gravityForce=calculateGravityVector(entity1.posX-entity.posX,
-							entity1.posY-entity.posY,
-							entity1.posZ-entity.posZ,
-							getForceValueByMode(mode),
-							1
-					);//1 means the scale of force
-					entity1.motionX+=gravityForce[0];
-					entity1.motionY+=gravityForce[1];
-					entity1.motionZ+=gravityForce[2];
+					magnetForce=calculateGravityVector(dx,dy,dz,getForceValueByMode(mode),1);//1 means the scale of force
+					entity1.motionX+=magnetForce[0];
+					entity1.motionY+=magnetForce[1];
+					entity1.motionZ+=magnetForce[2];
 				}
 			}
 		}

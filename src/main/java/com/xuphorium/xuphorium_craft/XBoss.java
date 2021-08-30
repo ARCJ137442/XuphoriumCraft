@@ -682,7 +682,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			if(!this.isRangedMode())
 			{
 				//Magnet Negative
-				if(!this.world.isRemote) XCraftTools.XMagnet.xMagnetCreateGravity(this.world,this,1);
+				if(!this.world.isRemote) XCraftTools.XMagnet.xMagnetCreateForce(this.world,this,1);
 				//Random Hurt
 				if(--randomHurtTick<0)
 				{
