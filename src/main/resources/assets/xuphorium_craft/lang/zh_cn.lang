@@ -1,7 +1,8 @@
 #entity
 entity.x_boss.name=X-BOSS
 entity.x_creeper.name=X-爬行者
-entity.x_neoman.name=X-新人类
+entity.neoman.name=新·人类
+entity.neohacker.name=侵染者
 
 #fluid
 fluid.x_fluid=X-液体

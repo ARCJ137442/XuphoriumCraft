@@ -1,5 +1,6 @@
 package com.xuphorium.xuphorium_craft;
 
+import com.google.common.base.Predicate;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeMap;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -10,6 +11,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAir;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -44,12 +48,12 @@ import com.xuphorium.xuphorium_craft.block.*;
 import com.xuphorium.xuphorium_craft.item.*; */
 
 @XuphoriumCraftElements.ModElement.Tag
-public class XNeoman extends XuphoriumCraftElements.ModElement
+public class Neoman extends XuphoriumCraftElements.ModElement
 {
 	//============Register About============//
 	public static final int ENTITYID=7;
 
-	public XNeoman(XuphoriumCraftElements instance)
+	public Neoman(XuphoriumCraftElements instance)
 	{
 		super(instance,2);
 	}
@@ -57,9 +61,12 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 	@Override
 	public void initElements()
 	{
-		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityXNeoman.class).id(
-				new ResourceLocation(XuphoriumCraft.MODID,"x_neoman"),ENTITYID
-		).name("x_neoman").tracker(64,1,true).egg(0x0000ff,0x00ff00).build());
+		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityNeoman.class).id(
+				new ResourceLocation(XuphoriumCraft.MODID,"neoman"),ENTITYID
+		).name("neoman").tracker(64,1,true).egg(0x0000ff,0x00ff00).build());
+		elements.entities.add(()->EntityEntryBuilder.create().entity(EntityNeoHacker.class).id(
+				new ResourceLocation(XuphoriumCraft.MODID,"neohacker"),ENTITYID+1
+		).name("neohacker").tracker(64,1,true).egg(0x00cccc,0x400000).build());
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -67,12 +74,31 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		//Add Render
-		RenderingRegistry.registerEntityRenderingHandler(EntityXNeoman.class,renderManager -> {
+		RenderingRegistry.registerEntityRenderingHandler(EntityNeoman.class,renderManager -> {
 			RenderBiped customRender=new RenderBiped(renderManager,new ModelBiped(),0.5f)
 			{
 				protected ResourceLocation getEntityTexture(Entity entity)
 				{
-					return new ResourceLocation("xuphorium_craft:textures/entities/x_neoman.png");
+					return new ResourceLocation("xuphorium_craft:textures/entities/"+((entity instanceof EntityNeoHacker)?"neohacker":"neoman")+".png");
+				}
+			};
+			customRender.addLayer(new net.minecraft.client.renderer.entity.layers.LayerHeldItem(customRender));
+			customRender.addLayer(new net.minecraft.client.renderer.entity.layers.LayerBipedArmor(customRender)
+			{
+				protected void initArmor()
+				{
+					this.modelLeggings=new ModelBiped();
+					this.modelArmor=new ModelBiped();
+				}
+			});
+			return customRender;
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityNeoHacker.class,renderManager -> {
+			RenderBiped customRender=new RenderBiped(renderManager,new ModelBiped(),0.5f)
+			{
+				protected ResourceLocation getEntityTexture(Entity entity)
+				{
+					return new ResourceLocation("xuphorium_craft:textures/entities/neohacker.png");
 				}
 			};
 			customRender.addLayer(new net.minecraft.client.renderer.entity.layers.LayerHeldItem(customRender));
@@ -89,7 +115,8 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 	}
 
 	public static void enrageNearbyEntities(World world,EntityLivingBase attacker,
-	                                            double radius,EntityLivingBase target,boolean overrideTarget)
+											float radius,EntityLivingBase target,
+											boolean overrideTarget,boolean limitConGeneric)
 	{
 		//Initial check
 		if(attacker==null||attacker.isDead||target==null||target.isDead) return;
@@ -100,6 +127,7 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			for(Entity entity: entities)
 			{
 				if(entity==null||entity==target||entity==attacker) continue;
+				if(limitConGeneric&&attacker.getClass()!=entity.getClass()) continue;
 				if(attacker.getDistance(entity)>radius) continue;
 				if(entity instanceof EntityLiving&&
 						(overrideTarget||((EntityLiving)entity).getAttackTarget()==null)
@@ -121,47 +149,47 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			//exception.printStackTrace();
 		}
 	}
-	
-	//====Tool Functions====//
-	
-	//============Entity Classes============//
-	public static class EntityXNeoman extends EntityMob
-	{
-		public static final ResourceLocation LOOT_TABLE_DEATH=LootTableList.register(new ResourceLocation("xuphorium_craft:entities/x_neoman"));
 
-		public EntityXNeoman(World world)
+	//====Tool Functions====//
+
+	//============Entity Classes============//
+	public static class EntityNeoman extends EntityMob
+	{
+		public static final ResourceLocation LOOT_TABLE_DEATH=LootTableList.register(new ResourceLocation("xuphorium_craft:entities/neoman"));
+
+		public EntityNeoman(World world)
 		{
 			super(world);
 			this.setSize(0.6f,1.8f);
 			this.experienceValue=5;
 			this.isImmuneToFire=false;
-			this.setCustomNameTag("X-Neoman");
+			this.setCustomNameTag("Neoman");
 			this.setAlwaysRenderNameTag(false);
 		}
 
 		@Override
 		protected ResourceLocation getLootTable()
 		{
-			return XNeoman.EntityXNeoman.LOOT_TABLE_DEATH;
+			return Neoman.EntityNeoman.LOOT_TABLE_DEATH;
 		}
 
 		public static final Class[] nearestAttackableTargets=new Class[]
-		{
-				EntityWither.class
-		};
-		
+				{
+						EntityWither.class
+				};
+
 		@Override
 		protected void initEntityAI()
 		{
 			this.aiTaskAdd(new EntityAISwimming(this));
-			this.aiTaskAdd(new EntityXNeomanAIAttackMelee(this,1,true));
+			this.aiTaskAdd(new EntityNeomanAIAttackMelee(this,1,true));
 			this.aiTaskAdd(new EntityAIMoveTowardsTarget(this,1.25D,64F));
 			this.aiTaskAdd(new EntityAIMoveTowardsRestriction(this,1.0D));
 			this.aiTaskAdd(new EntityAIWanderAvoidWater(this, 0.6D));
 			this.aiTargetTaskAdd(new EntityAIHurtByTarget(this,true));
 			for(Class entityClass : nearestAttackableTargets) this.aiTargetTaskAdd(new EntityAINearestAttackableTarget(this,entityClass,false,false));
 		}
-		
+
 		private int aiNum=0;
 
 		protected void addTask(EntityAITasks tasks, EntityAIBase ai)
@@ -178,32 +206,32 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 		{
 			this.addTask(this.targetTasks,ai);
 		}
-		
+
 		public EnumCreatureAttribute getCreatureAttribute()
 		{
 			return EnumCreatureAttribute.UNDEFINED;
 		}
-		
+
 		protected boolean canDespawn()
 		{
 			return false;
 		}
-		
+
 		public net.minecraft.util.SoundEvent getAmbientSound()
 		{
 			return null;
 		}
-		
+
 		public net.minecraft.util.SoundEvent getHurtSound(DamageSource ds)
 		{
 			return SoundEvents.ENTITY_PLAYER_HURT;
 		}
-		
+
 		public net.minecraft.util.SoundEvent getDeathSound()
 		{
 			return SoundEvents.ENTITY_PLAYER_DEATH;
 		}
-		
+
 		protected float getSoundVolume()
 		{
 			return 1.0F;
@@ -224,6 +252,145 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20D);
 			this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(2D);
 			this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64D);
+		}
+
+		//========Events========//
+		public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty,IEntityLivingData livingdata)
+		{
+			super.onInitialSpawn(difficulty,livingdata);
+			return livingdata;
+		}
+
+		//Entity has been attacked
+		public boolean attackEntityFrom(DamageSource source,float amount)
+		{
+			boolean flag=super.attackEntityFrom(source,amount);
+			return flag;
+		}
+
+		//Entity has attacked target
+		public boolean attackEntityAsMob(Entity entityIn)
+		{
+			boolean flag=super.attackEntityAsMob(entityIn);
+			return flag;
+		}
+
+		protected EntityLivingBase lastTarget=null;
+
+		protected boolean attackConGeneric=false;
+		protected boolean onlyCopyConGenericTarget=false;
+
+		public void onUpdate()
+		{
+			EntityLivingBase livingBase;
+			try
+			{
+				super.onUpdate();
+			}
+			catch(Exception exception)
+			{
+				XuphoriumCraft.LOGGER.error(exception.toString());
+				exception.printStackTrace();
+			}
+			//Not Dead Self
+			if(this.isDead) return;
+			if(this.getAttackTarget()==null)
+			{
+				float radius=16f;
+				List<Entity> entities=world.loadedEntityList;
+				//Get
+				for(Entity entity: entities)
+				{
+					if(entity==null||entity.isDead||entity==this) continue;
+					if(this.getDistance(entity) > radius) continue;
+					if(onlyCopyConGenericTarget&&!(entity instanceof EntityNeoman)) continue;
+					if(entity instanceof EntityLiving)
+					{
+						//Copy Target nearby
+						livingBase=((EntityLiving)entity).getAttackTarget();
+						if(livingBase!=null&&!livingBase.isDead)
+						{
+							//Attack entity who will attack itself
+							if(livingBase==this) livingBase=(EntityLiving)entity;
+							else if(!attackConGeneric&&livingBase instanceof EntityNeoman) continue;
+							this.setAttackTarget(livingBase);
+							break;
+						}
+					}
+				}
+			}
+			//Not Dead
+			else if(this.getAttackTarget().isDead) this.setAttackTarget(null);
+		}
+
+		public void setAttackTarget(@Nullable EntityLivingBase p_setAttackTarget_1_)
+		{
+			super.setAttackTarget(p_setAttackTarget_1_);
+			this.lastTarget=p_setAttackTarget_1_;
+			//Enrage nearby entities when target change
+			try
+			{
+				Neoman.enrageNearbyEntities(world, this, 8f, this.lastTarget, false,this.onlyCopyConGenericTarget);
+			}
+			catch(Exception exception)
+			{
+				XuphoriumCraft.LOGGER.error(exception.toString());
+				exception.printStackTrace();
+			}
+		}
+	}
+
+	public static class EntityNeoHacker extends EntityNeoman
+	{
+		public static final ResourceLocation LOOT_TABLE_DEATH=LootTableList.register(new ResourceLocation("xuphorium_craft:entities/neohacker"));
+		private static final Predicate<Entity> NOT_CONGENERIC;
+
+		static {
+			NOT_CONGENERIC = entity -> entity instanceof EntityLivingBase && !(entity instanceof EntityNeoman) && !entity.isDead && ((EntityLivingBase)entity).attackable();
+		}
+
+		public EntityNeoHacker(World world)
+		{
+			super(world);
+			this.experienceValue=10;
+			this.isImmuneToFire=true;
+			this.setCustomNameTag("NeoHacker");
+		}
+
+		@Override
+		protected ResourceLocation getLootTable()
+		{
+			return Neoman.EntityNeoHacker.LOOT_TABLE_DEATH;
+		}
+
+		@Override
+		protected void initEntityAI()
+		{
+			this.aiTaskAdd(new EntityAISwimming(this));
+			this.aiTaskAdd(new EntityNeomanAIAttackMelee(this,1,true,36,10));
+			this.aiTaskAdd(new EntityAIMoveTowardsTarget(this,1.25D,64F));
+			this.aiTaskAdd(new EntityAIMoveTowardsRestriction(this,1.0D));
+			this.aiTaskAdd(new EntityAIWanderAvoidWater(this, 0.6D));
+			this.aiTargetTaskAdd(new EntityAIHurtByTarget(this,true));
+			this.aiTargetTaskAdd(new EntityAINearestAttackableTarget(this, EntityLiving.class, 10, false, false, NOT_CONGENERIC));
+		}
+
+		public EnumCreatureAttribute getCreatureAttribute()
+		{
+			return EnumCreatureAttribute.UNDEFINED;
+		}
+
+		/*
+		protected double attribute_armor=0D;
+		protected double attribute_speed=0.4D;
+		protected double attribute_maxHealth=0D;
+		protected double attribute_attackDamage=0D;
+		protected double attribute_followRange=0D;
+		*/
+		@Override
+		protected void applyEntityAttributes()
+		{
+			super.applyEntityAttributes();
 		}
 
 		public static final IAttribute[] COPY_ATTRIBUTES=new IAttribute[]{
@@ -274,13 +441,13 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 				else if(blankStack!=null&&!blankStack.isEmpty()) this.setItemStackToSlot(slot,blankStack.copy());
 			}
 		}
-		
+
 		//====Boss Bar====//
 		public boolean isNonBoss()
 		{
 			return true;
 		}
-		
+
 		//========Events========//
 		public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty,IEntityLivingData livingdata)
 		{
@@ -300,16 +467,15 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			try
 			{
 				//Duplicate itself as living
-				if(victim instanceof EntityXNeoman) return;
-				if(this.world.getDifficulty() == EnumDifficulty.PEACEFUL) return;
+				if(victim instanceof EntityNeoman) return;
 
 				boolean hardcore=this.world.getDifficulty() == EnumDifficulty.NORMAL || this.world.getDifficulty() == EnumDifficulty.HARD;
-				EntityXNeoman entitySubstitute = new EntityXNeoman(victim.world);
+				EntityNeoHacker entitySubstitute = new EntityNeoHacker(victim.world);
 				entitySubstitute.copyLocationAndAnglesFrom(victim);
 				entitySubstitute.copyEntityAttributesFrom(victim,hardcore,hardcore?this:null);
 				entitySubstitute.copyEntityEquipmentFrom(victim,hardcore?this:null);
 				this.world.removeEntity(victim);
-				//entitySubstitute.onInitialSpawn(this.world.getDifficultyForLocation(new BlockPos(entitySubstitute)), new EntityXNeoman.GroupData(false));//Init with some data
+				//entitySubstitute.onInitialSpawn(this.world.getDifficultyForLocation(new BlockPos(entitySubstitute)), new EntityNeoHacker.GroupData(false));//Init with some data
 				if(victim instanceof EntityLiving)entitySubstitute.setNoAI(((EntityLiving)victim).isAIDisabled());
 				if (victim.hasCustomName()) {
 					entitySubstitute.setCustomNameTag(victim.getCustomNameTag());
@@ -338,77 +504,32 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			return flag;
 		}
 
-		protected EntityLivingBase lastTarget=null;
-
-		protected boolean attackConGeneric=false;
-
+		@Override
 		public void onUpdate()
 		{
-			EntityLivingBase livingBase;
-			try
-			{
-				super.onUpdate();
-			}
-			catch(Exception exception)
-			{
-				XuphoriumCraft.LOGGER.error(exception.toString());
-				exception.printStackTrace();
-			}
-			//Not Dead Self
-			if(this.isDead) return;
-			if(this.getAttackTarget()==null)
-			{
-				double radius=16;
-				List<Entity> entities=world.loadedEntityList;
-				//Get
-				for(Entity entity: entities)
-				{
-					if(entity==null||entity.isDead||entity==this) continue;
-					if(this.getDistance(entity) > radius) continue;
-					if(entity instanceof EntityLiving)
-					{
-						//Copy Target nearby
-						livingBase=((EntityLiving)entity).getAttackTarget();
-						if(livingBase!=null&&!livingBase.isDead)
-						{
-							//Attack entity who will attack itself
-							if(livingBase==this) livingBase=(EntityLiving)entity;
-							else if(!attackConGeneric&&livingBase instanceof EntityXNeoman) continue;
-							this.setAttackTarget(livingBase);
-							break;
-						}
-					}
-				}
-			}
-			//Not Dead
-			else if(this.getAttackTarget().isDead) this.setAttackTarget(null);
-		}
-
-		public void setAttackTarget(@Nullable EntityLivingBase p_setAttackTarget_1_)
-		{
-			super.setAttackTarget(p_setAttackTarget_1_);
-			this.lastTarget=p_setAttackTarget_1_;
-			//Enrage nearby entities when target change
-			try
-			{
-				XNeoman.enrageNearbyEntities(world, this, 8, this.lastTarget, false);
-			}
-			catch(Exception exception)
-			{
-				XuphoriumCraft.LOGGER.error(exception.toString());
-				exception.printStackTrace();
-			}
+			if(!this.onlyCopyConGenericTarget) this.onlyCopyConGenericTarget=true;
+			super.onUpdate();
 		}
 	}
 
 	//Melee attack behavior
-	public static class EntityXNeomanAIAttackMelee extends EntityAIAttackMelee
+	public static class EntityNeomanAIAttackMelee extends EntityAIAttackMelee
 	{
-		protected EntityXNeoman host;
-		public EntityXNeomanAIAttackMelee(EntityCreature creature,double speedIn,boolean useLongMemory)
+		protected EntityNeoman host;
+		protected double attackRangeSqr=16F;
+		protected int attackPeriod=15;
+
+		public EntityNeomanAIAttackMelee(EntityCreature creature,double speedIn,boolean useLongMemory,double attackRangeSqr,int attackPeriod)
+		{
+			this(creature, speedIn, useLongMemory);
+			this.attackRangeSqr=attackRangeSqr;
+			this.attackPeriod=attackPeriod;
+		}
+
+		public EntityNeomanAIAttackMelee(EntityCreature creature,double speedIn,boolean useLongMemory)
 		{
 			super(creature,speedIn,useLongMemory);
-			if(creature instanceof EntityXNeoman) this.host=(EntityXNeoman)creature;
+			if(creature instanceof EntityNeoman) this.host=(EntityNeoman)creature;
 		}
 
 		@Override
@@ -418,7 +539,7 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 
 			if (p_190102_2_<=d0&&this.attackTick<=0)
 			{
-				this.attackTick=15;//(int)(10*(Math.random()+1))
+				this.attackTick=this.attackPeriod;//(int)(10*(Math.random()+1))
 				this.attacker.swingArm(EnumHand.MAIN_HAND);
 				this.attacker.attackEntityAsMob(p_190102_1_);
 			}
@@ -427,7 +548,7 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 		@Override
 		protected double getAttackReachSqr(EntityLivingBase attackTarget)
 		{
-			return 16F;
+			return this.attackRangeSqr;
 		}
 	}
 }
