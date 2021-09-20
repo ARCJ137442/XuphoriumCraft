@@ -89,12 +89,6 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 	}
 
 	public static void enrageNearbyEntities(World world,EntityLivingBase attacker,
-											double radius,EntityLivingBase target,boolean overrideTarget)
-	{
-		enrageNearbyEntities(world, attacker, attacker.posX, attacker.posY, attacker.posZ, radius, target,overrideTarget);
-	}
-
-	public static void enrageNearbyEntities(World world,EntityLivingBase attacker,double sourceX,double sourceY,double sourceZ,
 	                                            double radius,EntityLivingBase target,boolean overrideTarget)
 	{
 		//Initial check
@@ -160,11 +154,9 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 		protected void initEntityAI()
 		{
 			this.aiTaskAdd(new EntityAISwimming(this));
-			this.aiTaskAdd(new EntityAIOpenDoor(this, true));
 			this.aiTaskAdd(new EntityXNeomanAIAttackMelee(this,1,true));
 			this.aiTaskAdd(new EntityAIMoveTowardsTarget(this,1.25D,64F));
 			this.aiTaskAdd(new EntityAIMoveTowardsRestriction(this,1.0D));
-			this.aiTaskAdd(new EntityAIWatchClosest(this,EntityLivingBase.class,(float)12));
 			this.aiTaskAdd(new EntityAIWanderAvoidWater(this, 0.6D));
 			this.aiTargetTaskAdd(new EntityAIHurtByTarget(this,true));
 			for(Class entityClass : nearestAttackableTargets) this.aiTargetTaskAdd(new EntityAINearestAttackableTarget(this,entityClass,false,false));
@@ -174,7 +166,7 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 
 		protected void addTask(EntityAITasks tasks, EntityAIBase ai)
 		{
-			this.targetTasks.addTask(this.aiNum++,ai);
+			tasks.addTask(this.aiNum++,ai);
 		}
 
 		protected void aiTaskAdd(EntityAIBase ai)
@@ -241,18 +233,27 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 				SharedMonsterAttributes.ATTACK_DAMAGE,SharedMonsterAttributes.ATTACK_SPEED,
 				SharedMonsterAttributes.FOLLOW_RANGE,SharedMonsterAttributes.KNOCKBACK_RESISTANCE};
 
-		protected void copyEntityAttributesFrom(EntityLiving entityLiving,boolean maxMode)
+		protected void copyEntityAttributesFrom(EntityLivingBase entityLiving,boolean maxMode,EntityLiving blankEntity)
 		{
-			IAttributeInstance attribute1;
+			IAttributeInstance attribute1,attribute2;
 			double aValue;
 			for(IAttribute attribute : COPY_ATTRIBUTES)
 			{
-				attribute1=entityLiving.getEntityAttribute(attribute);
-				if(this.getEntityAttribute(attribute)!=null&&attribute1!=null)
+				try {
+					attribute1 = entityLiving.getEntityAttribute(attribute);
+					if (attribute1 != null) {
+						aValue = attribute1.getBaseValue();
+						if (maxMode)
+						{
+							attribute2 = (blankEntity != null) ? blankEntity.getEntityAttribute(attribute) : this.getEntityAttribute(attribute);
+							if(attribute2 != null) aValue = Math.max(attribute1.getBaseValue(), attribute2.getBaseValue());
+						}
+						this.getEntityAttribute(attribute).setBaseValue(aValue);
+					}
+				}
+				catch (Exception ignored)
 				{
-					aValue=attribute1.getBaseValue();
-					if(maxMode) aValue=Math.max(this.getEntityAttribute(attribute).getBaseValue(),attribute1.getBaseValue());
-					this.getEntityAttribute(attribute).setBaseValue(aValue);
+
 				}
 			}
 		}
@@ -262,7 +263,7 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 				EntityEquipmentSlot.HEAD,EntityEquipmentSlot.CHEST,
 				EntityEquipmentSlot.LEGS,EntityEquipmentSlot.FEET};
 
-		protected void copyEntityEquipmentFrom(EntityLiving entityLiving,EntityLiving blankEntity)
+		protected void copyEntityEquipmentFrom(EntityLivingBase entityLiving,EntityLiving blankEntity)
 		{
 			ItemStack iStack,blankStack;
 			for(EntityEquipmentSlot slot : COPY_ITEMSLOTS)
@@ -278,11 +279,6 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 		public boolean isNonBoss()
 		{
 			return true;
-		}
-		
-		public void setSwingingArms(boolean swingingArms)
-		{
-		
 		}
 		
 		//========Events========//
@@ -303,18 +299,18 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			super.onKillEntity(victim);
 			try
 			{
-				//Duplicate self as living
-				if(!(victim instanceof EntityLiving)||victim instanceof EntityXNeoman) return;
+				//Duplicate itself as living
+				if(victim instanceof EntityXNeoman) return;
 				if(this.world.getDifficulty() == EnumDifficulty.PEACEFUL) return;
 
 				boolean hardcore=this.world.getDifficulty() == EnumDifficulty.NORMAL || this.world.getDifficulty() == EnumDifficulty.HARD;
 				EntityXNeoman entitySubstitute = new EntityXNeoman(victim.world);
 				entitySubstitute.copyLocationAndAnglesFrom(victim);
-				entitySubstitute.copyEntityAttributesFrom((EntityLiving)victim,hardcore);
-				entitySubstitute.copyEntityEquipmentFrom((EntityLiving)victim,hardcore?this:null);
+				entitySubstitute.copyEntityAttributesFrom(victim,hardcore,hardcore?this:null);
+				entitySubstitute.copyEntityEquipmentFrom(victim,hardcore?this:null);
 				this.world.removeEntity(victim);
 				//entitySubstitute.onInitialSpawn(this.world.getDifficultyForLocation(new BlockPos(entitySubstitute)), new EntityXNeoman.GroupData(false));//Init with some data
-				entitySubstitute.setNoAI(((EntityLiving)victim).isAIDisabled());
+				if(victim instanceof EntityLiving)entitySubstitute.setNoAI(((EntityLiving)victim).isAIDisabled());
 				if (victim.hasCustomName()) {
 					entitySubstitute.setCustomNameTag(victim.getCustomNameTag());
 					entitySubstitute.setAlwaysRenderNameTag(victim.getAlwaysRenderNameTag());
@@ -322,12 +318,12 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 				this.world.spawnEntity(entitySubstitute);
 				entitySubstitute.setHealth(entitySubstitute.getMaxHealth());
 				//Particle
-				if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(EnumParticleTypes.SMOKE_NORMAL,
-						entitySubstitute.posX,entitySubstitute.posY,entitySubstitute.posZ,16,
+				if(world instanceof WorldServer) ((WorldServer)world).spawnParticle(EnumParticleTypes.SMOKE_LARGE,
+						entitySubstitute.posX,entitySubstitute.posY,entitySubstitute.posZ,32,
 						entitySubstitute.width*0.5,entitySubstitute.height*0.5,entitySubstitute.width*0.5,
 						0
 				);
-				}
+			}
 			catch(Exception exception)
 			{
 				XuphoriumCraft.LOGGER.error(exception.toString());
@@ -352,40 +348,40 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			try
 			{
 				super.onUpdate();
-				//Not Dead Self
-				if(this.isDead) return;
-				if(this.getAttackTarget()==null)
-				{
-					double radius=16;
-					List<Entity> entities=world.loadedEntityList;
-					//Get
-					for(Entity entity: entities)
-					{
-						if(entity==null||entity.isDead||entity==this) continue;
-						if(this.getDistance(entity) > radius) continue;
-						if(entity instanceof EntityLiving)
-						{
-							//Copy Target nearby
-							livingBase=((EntityLiving)entity).getAttackTarget();
-							if(livingBase!=null&&!livingBase.isDead)
-							{
-								//Attack entity who will attack itself
-								if(livingBase==this) livingBase=(EntityLiving)entity;
-								if(!attackConGeneric&&livingBase instanceof EntityXNeoman) continue;
-								this.setAttackTarget(livingBase);
-								break;
-							}
-						}
-					}
-				}
-				//Not Dead
-				else if(this.getAttackTarget().isDead) this.setAttackTarget(null);
 			}
 			catch(Exception exception)
 			{
 				XuphoriumCraft.LOGGER.error(exception.toString());
 				exception.printStackTrace();
 			}
+			//Not Dead Self
+			if(this.isDead) return;
+			if(this.getAttackTarget()==null)
+			{
+				double radius=16;
+				List<Entity> entities=world.loadedEntityList;
+				//Get
+				for(Entity entity: entities)
+				{
+					if(entity==null||entity.isDead||entity==this) continue;
+					if(this.getDistance(entity) > radius) continue;
+					if(entity instanceof EntityLiving)
+					{
+						//Copy Target nearby
+						livingBase=((EntityLiving)entity).getAttackTarget();
+						if(livingBase!=null&&!livingBase.isDead)
+						{
+							//Attack entity who will attack itself
+							if(livingBase==this) livingBase=(EntityLiving)entity;
+							else if(!attackConGeneric&&livingBase instanceof EntityXNeoman) continue;
+							this.setAttackTarget(livingBase);
+							break;
+						}
+					}
+				}
+			}
+			//Not Dead
+			else if(this.getAttackTarget().isDead) this.setAttackTarget(null);
 		}
 
 		public void setAttackTarget(@Nullable EntityLivingBase p_setAttackTarget_1_)
@@ -395,7 +391,7 @@ public class XNeoman extends XuphoriumCraftElements.ModElement
 			//Enrage nearby entities when target change
 			try
 			{
-				XNeoman.enrageNearbyEntities(world, this, 12, this.lastTarget, false);
+				XNeoman.enrageNearbyEntities(world, this, 8, this.lastTarget, false);
 			}
 			catch(Exception exception)
 			{
