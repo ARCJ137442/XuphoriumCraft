@@ -441,7 +441,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 		public static ItemStack getXMagnet()
 		{
 			ItemStack result=new ItemStack(XCraftTools.X_MAGNET);
-			XCraftTools.XMagnet.setItemMode(result,XCraftTools.XMagnet.MODE_ID_NEGATIVE);
+			XCraftTools.XMagnet.setItemMode(result,XCraftTools.XMagnet.MODE_ID_CONDUCT);
 			result.addEnchantment(Enchantments.UNBREAKING,3);
 			result.addEnchantment(Enchantments.MENDING,1);
 			return result;
@@ -664,7 +664,7 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 			double dz=target==null?0:(target.posZ-this.posZ);
 			double targetDistance=MathHelper.sqrt(dx*dx+dy*dy+dz*dz);
 			//Drag to Target
-			if(target!=null)
+			if(target!=null&&!target.isDead)
 			{
 				if(targetDistance>=(this.isRangedMode()?24:6))
 				{
@@ -678,26 +678,26 @@ public class XBoss extends XuphoriumCraftElements.ModElement
 							target.posX, target.posY+target.getEyeHeight(),target.posZ,
 							-dx,-dy,-dz);
 				}
-			}
-			if(!this.isRangedMode())
-			{
-				//Magnet Negative
-				if(!this.world.isRemote) XCraftTools.XMagnet.xMagnetCreateForce(this.world,this,1);
-				//Random Hurt
-				if(--randomHurtTick<0)
+				if(!this.isRangedMode())//Melee
 				{
-					randomHurtTick=40;
-					this.updateRangedMode(true);
-					redRayHurtNearbyEntities(this.world,this,16,-1,true,true);
-					if(target!=null)
+					//Magnet Conduct
+					if(!this.world.isRemote) XCraftTools.XMagnet.xMagnetCreateForce(this.world,this, XCraftTools.XMagnet.MODE_ID_CONDUCT);
+					//Random Hurt
+					if(--randomHurtTick<0)
 					{
-						//Particle
-						XuphoriumCraft.generateParticleRay(target.world,
-							this.posX,this.posY+this.getEyeHeight(),this.posZ,
-							target.posX,target.posY+target.getEyeHeight(),target.posZ,
-							((int)targetDistance)*4,1,EnumParticleTypes.SPELL_INSTANT,0,0d);
-						//Direct Attack Entity
-						if(this.attackEntityAsMob(target)) this.randomHurtTick=20;
+						randomHurtTick=40;
+						this.updateRangedMode(true);
+						redRayHurtNearbyEntities(this.world,this,16,-1,true,true);
+						if(target!=null)
+						{
+							//Particle
+							XuphoriumCraft.generateParticleRay(target.world,
+								this.posX,this.posY+this.getEyeHeight(),this.posZ,
+								target.posX,target.posY+target.getEyeHeight(),target.posZ,
+								((int)targetDistance)*4,1,EnumParticleTypes.SPELL_INSTANT,0,0d);
+							//Direct Attack Entity
+							if(this.attackEntityAsMob(target)) this.randomHurtTick=20;
+						}
 					}
 				}
 			}

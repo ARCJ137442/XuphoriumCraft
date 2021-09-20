@@ -1,6 +1,7 @@
 #entity
 entity.x_boss.name=X-BOSS
 entity.x_creeper.name=X-Creeper
+entity.x_neoman.name=X-Neoman
 
 #fluid
 fluid.x_fluid=X-Fluid

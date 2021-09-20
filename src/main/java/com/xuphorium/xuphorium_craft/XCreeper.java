@@ -1,6 +1,5 @@
 package com.xuphorium.xuphorium_craft;
 
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -57,7 +56,6 @@ import java.util.List;
 public class XCreeper extends XuphoriumCraftElements.ModElement
 {
 	public static final int ENTITYID=1;
-	public static final int ENTITYID_RANGED=2;
 
 	public XCreeper(XuphoriumCraftElements instance)
 	{

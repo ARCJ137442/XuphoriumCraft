@@ -156,6 +156,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_POWERED_EXTRA,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_extra","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_LORENTZ,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_lorentz","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_REDUCER,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_reducer","inventory"));
+        ModelLoader.setCustomModelResourceLocation(X_MAGNET,XMagnet.MODE_ID_CONDUCT,new ModelResourceLocation("xuphorium_craft:x_magnet_powered_conduct","inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(X_AXE,0,new ModelResourceLocation("xuphorium_craft:x_axe","inventory"));
 		ModelLoader.setCustomModelResourceLocation(X_PICKAXE,0,new ModelResourceLocation("xuphorium_craft:x_pickaxe","inventory"));
@@ -635,7 +636,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 	public static class XMagnet extends XCraftToolCommon
 	{
 		//========Static Variable & Function========//
-		public static final int NUM_MODES=6;
+		public static final int NUM_MODES=7;
 		
 		public static final int MODE_ID_DEFAULT=0;
 		public static final int MODE_ID_NEGATIVE=1;
@@ -643,6 +644,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 		public static final int MODE_ID_POWERED_EXTRA=3;
 		public static final int MODE_ID_LORENTZ=4;
 		public static final int MODE_ID_REDUCER=5;
+        public static final int MODE_ID_CONDUCT=6;
 		
 		public static int getItemMode(ItemStack stack)
 		{
@@ -674,6 +676,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				case MODE_ID_POWERED_EXTRA: return XCraftMaterials.X_DIAMOND;
 				case MODE_ID_LORENTZ: return XCraftMaterials.X_CATALYST;
 				case MODE_ID_REDUCER: return XCraftMaterials.X_PEARL;
+                case MODE_ID_CONDUCT: return XCraftMaterials.X_METAL;
 				default:return null;
 			}
 		}
@@ -822,6 +825,7 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 			List<Entity> entities=world.loadedEntityList;
 			double[] magnetForce;
 			double dx,dy,dz,distanceSquare;
+			Vec3d lookVec,motionVec;
 			for(Entity entity1 : entities)
 			{
 				//calculate distance
@@ -829,37 +833,64 @@ public class XCraftTools extends XuphoriumCraftElements.ModElement
 				dy=entity1.posY-entity.posY;
 				dz=entity1.posZ-entity.posZ;
 				distanceSquare = dx * dx + dy * dy + dz * dz;
-				//Short Distance Force
-				if(0<distanceSquare&&distanceSquare<=256) {
-					//entity1 instanceof IProjectile || entity1 instanceof EntityFireball
-					//Lorentz Mode
-					if (mode == MODE_ID_LORENTZ) {
-						magnetForce = calculateVectorProduct(entity1.motionX, entity1.motionY, entity1.motionZ,
-								0, 4 / (distanceSquare + 1), 0
-						);//Generates a magnetic field that is always pointing up along the Y-axis
-						entity1.motionX += magnetForce[0];
-						entity1.motionY += magnetForce[1];
-						entity1.motionZ += magnetForce[2];
-					}
-					//Reducer Mode
-					else if (mode == MODE_ID_REDUCER) {
-						distanceSquare = 1 - 32 / (distanceSquare + 32);//override to simplify calculate
-						entity1.motionX *= distanceSquare;
-						entity1.motionY *= distanceSquare;
-						entity1.motionZ *= distanceSquare;
-					}
-				}
-				//Other Mode
-				if(mode>MODE_ID_DEFAULT&&mode<MODE_ID_LORENTZ&&(entity1 instanceof EntityItem||entity1 instanceof EntityXPOrb||
-						modeCanAffectProjectiles(mode)&&(
-								entity1 instanceof IProjectile||entity1 instanceof EntityFireball
-						)))
-				{
-					magnetForce=calculateGravityVector(dx,dy,dz,getForceValueByMode(mode),1);//1 means the scale of force
-					entity1.motionX+=magnetForce[0];
-					entity1.motionY+=magnetForce[1];
-					entity1.motionZ+=magnetForce[2];
-				}
+				switch(mode) {
+                    case MODE_ID_LORENTZ:// range = 12
+                        if (0 < distanceSquare && distanceSquare <= 144) {
+                            //entity1 instanceof IProjectile || entity1 instanceof EntityFireball
+							//calculate factor to separate projects and livings
+                            magnetForce = calculateVectorProduct(entity1.motionX, entity1.motionY, entity1.motionZ,
+                                    0, 0.5, 0
+                            );//Generates a magnetic field that is always pointing up along the Y-axis
+							distanceSquare=(entity1 instanceof IProjectile || entity1 instanceof EntityFireball)?1:-1;
+                            entity1.motionX += magnetForce[0]*distanceSquare;
+                            entity1.motionY += magnetForce[1]*distanceSquare;
+                            entity1.motionZ += magnetForce[2]*distanceSquare;
+                        }
+                        break;
+                    case MODE_ID_REDUCER:// range = 8
+                        if (0 < distanceSquare && distanceSquare <= 64) {
+                            distanceSquare = 1 - 32 / (distanceSquare + 32);//override to simplify calculate
+                            entity1.motionX *= distanceSquare;
+                            entity1.motionY *= distanceSquare;
+                            entity1.motionZ *= distanceSquare;
+                        }
+                        break;
+                    case MODE_ID_CONDUCT:// range = 8
+                        if (0 < distanceSquare && distanceSquare <= 64 &&
+                                (entity1 instanceof IProjectile || entity1 instanceof EntityFireball)) {
+                        	//uses lookVec as conduct vector
+							lookVec=entity.getLookVec();
+							motionVec=new Vec3d(entity.motionX,entity.motionY,entity.motionZ);
+                        	//calculate scaler product:(entity1.motion*lookVec)/(lookVec*lookVec), assumed |lookVec|=1
+							distanceSquare = lookVec.dotProduct(motionVec)/(lookVec.lengthSquared());//override to simplify calculate
+                            //calculate y-limit vector override to motionVec
+							//calculate distanceSquare as fraction factor
+							motionVec=lookVec.scale(distanceSquare).subtract(motionVec).scale(31/32).add(lookVec.scale(0.2));
+							//reduce the acceleration
+							if(entity1 instanceof EntityFireball)
+							{
+								((EntityFireball)entity1).accelerationX=motionVec.x;
+								((EntityFireball)entity1).accelerationY=motionVec.y;
+								((EntityFireball)entity1).accelerationZ=motionVec.z;
+							}
+							//total effect
+                            entity1.motionX += motionVec.x;
+                            entity1.motionY += motionVec.y;
+                            entity1.motionZ += motionVec.z;
+                        }
+                        break;
+                    //Other Basic Mode
+                    default:
+                    if (entity1 instanceof EntityItem || entity1 instanceof EntityXPOrb ||
+                            modeCanAffectProjectiles(mode) && (
+                                    entity1 instanceof IProjectile || entity1 instanceof EntityFireball
+                            )) {
+                        magnetForce = calculateGravityVector(dx, dy, dz, getForceValueByMode(mode), 1);//1 means the scale of force
+                        entity1.motionX += magnetForce[0];
+                        entity1.motionY += magnetForce[1];
+                        entity1.motionZ += magnetForce[2];
+                    }
+                }
 			}
 		}
 	}
